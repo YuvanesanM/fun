@@ -2,482 +2,1190 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="description" content="Sana & Tara's magical kingdom of riddles, stories, jokes and doodles!">
+<meta name="theme-color" content="#080720">
 <title>Sana & Tara's Magic Kingdom 🌙</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Pacifico&family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
 :root {
-  --night: #080720;
-  --card: rgba(255,255,255,0.06);
-  --border: rgba(255,255,255,0.1);
-  --pink: #f472b6;
-  --sky: #67e8f9;
-  --gold: #fcd34d;
-  --mint: #6ee7b7;
-  --purple: #a78bfa;
-  --cream: #fef3c7;
+  --night:#080720;
+  --pink:#f472b6;  --sky:#67e8f9;   --gold:#fcd34d;
+  --mint:#6ee7b7;  --purple:#a78bfa; --cream:#fef3c7;
+  --card:rgba(255,255,255,.07);
+  --border:rgba(255,255,255,.12);
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Baloo 2',cursive; background:var(--night); color:#e2e8f0; min-height:100vh; overflow-x:hidden; }
+
+/* ═══════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Baloo 2',cursive;
+  background:var(--night);
+  color:#e2e8f0;
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+button { font-family:inherit; cursor:pointer; }
 #bg-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; }
 
-/* PAGES */
-.page { display:none; position:relative; z-index:1; min-height:100vh; padding-bottom:5rem; animation:fadeUp .5s ease; }
+/* ═══════════════════════════════════════════
+   SHARED ANIMATIONS
+═══════════════════════════════════════════ */
+@keyframes fadeUp  { from{opacity:0;transform:translateY(18px);}  to{opacity:1;transform:none;} }
+@keyframes float   { 0%,100%{transform:translateY(0) rotate(-3deg);} 50%{transform:translateY(-16px) rotate(3deg);} }
+@keyframes pop     { from{transform:scale(.88);opacity:0;} to{transform:scale(1);opacity:1;} }
+@keyframes bounce  { 0%,100%{transform:scale(1);} 50%{transform:scale(1.12);} }
+@keyframes spin    { to{transform:rotate(360deg);} }
+@keyframes pulse   { 0%,100%{transform:scale(.8);opacity:.6;} 50%{transform:scale(1.2);opacity:1;} }
+@keyframes pulse-g { 0%,100%{opacity:1;} 50%{opacity:.5;} }
+@keyframes tick    { 0%{transform:scale(1);} 50%{transform:scale(1.28);} 100%{transform:scale(1);} }
+@keyframes dots    { 0%{content:'';}33%{content:'.';}66%{content:'..';}100%{content:'...';} }
+@keyframes sp      { 0%{opacity:1;transform:translateY(0) scale(1) rotate(0);}
+                    100%{opacity:0;transform:translateY(90px) scale(.2) rotate(400deg);} }
+@keyframes wob     { 0%,100%{transform:rotate(-5deg);} 50%{transform:rotate(5deg);} }
+
+/* ═══════════════════════════════════════════
+   PAGES — hash-based routing
+═══════════════════════════════════════════ */
+.page {
+  display:none;
+  position:relative; z-index:1;
+  max-width:820px; margin:0 auto;
+  padding:2rem 1.25rem 6rem;
+  animation:fadeUp .5s ease;
+}
 .page.active { display:block; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;} }
-#home { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:2rem 1.5rem 5rem; }
-#home.active { display:flex; }
+#home.active { display:flex; flex-direction:column; align-items:center; text-align:center; }
 
-/* HOME */
-.big-moon { font-size:5.5rem; display:block; animation:float 5s ease-in-out infinite; filter:drop-shadow(0 0 40px #fcd34d88); margin-bottom:.5rem; }
-@keyframes float { 0%,100%{transform:translateY(0) rotate(-3deg);}50%{transform:translateY(-16px) rotate(3deg);} }
-.site-title { font-family:'Pacifico',cursive; font-size:clamp(2.4rem,8vw,4.8rem); background:linear-gradient(135deg,#fcd34d 0%,#f472b6 45%,#a78bfa 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height:1.15; margin-bottom:.5rem; }
-.site-sub { color:var(--purple); font-size:1.1rem; font-weight:600; margin-bottom:2rem; letter-spacing:.5px; }
+/* ═══════════════════════════════════════════
+   TOP BAR (inner pages)
+═══════════════════════════════════════════ */
+.top-bar {
+  display:flex; align-items:center; gap:.75rem;
+  margin-bottom:1.75rem; flex-wrap:wrap;
+}
+.back-btn {
+  background:rgba(255,255,255,.09);
+  border:1.5px solid var(--border);
+  color:white; padding:.5rem 1.2rem;
+  border-radius:999px; font-family:'Fredoka One',cursive;
+  font-size:.92rem; transition:all .2s; white-space:nowrap;
+}
+.back-btn:hover { background:rgba(255,255,255,.18); }
+.page-heading { font-family:'Fredoka One',cursive; font-size:clamp(1.8rem,5vw,2.8rem); }
+.page-heading.gold   { color:var(--gold); }
+.page-heading.sky    { color:var(--sky); }
+.page-heading.pink   { color:var(--pink); }
+.page-heading.mint   { color:var(--mint); }
+.page-sub { color:var(--purple); font-size:1rem; margin-bottom:1.5rem; }
 
-.who-row { display:flex; gap:.75rem; margin-bottom:2.5rem; flex-wrap:wrap; justify-content:center; }
-.who-btn { padding:.5rem 1.6rem; border-radius:999px; border:2.5px solid transparent; font-family:'Fredoka One',cursive; font-size:1.1rem; cursor:pointer; transition:all .25s; color:white; }
-.who-btn.sana { background:linear-gradient(135deg,#be185d,#7c3aed); }
-.who-btn.both { background:linear-gradient(135deg,#b45309,#be185d); }
-.who-btn.tara { background:linear-gradient(135deg,#0369a1,#0d9488); }
+/* ═══════════════════════════════════════════
+   HOME HERO
+═══════════════════════════════════════════ */
+.big-moon {
+  font-size:5.5rem; display:block;
+  animation:float 5s ease-in-out infinite;
+  filter:drop-shadow(0 0 45px #fcd34d88);
+  margin-bottom:.3rem;
+}
+.site-title {
+  font-family:'Pacifico',cursive;
+  font-size:clamp(2.2rem,7vw,4.5rem);
+  background:linear-gradient(135deg,#fcd34d,#f472b6,#a78bfa);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  line-height:1.15; margin-bottom:.3rem;
+}
+.site-sub { color:var(--purple); font-size:1rem; font-weight:600; letter-spacing:.5px; margin-bottom:1.75rem; }
+
+/* ── WHO ── */
+.who-row { display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; margin-bottom:2rem; }
+.who-btn {
+  padding:.5rem 1.7rem; border-radius:999px;
+  border:2.5px solid transparent;
+  font-family:'Fredoka One',cursive; font-size:1.1rem;
+  color:white; transition:all .25s;
+}
+.who-btn.sana  { background:linear-gradient(135deg,#be185d,#7c3aed); }
+.who-btn.both  { background:linear-gradient(135deg,#b45309,#be185d); }
+.who-btn.tara  { background:linear-gradient(135deg,#0369a1,#0d9488); }
 .who-btn.active { border-color:white; transform:scale(1.1); box-shadow:0 0 22px rgba(255,255,255,.3); }
 
-.nav-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; max-width:480px; width:100%; }
-@media(max-width:400px){ .nav-grid{ grid-template-columns:1fr; } }
-.nav-card { background:var(--card); border:2px solid var(--border); border-radius:24px; padding:2rem 1.5rem; cursor:pointer; transition:all .3s; text-align:center; backdrop-filter:blur(12px); }
-.nav-card:hover { background:rgba(255,255,255,.11); transform:translateY(-7px) scale(1.03); }
-.nav-card.riddle:hover { border-color:var(--gold); box-shadow:0 18px 40px rgba(252,211,77,.2); }
-.nav-card.story:hover  { border-color:var(--sky);  box-shadow:0 18px 40px rgba(103,232,249,.2); }
-.nav-card .nav-icon { font-size:3.2rem; margin-bottom:.6rem; display:block; }
-.nav-card h2 { font-family:'Fredoka One',cursive; font-size:1.5rem; }
+/* ═══════════════════════════════════════════
+   COUNTDOWN TIMERS
+═══════════════════════════════════════════ */
+.section-label {
+  font-family:'Fredoka One',cursive;
+  font-size:1.25rem; color:rgba(255,255,255,.4);
+  text-align:center; margin-bottom:1rem; letter-spacing:1px; width:100%;
+}
+.countdowns {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:1.1rem; margin-bottom:2.5rem; width:100%;
+}
+.cd-card {
+  border-radius:22px; padding:1.4rem 1.25rem;
+  text-align:center; position:relative; overflow:hidden;
+  border:2px solid transparent; transition:transform .3s,box-shadow .3s;
+}
+.cd-card:hover { transform:translateY(-5px); }
+.cd-card::before { content:''; position:absolute; inset:0; border-radius:inherit; opacity:.13; }
+
+.cd-sana    { background:linear-gradient(135deg,rgba(219,39,119,.18),rgba(124,58,237,.18)); border-color:rgba(244,114,182,.4); box-shadow:0 8px 30px rgba(244,114,182,.15); }
+.cd-sana::before    { background:radial-gradient(circle at 50% 0%,#f472b6,transparent 70%); }
+.cd-sana:hover      { box-shadow:0 16px 45px rgba(244,114,182,.3); }
+.cd-ireland { background:linear-gradient(135deg,rgba(5,150,105,.18),rgba(2,132,199,.18));   border-color:rgba(110,231,183,.4); box-shadow:0 8px 30px rgba(110,231,183,.12); }
+.cd-ireland::before { background:radial-gradient(circle at 50% 0%,#6ee7b7,transparent 70%); }
+.cd-ireland:hover   { box-shadow:0 16px 45px rgba(110,231,183,.25); }
+.cd-dad     { background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(239,68,68,.15));  border-color:rgba(252,211,77,.4);  box-shadow:0 8px 30px rgba(252,211,77,.12); }
+.cd-dad::before     { background:radial-gradient(circle at 50% 0%,#fcd34d,transparent 70%); }
+.cd-dad:hover       { box-shadow:0 16px 45px rgba(252,211,77,.25); }
+.cd-mom     { background:linear-gradient(135deg,rgba(251,113,133,.18),rgba(251,191,36,.15)); border-color:rgba(251,113,133,.4); box-shadow:0 8px 30px rgba(251,113,133,.12); }
+.cd-mom::before     { background:radial-gradient(circle at 50% 0%,#fb7185,transparent 70%); }
+.cd-mom:hover       { box-shadow:0 16px 45px rgba(251,113,133,.25); }
+
+.cd-emoji { font-size:2.4rem; display:block; margin-bottom:.35rem; animation:bounce 2.2s ease-in-out infinite; }
+.cd-title { font-family:'Fredoka One',cursive; font-size:1.1rem; margin-bottom:.75rem; }
+.cd-sana    .cd-title { color:var(--pink); }
+.cd-ireland .cd-title { color:var(--mint); }
+.cd-dad     .cd-title { color:var(--gold); }
+.cd-mom     .cd-title { color:#fb7185; }
+
+.cd-numbers { display:flex; justify-content:center; gap:.4rem; margin-bottom:.5rem; }
+.cd-unit    { display:flex; flex-direction:column; align-items:center; }
+.cd-num {
+  font-family:'Fredoka One',cursive; font-size:2rem; line-height:1;
+  min-width:2.2rem; padding:.2rem .35rem; border-radius:9px;
+}
+.cd-sana    .cd-num { background:rgba(244,114,182,.2); color:var(--pink); }
+.cd-ireland .cd-num { background:rgba(110,231,183,.2); color:var(--mint); }
+.cd-dad     .cd-num { background:rgba(252,211,77,.2);  color:var(--gold); }
+.cd-mom     .cd-num { background:rgba(251,113,133,.2); color:#fb7185; }
+.cd-num.tick { animation:tick .22s ease; }
+.cd-sep  { font-family:'Fredoka One',cursive; font-size:1.5rem; color:rgba(255,255,255,.22); align-self:flex-start; margin-top:.15rem; }
+.cd-lbl  { font-size:.6rem; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.8px; margin-top:.2rem; }
+.cd-msg  { font-size:.8rem; color:rgba(255,255,255,.45); font-style:italic; }
+.cd-today {
+  font-family:'Fredoka One',cursive; font-size:1.3rem; color:var(--gold);
+  animation:pulse-g 1s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════
+   NAV CARDS
+═══════════════════════════════════════════ */
+.nav-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:1.1rem; margin-bottom:2.5rem; width:100%;
+}
+.nav-card {
+  background:var(--card); border:2px solid var(--border);
+  border-radius:22px; padding:1.75rem 1.1rem;
+  text-align:center; transition:all .3s;
+  backdrop-filter:blur(12px);
+  position:relative; overflow:hidden;
+}
+.nav-card::after {
+  content:''; position:absolute; inset:0; opacity:0;
+  transition:opacity .3s; border-radius:inherit;
+}
+.nav-card:hover { transform:translateY(-6px) scale(1.03); }
+.nav-card:hover::after { opacity:1; }
+.nav-card.riddle::after { background:radial-gradient(circle at 50% 90%,rgba(252,211,77,.15),transparent 70%); }
+.nav-card.story::after  { background:radial-gradient(circle at 50% 90%,rgba(103,232,249,.15),transparent 70%); }
+.nav-card.joke::after   { background:radial-gradient(circle at 50% 90%,rgba(244,114,182,.15),transparent 70%); }
+.nav-card.doodle::after { background:radial-gradient(circle at 50% 90%,rgba(110,231,183,.15),transparent 70%); }
+.nav-card.riddle:hover { border-color:var(--gold); box-shadow:0 18px 45px rgba(252,211,77,.22); }
+.nav-card.story:hover  { border-color:var(--sky);  box-shadow:0 18px 45px rgba(103,232,249,.22); }
+.nav-card.joke:hover   { border-color:var(--pink); box-shadow:0 18px 45px rgba(244,114,182,.22); }
+.nav-card.doodle:hover { border-color:var(--mint); box-shadow:0 18px 45px rgba(110,231,183,.22); }
+.nav-icon { font-size:2.8rem; display:block; margin-bottom:.55rem; }
+.nav-card h2 { font-family:'Fredoka One',cursive; font-size:1.35rem; }
 .nav-card.riddle h2 { color:var(--gold); }
-.nav-card.story  h2 { color:var(--sky); }
-.nav-card p { font-size:.88rem; color:#94a3b8; margin-top:.3rem; }
+.nav-card.story  h2 { color:var(--sky);  }
+.nav-card.joke   h2 { color:var(--pink); }
+.nav-card.doodle h2 { color:var(--mint); }
+.nav-card p { font-size:.8rem; color:#94a3b8; margin-top:.25rem; }
 
-/* INNER PAGES */
-.inner-header { max-width:720px; margin:0 auto; padding:2rem 1.5rem 0; }
-.back-btn { display:inline-flex; align-items:center; gap:.5rem; background:rgba(255,255,255,.08); border:1.5px solid var(--border); color:white; padding:.55rem 1.3rem; border-radius:999px; cursor:pointer; font-family:'Baloo 2',cursive; font-size:.95rem; font-weight:700; transition:all .2s; margin-bottom:1.5rem; }
-.back-btn:hover { background:rgba(255,255,255,.16); }
-.page-heading { font-family:'Fredoka One',cursive; font-size:clamp(2rem,6vw,3rem); margin-bottom:.3rem; }
-.page-heading.gold { color:var(--gold); }
-.page-heading.sky  { color:var(--sky); }
-.page-sub { color:var(--purple); font-size:1rem; }
+.footer { color:rgba(255,255,255,.18); font-size:.8rem; margin-top:1rem; width:100%; }
 
-/* LOADER */
-.loader-wrap { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:50vh; gap:1.5rem; text-align:center; padding:2rem; }
+/* ═══════════════════════════════════════════
+   LOADER
+═══════════════════════════════════════════ */
+.loader-wrap {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; min-height:52vh; gap:1.5rem; text-align:center;
+}
 .magic-loader { position:relative; width:100px; height:100px; }
 .ring { position:absolute; border-radius:50%; border:3px solid transparent; animation:spin var(--s) linear infinite; }
 .ring1 { inset:0;    border-top-color:var(--pink);   --s:1.2s; }
 .ring2 { inset:12px; border-top-color:var(--purple); --s:1.8s; animation-direction:reverse; }
 .ring3 { inset:24px; border-top-color:var(--sky);    --s:2.4s; }
 .ring4 { inset:36px; border-top-color:var(--gold);   --s:3s;   animation-direction:reverse; }
-.ring-center { position:absolute; inset:44px; background:var(--gold); border-radius:50%; animation:pulse 1s ease-in-out infinite; }
-@keyframes spin  { to{transform:rotate(360deg);} }
-@keyframes pulse { 0%,100%{transform:scale(.8);opacity:.6;}50%{transform:scale(1.2);opacity:1;} }
-.loader-text { font-family:'Fredoka One',cursive; font-size:1.3rem; color:var(--purple); }
-.loader-dots::after { content:''; animation:dots 1.5s infinite; }
-@keyframes dots { 0%{content:'';}33%{content:'.';}66%{content:'..';}100%{content:'...';} }
+.ring-c { position:absolute; inset:44px; background:var(--gold); border-radius:50%; animation:pulse 1s ease-in-out infinite; }
+.loader-text { font-family:'Fredoka One',cursive; font-size:1.25rem; color:var(--purple); }
+.loader-text::after { content:''; animation:dots 1.5s infinite; }
 
-/* ERROR */
-.err-box { background:rgba(239,68,68,.12); border:1.5px solid rgba(239,68,68,.4); border-radius:18px; padding:1.5rem; text-align:center; max-width:480px; margin:2rem auto; }
+/* ═══════════════════════════════════════════
+   ERROR BOX
+═══════════════════════════════════════════ */
+.err-box {
+  background:rgba(239,68,68,.12); border:1.5px solid rgba(239,68,68,.4);
+  border-radius:18px; padding:1.5rem; text-align:center;
+  max-width:480px; margin:2rem auto;
+}
 .err-box h3 { color:#fca5a5; font-family:'Fredoka One',cursive; margin-bottom:.5rem; }
 .err-box p  { color:#fca5a5; font-size:.9rem; }
-.retry-btn { margin-top:1rem; background:linear-gradient(135deg,#7c3aed,#db2777); border:none; color:white; padding:.6rem 1.6rem; border-radius:999px; cursor:pointer; font-family:'Fredoka One',cursive; font-size:1rem; transition:all .2s; }
+.retry-btn {
+  margin-top:1rem;
+  background:linear-gradient(135deg,#7c3aed,#db2777);
+  border:none; color:white; padding:.6rem 1.6rem;
+  border-radius:999px; font-family:'Fredoka One',cursive; font-size:1rem;
+  transition:all .2s;
+}
 .retry-btn:hover { transform:scale(1.05); }
 
-/* RIDDLES */
-.riddles-wrap { max-width:680px; margin:0 auto; padding:0 1.25rem; }
-.score-banner { background:rgba(252,211,77,.08); border:1.5px solid rgba(252,211,77,.25); border-radius:16px; padding:1rem 1.5rem; display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; flex-wrap:wrap; gap:.5rem; }
-.score-label { font-family:'Fredoka One',cursive; color:var(--gold); font-size:1.1rem; }
-.stars-track { font-size:1.3rem; letter-spacing:2px; }
-.riddle-card { background:var(--card); border:2px solid var(--border); border-radius:20px; padding:1.5rem 1.75rem; margin-bottom:1.1rem; transition:border-color .3s; backdrop-filter:blur(8px); }
+/* ═══════════════════════════════════════════
+   RIDDLES
+═══════════════════════════════════════════ */
+.score-banner {
+  background:rgba(252,211,77,.08); border:1.5px solid rgba(252,211,77,.25);
+  border-radius:16px; padding:.9rem 1.4rem;
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:1.25rem; flex-wrap:wrap; gap:.5rem;
+}
+.score-label  { font-family:'Fredoka One',cursive; color:var(--gold); font-size:1.1rem; }
+.stars-track  { font-size:1.2rem; letter-spacing:2px; }
+.star-jar-wrap { text-align:center; margin-bottom:1.25rem; }
+.star-jar-label { font-family:'Fredoka One',cursive; color:var(--purple); font-size:.9rem; margin-bottom:.4rem; }
+.star-jar {
+  display:inline-flex; flex-wrap:wrap; justify-content:center; gap:.3rem;
+  background:rgba(255,255,255,.04); border:1.5px solid rgba(255,255,255,.1);
+  border-radius:16px; padding:.65rem 1rem; min-width:120px; min-height:44px;
+}
+.jar-star { font-size:1.4rem; animation:pop .3s ease both; }
+
+.riddle-card {
+  background:var(--card); border:2px solid var(--border);
+  border-radius:20px; padding:1.4rem 1.6rem;
+  margin-bottom:1rem; transition:border-color .3s;
+  backdrop-filter:blur(8px);
+  animation:fadeUp .4s ease both;
+}
 .riddle-card.solved { border-color:var(--mint); background:rgba(110,231,183,.06); }
-.riddle-num { color:var(--gold); font-size:.9rem; font-weight:700; margin-bottom:.4rem; }
-.riddle-q   { font-size:1.08rem; font-weight:700; line-height:1.6; color:var(--cream); margin-bottom:.75rem; }
-.riddle-hint{ font-size:.88rem; color:var(--purple); margin-bottom:1rem; font-style:italic; }
-.reveal-btn { background:linear-gradient(135deg,#7c3aed,#db2777); border:none; color:white; padding:.5rem 1.3rem; border-radius:999px; cursor:pointer; font-family:'Fredoka One',cursive; font-size:.98rem; transition:all .2s; display:inline-flex; align-items:center; gap:.4rem; }
-.reveal-btn:hover { transform:scale(1.05); box-shadow:0 6px 20px rgba(219,39,119,.4); }
-.reveal-btn.done { background:linear-gradient(135deg,#059669,#0284c7); }
-.answer-box { display:none; margin-top:1rem; background:linear-gradient(135deg,rgba(110,231,183,.12),rgba(103,232,249,.12)); border:1.5px solid var(--mint); border-radius:14px; padding:1rem 1.25rem; }
+.riddle-num  { color:var(--gold); font-size:.88rem; font-weight:700; margin-bottom:.3rem; }
+.riddle-q    { font-size:1.08rem; font-weight:700; line-height:1.65; color:var(--cream); margin-bottom:.65rem; }
+.riddle-hint { font-size:.86rem; color:var(--purple); margin-bottom:.9rem; font-style:italic; }
+.reveal-btn {
+  background:linear-gradient(135deg,#7c3aed,#db2777);
+  border:none; color:white; padding:.48rem 1.25rem;
+  border-radius:999px; font-family:'Fredoka One',cursive; font-size:.95rem;
+  transition:all .2s; display:inline-flex; align-items:center; gap:.35rem;
+}
+.reveal-btn:hover   { transform:scale(1.05); box-shadow:0 6px 20px rgba(219,39,119,.4); }
+.reveal-btn.done    { background:linear-gradient(135deg,#059669,#0284c7); }
+.answer-box {
+  display:none; margin-top:.9rem;
+  background:linear-gradient(135deg,rgba(110,231,183,.12),rgba(103,232,249,.12));
+  border:1.5px solid var(--mint); border-radius:14px; padding:.9rem 1.1rem;
+}
 .answer-box.show { display:block; animation:pop .3s ease; }
-@keyframes pop { from{transform:scale(.9);opacity:0;}to{transform:scale(1);opacity:1;} }
-.answer-box .ans { font-size:1.05rem; color:var(--mint); font-weight:800; }
-.answer-box .exp { font-size:.9rem; color:#a7f3d0; margin-top:.3rem; }
+.answer-box .ans { font-size:1rem; color:var(--mint); font-weight:800; }
+.answer-box .exp { font-size:.86rem; color:#a7f3d0; margin-top:.25rem; }
+.all-done { text-align:center; padding:1.5rem 0; animation:fadeUp .5s ease; }
+.all-done .trophy { font-size:4rem; display:block; animation:bounce 1s ease-in-out infinite; }
+.all-done h2 { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--gold); margin:.4rem 0; }
+.all-done p  { color:var(--purple); }
 
-/* STORY LIST */
-.stories-wrap { max-width:760px; margin:0 auto; padding:0 1.25rem; }
-.story-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1.1rem; }
-.story-card { background:var(--card); border:2px solid var(--border); border-radius:20px; padding:1.5rem 1.25rem; cursor:pointer; text-align:center; transition:all .3s; backdrop-filter:blur(8px); }
-.story-card:hover { border-color:var(--sky); transform:translateY(-6px); box-shadow:0 16px 35px rgba(103,232,249,.2); }
-.story-card .s-emoji { font-size:2.8rem; display:block; margin-bottom:.6rem; }
-.story-card h3 { font-family:'Fredoka One',cursive; font-size:1.1rem; color:var(--sky); }
-.story-card p  { font-size:.82rem; color:#94a3b8; margin-top:.25rem; line-height:1.4; }
+/* ═══════════════════════════════════════════
+   STORIES
+═══════════════════════════════════════════ */
+.mood-row { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+.mood-label { font-family:'Fredoka One',cursive; color:rgba(255,255,255,.38); font-size:.88rem; width:100%; margin-bottom:.2rem; }
+.mood-btn {
+  padding:.38rem 1rem; border-radius:999px;
+  border:2px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.06); color:white;
+  font-family:'Fredoka One',cursive; font-size:.9rem; transition:all .2s;
+}
+.mood-btn:hover  { background:rgba(255,255,255,.14); }
+.mood-btn.active { border-color:var(--sky); background:rgba(103,232,249,.15); color:var(--sky); }
 
-/* STORY READER */
-#story-reader { display:none; max-width:680px; margin:0 auto; padding:0 1.25rem; animation:fadeUp .4s ease; }
+.story-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:1rem; }
+.story-card {
+  background:var(--card); border:2px solid var(--border);
+  border-radius:20px; padding:1.4rem 1.1rem;
+  text-align:center; transition:all .3s; backdrop-filter:blur(8px);
+  animation:fadeUp .4s ease both;
+}
+.story-card:hover { border-color:var(--sky); transform:translateY(-5px); box-shadow:0 14px 32px rgba(103,232,249,.18); }
+.s-emoji { font-size:2.6rem; display:block; margin-bottom:.5rem; }
+.story-card h3 { font-family:'Fredoka One',cursive; font-size:1.05rem; color:var(--sky); }
+.story-card p  { font-size:.78rem; color:#94a3b8; margin-top:.2rem; }
+
+/* book reader */
+#story-reader { display:none; animation:fadeUp .4s ease; }
 #story-reader.open { display:block; }
-.book-wrap { background:var(--card); border:2px solid var(--border); border-radius:26px; padding:2rem; backdrop-filter:blur(12px); min-height:360px; }
-.prog-dots { display:flex; justify-content:center; gap:.5rem; margin-bottom:1.5rem; }
+.book-wrap {
+  background:var(--card); border:2px solid var(--border);
+  border-radius:26px; padding:2rem; backdrop-filter:blur(12px); min-height:370px;
+}
+.prog-dots { display:flex; justify-content:center; gap:.5rem; margin-bottom:1.4rem; }
 .p-dot { width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,.15); transition:all .3s; }
 .p-dot.lit { background:var(--mint); box-shadow:0 0 8px var(--mint); }
-.story-page { display:none; text-align:center; animation:fadeUp .4s ease; }
+.story-page      { display:none; text-align:center; animation:fadeUp .4s ease; }
 .story-page.show { display:block; }
-.sp-icon  { font-size:3.8rem; display:block; margin-bottom:.75rem; }
-.sp-title { font-family:'Fredoka One',cursive; font-size:1.7rem; color:var(--gold); margin-bottom:1.2rem; }
+.sp-icon  { font-size:3.8rem; display:block; margin-bottom:.7rem; }
+.sp-title { font-family:'Fredoka One',cursive; font-size:1.65rem; color:var(--gold); margin-bottom:1.1rem; }
 .sp-text  { font-size:1.08rem; line-height:1.95; color:var(--cream); }
 .sp-text .ns { color:var(--pink); font-weight:800; }
 .sp-text .nt { color:var(--sky);  font-weight:800; }
-.book-nav { display:flex; justify-content:space-between; align-items:center; margin-top:1.75rem; gap:.75rem; }
-.nav-pg-btn { background:rgba(255,255,255,.08); border:1.5px solid var(--border); color:white; padding:.55rem 1.3rem; border-radius:999px; cursor:pointer; font-family:'Fredoka One',cursive; font-size:.98rem; transition:all .2s; display:flex; align-items:center; gap:.35rem; }
-.nav-pg-btn:hover:not(:disabled) { background:rgba(255,255,255,.18); transform:scale(1.05); }
-.nav-pg-btn:disabled { opacity:.25; cursor:default; }
-.pg-counter { font-family:'Fredoka One',cursive; color:var(--purple); font-size:.98rem; }
+.book-nav { display:flex; justify-content:space-between; align-items:center; margin-top:1.6rem; gap:.6rem; }
+.pg-btn {
+  background:rgba(255,255,255,.08); border:1.5px solid var(--border);
+  color:white; padding:.5rem 1.2rem; border-radius:999px;
+  font-family:'Fredoka One',cursive; font-size:.95rem; transition:all .2s;
+}
+.pg-btn:hover:not(:disabled) { background:rgba(255,255,255,.18); transform:scale(1.05); }
+.pg-btn:disabled { opacity:.25; cursor:default; }
+.pg-counter { font-family:'Fredoka One',cursive; color:var(--purple); font-size:.95rem; }
 
-/* SPARKLES */
-.sparkle { position:fixed; pointer-events:none; font-size:1.6rem; z-index:999; animation:sparkle-anim 1.4s ease forwards; }
-@keyframes sparkle-anim { 0%{opacity:1;transform:translateY(0) scale(1) rotate(0deg);}100%{opacity:0;transform:translateY(90px) scale(.2) rotate(400deg);} }
+/* ═══════════════════════════════════════════
+   JOKES
+═══════════════════════════════════════════ */
+.joke-stage {
+  background:var(--card); border:2px solid var(--border);
+  border-radius:26px; padding:2.5rem 2rem; text-align:center;
+  margin-bottom:1.25rem; min-height:210px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  backdrop-filter:blur(12px);
+}
+.joke-emoji  { font-size:3.8rem; display:block; margin-bottom:.7rem; animation:wob 2s ease-in-out infinite; }
+.joke-setup  { font-size:1.18rem; font-weight:700; color:var(--cream); line-height:1.6; margin-bottom:.9rem; }
+.punchline   { font-size:1.18rem; font-weight:800; color:var(--pink); display:none; }
+.punchline.show { display:block; animation:pop .4s ease; }
+.punch-btn {
+  background:linear-gradient(135deg,#db2777,#f59e0b);
+  border:none; color:white; padding:.65rem 1.8rem;
+  border-radius:999px; font-family:'Fredoka One',cursive; font-size:1.05rem;
+  transition:all .2s; margin-top:.4rem;
+}
+.punch-btn:hover { transform:scale(1.07); box-shadow:0 8px 25px rgba(219,39,119,.4); }
+.next-j-btn {
+  background:linear-gradient(135deg,#7c3aed,#0284c7);
+  border:none; color:white; padding:.65rem 1.8rem;
+  border-radius:999px; font-family:'Fredoka One',cursive; font-size:1.05rem;
+  transition:all .2s; display:none; margin-top:.75rem;
+}
+.next-j-btn.show { display:inline-block; animation:fadeUp .4s ease; }
+.next-j-btn:hover { transform:scale(1.07); }
+.joke-counter { font-family:'Fredoka One',cursive; color:var(--purple); text-align:center; margin-bottom:.9rem; }
+.react-bar { text-align:center; }
+.react-label { color:rgba(255,255,255,.35); font-size:.82rem; margin-bottom:.45rem; }
+.ha-row { display:flex; justify-content:center; gap:.5rem; flex-wrap:wrap; }
+.ha-btn {
+  background:rgba(255,255,255,.06); border:1.5px solid rgba(255,255,255,.12);
+  border-radius:999px; padding:.35rem .9rem; font-size:1.1rem; transition:all .2s;
+}
+.ha-btn:hover { transform:scale(1.18); background:rgba(255,255,255,.15); }
 
+/* ═══════════════════════════════════════════
+   DOODLE PAD
+═══════════════════════════════════════════ */
+#doodle.active { display:flex; flex-direction:column; height:100vh; }
+#doodle { padding:0; max-width:100%; }
+#doodle .top-bar {
+  padding:.6rem 1rem;
+  background:rgba(255,255,255,.05);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  margin-bottom:0; flex-shrink:0;
+}
+.doodle-toolbar {
+  display:flex; align-items:center; gap:.45rem;
+  padding:.5rem .9rem; flex-wrap:wrap;
+  background:rgba(255,255,255,.04);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  flex-shrink:0;
+}
+.tool-group { display:flex; align-items:center; gap:.3rem; }
+.tool-sep   { width:1px; height:26px; background:rgba(255,255,255,.12); margin:0 .15rem; }
+.d-btn {
+  width:34px; height:34px; border-radius:9px;
+  border:2px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.07);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1rem; transition:all .2s; color:white;
+}
+.d-btn:hover,.d-btn.active { background:rgba(110,231,183,.2); border-color:var(--mint); }
+.sz-btn {
+  border-radius:50%; border:2px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.08); transition:all .2s;
+  display:flex; align-items:center; justify-content:center;
+}
+.sz-btn:hover,.sz-btn.active { border-color:var(--mint); background:rgba(110,231,183,.2); }
+.sz-btn.s1{width:26px;height:26px;} .sz-btn.s2{width:32px;height:32px;} .sz-btn.s3{width:38px;height:38px;}
+.sz-dot { border-radius:50%; background:white; pointer-events:none; }
+.s1 .sz-dot{width:4px;height:4px;} .s2 .sz-dot{width:8px;height:8px;} .s3 .sz-dot{width:14px;height:14px;}
+.swatch {
+  width:26px; height:26px; border-radius:7px;
+  border:2.5px solid transparent; transition:all .2s; flex-shrink:0;
+}
+.swatch:hover { transform:scale(1.18); }
+.swatch.active { border-color:white; transform:scale(1.22); box-shadow:0 0 10px rgba(255,255,255,.4); }
+.act-btn {
+  background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.15);
+  color:white; padding:.3rem .8rem; border-radius:999px;
+  font-family:'Fredoka One',cursive; font-size:.78rem; transition:all .2s; white-space:nowrap;
+}
+.act-btn:hover { background:rgba(255,255,255,.18); }
+.act-btn.danger:hover { background:rgba(239,68,68,.22); border-color:rgba(239,68,68,.5); }
+.canvas-wrap {
+  flex:1; min-height:0;
+  position:relative; overflow:hidden; cursor:crosshair;
+  touch-action:none;
+}
+#draw-canvas { position:absolute; inset:0; width:100%; height:100%; touch-action:none; }
+.sticker-tray {
+  position:fixed; bottom:0; left:0; right:0;
+  background:rgba(8,7,32,.94); border-top:1px solid rgba(255,255,255,.1);
+  padding:.5rem .9rem; display:none; flex-wrap:wrap;
+  gap:.4rem; z-index:20; max-height:110px; overflow-y:auto;
+}
+.sticker-tray.open { display:flex; }
+.sticker { font-size:1.8rem; line-height:1; padding:.1rem; transition:transform .15s; }
+.sticker:hover { transform:scale(1.3); }
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+.toast {
+  position:fixed; bottom:1.5rem; left:50%;
+  transform:translateX(-50%) translateY(16px);
+  background:rgba(110,231,183,.15); border:1.5px solid var(--mint);
+  border-radius:999px; padding:.48rem 1.3rem;
+  font-family:'Fredoka One',cursive; font-size:.9rem; color:var(--mint);
+  opacity:0; transition:all .3s; pointer-events:none; z-index:99; white-space:nowrap;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ═══════════════════════════════════════════
+   SPARKLES
+═══════════════════════════════════════════ */
+.sparkle { position:fixed; pointer-events:none; font-size:1.6rem; z-index:999; animation:sp 1.4s ease forwards; }
+
+/* scrollbar */
 ::-webkit-scrollbar { width:5px; }
 ::-webkit-scrollbar-thumb { background:#7c3aed; border-radius:99px; }
 </style>
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
-<div id="app">
 
-  <!-- HOME -->
-  <div id="home" class="page active">
-    <span class="big-moon">🌙</span>
-    <h1 class="site-title">Sana & Tara's<br>Magic Kingdom</h1>
-    <p class="site-sub">✨ New riddles &amp; stories every single time ✨</p>
+<!-- ══════════════════════════════════════
+     HOME
+══════════════════════════════════════ -->
+<div id="home" class="page active">
+  <span class="big-moon">🌙</span>
+  <h1 class="site-title">Sana & Tara's<br>Magic Kingdom</h1>
+  <p class="site-sub">✨ Riddles · Stories · Jokes · Doodles ✨</p>
 
-    <div class="who-row">
-      <button class="who-btn sana active" onclick="setWho('sana',this)">🌸 Sana</button>
-      <button class="who-btn both"        onclick="setWho('both',this)">👯 Both</button>
-      <button class="who-btn tara"        onclick="setWho('tara',this)">🌊 Tara</button>
+  <div class="who-row">
+    <button class="who-btn sana active" onclick="setWho('sana',this)">🌸 Sana</button>
+    <button class="who-btn both"        onclick="setWho('both',this)">👯 Both</button>
+    <button class="who-btn tara"        onclick="setWho('tara',this)">🌊 Tara</button>
+  </div>
+
+  <div class="section-label">⏳ EXCITING THINGS COMING UP!</div>
+  <div class="countdowns">
+    <div class="cd-card cd-sana">
+      <span class="cd-emoji">🎂</span>
+      <div class="cd-title">Sana's Birthday!</div>
+      <div class="cd-numbers" id="cd-sana-nums">
+        <div class="cd-unit"><span class="cd-num" id="cs-d">--</span><span class="cd-lbl">days</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cs-h">--</span><span class="cd-lbl">hrs</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cs-m">--</span><span class="cd-lbl">mins</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cs-s">--</span><span class="cd-lbl">secs</span></div>
+      </div>
+      <div class="cd-msg" id="cs-msg">April 17th 🌸</div>
     </div>
-
-    <div class="nav-grid">
-      <div class="nav-card riddle" onclick="goTo('riddles-page')">
-        <span class="nav-icon">🧩</span>
-        <h2>Riddle Time!</h2>
-        <p>8 brand-new magical riddles</p>
+    <div class="cd-card cd-ireland">
+      <span class="cd-emoji">✈️</span>
+      <div class="cd-title">Ireland Adventure!</div>
+      <div class="cd-numbers" id="cd-ire-nums">
+        <div class="cd-unit"><span class="cd-num" id="ci-d">--</span><span class="cd-lbl">days</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="ci-h">--</span><span class="cd-lbl">hrs</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="ci-m">--</span><span class="cd-lbl">mins</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="ci-s">--</span><span class="cd-lbl">secs</span></div>
       </div>
-      <div class="nav-card story" onclick="goTo('stories-page')">
-        <span class="nav-icon">📖</span>
-        <h2>Story Corner</h2>
-        <p>Fresh bedtime adventures await</p>
+      <div class="cd-msg" id="ci-msg">May 18th 🍀</div>
+    </div>
+    <div class="cd-card cd-dad">
+      <span class="cd-emoji">🎉</span>
+      <div class="cd-title">Daddy's Birthday!</div>
+      <div class="cd-numbers" id="cd-dad-nums">
+        <div class="cd-unit"><span class="cd-num" id="cd-d">--</span><span class="cd-lbl">days</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cd-h">--</span><span class="cd-lbl">hrs</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cd-m">--</span><span class="cd-lbl">mins</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cd-s">--</span><span class="cd-lbl">secs</span></div>
       </div>
+      <div class="cd-msg" id="cd-msg">May 21st 🎊</div>
+    </div>
+    <div class="cd-card cd-mom">
+      <span class="cd-emoji">🌹</span>
+      <div class="cd-title">Amma's Birthday!</div>
+      <div class="cd-numbers" id="cd-mom-nums">
+        <div class="cd-unit"><span class="cd-num" id="cm-d">--</span><span class="cd-lbl">days</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cm-h">--</span><span class="cd-lbl">hrs</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cm-m">--</span><span class="cd-lbl">mins</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cm-s">--</span><span class="cd-lbl">secs</span></div>
+      </div>
+      <div class="cd-msg" id="cm-msg">September 19th 🌹</div>
     </div>
   </div>
 
-  <!-- RIDDLES PAGE -->
-  <div id="riddles-page" class="page">
-    <div class="inner-header">
-      <button class="back-btn" onclick="goTo('home')">← Back</button>
-      <div class="page-heading gold">🧩 Riddle Time!</div>
-      <p class="page-sub" id="riddle-sub">Loading fresh riddles…</p>
+  <div class="section-label">🪄 WHAT SHALL WE DO?</div>
+  <div class="nav-grid">
+    <div class="nav-card riddle" onclick="goTo('riddles')">
+      <span class="nav-icon">🧩</span><h2>Riddles!</h2><p>8 brand-new magical riddles</p>
     </div>
-    <div class="riddles-wrap" id="riddles-body"></div>
-  </div>
-
-  <!-- STORIES PAGE -->
-  <div id="stories-page" class="page">
-    <div class="inner-header">
-      <button class="back-btn" onclick="backFromStories()">← Back</button>
-      <div class="page-heading sky" id="stories-heading">📖 Story Corner</div>
-      <p class="page-sub" id="stories-sub">Choose your adventure!</p>
+    <div class="nav-card story" onclick="goTo('stories')">
+      <span class="nav-icon">📖</span><h2>Stories!</h2><p>Fresh bedtime adventures</p>
     </div>
-    <div class="stories-wrap">
-      <div id="story-list-wrap">
-        <div class="story-grid" id="story-grid"></div>
-      </div>
-      <div id="story-reader">
-        <button class="back-btn" style="margin-top:1rem" onclick="closeReader()">← Pick another story</button>
-        <div class="book-wrap">
-          <div class="prog-dots" id="prog-dots"></div>
-          <div id="story-pages-wrap"></div>
-          <div class="book-nav">
-            <button class="nav-pg-btn" id="prev-btn" onclick="turnPage(-1)" disabled>◀ Prev</button>
-            <span class="pg-counter" id="pg-counter"></span>
-            <button class="nav-pg-btn" id="next-btn" onclick="turnPage(1)" disabled>Next ▶</button>
-          </div>
-        </div>
-      </div>
+    <div class="nav-card joke" onclick="goTo('jokes')">
+      <span class="nav-icon">😂</span><h2>Jokes!</h2><p>Silly jokes just for you</p>
+    </div>
+    <div class="nav-card doodle" onclick="goTo('doodle')">
+      <span class="nav-icon">🎨</span><h2>Doodle!</h2><p>Draw anything you imagine</p>
     </div>
   </div>
-
+  <p class="footer">Made with 💜 just for Sana & Tara · by Daddy</p>
 </div>
+
+<!-- ══════════════════════════════════════
+     RIDDLES
+══════════════════════════════════════ -->
+<div id="riddles" class="page">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goTo('home')">← Home</button>
+    <div class="page-heading gold">🧩 Riddle Time!</div>
+  </div>
+  <p class="page-sub" id="riddle-sub">Loading fresh riddles…</p>
+  <div class="star-jar-wrap">
+    <div class="star-jar-label">⭐ Your Star Jar</div>
+    <div class="star-jar" id="jar"></div>
+  </div>
+  <div id="riddles-body"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     STORIES
+══════════════════════════════════════ -->
+<div id="stories" class="page">
+  <div class="top-bar">
+    <button class="back-btn" id="stories-back" onclick="storiesBack()">← Home</button>
+    <div class="page-heading sky" id="stories-heading">📖 Story Corner</div>
+  </div>
+  <p class="page-sub" id="stories-sub">Pick a mood &amp; a story!</p>
+
+  <div id="story-list">
+    <div class="mood-label">✨ Tonight's vibe:</div>
+    <div class="mood-row">
+      <button class="mood-btn active" onclick="setMood('magical',this)">🪄 Magical</button>
+      <button class="mood-btn" onclick="setMood('funny',this)">😂 Funny</button>
+      <button class="mood-btn" onclick="setMood('spooky',this)">👻 Spooky</button>
+      <button class="mood-btn" onclick="setMood('adventure',this)">🗺️ Adventure</button>
+      <button class="mood-btn" onclick="setMood('cosy',this)">☕ Cosy</button>
+    </div>
+    <div class="story-grid" id="story-grid"></div>
+  </div>
+
+  <div id="story-reader">
+    <div class="book-wrap">
+      <div class="prog-dots" id="prog-dots"></div>
+      <div id="story-pages-wrap"></div>
+      <div class="book-nav">
+        <button class="pg-btn" id="prev-btn" onclick="turnPage(-1)" disabled>◀ Prev</button>
+        <span class="pg-counter" id="pg-counter"></span>
+        <button class="pg-btn" id="next-btn" onclick="turnPage(1)"  disabled>Next ▶</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     JOKES
+══════════════════════════════════════ -->
+<div id="jokes" class="page">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goTo('home')">← Home</button>
+    <div class="page-heading pink">😂 Joke Time!</div>
+  </div>
+  <p class="page-sub" id="joke-sub">Get ready to LAUGH! 🤣</p>
+  <div class="joke-counter" id="joke-counter"></div>
+  <div class="joke-stage" id="joke-stage"></div>
+  <div style="text-align:center;margin-bottom:1.25rem">
+    <button class="next-j-btn" id="next-j-btn" onclick="nextJoke()">Next Joke ➡️</button>
+  </div>
+  <div class="react-bar">
+    <div class="react-label">React to this joke:</div>
+    <div class="ha-row">
+      <button class="ha-btn" onclick="react('🤣')">🤣</button>
+      <button class="ha-btn" onclick="react('😄')">😄</button>
+      <button class="ha-btn" onclick="react('🙈')">🙈</button>
+      <button class="ha-btn" onclick="react('😐')">😐</button>
+      <button class="ha-btn" onclick="react('🥱')">🥱</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     DOODLE
+══════════════════════════════════════ -->
+<div id="doodle" class="page">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goTo('home')">← Home</button>
+    <span class="page-heading mint" id="doodle-title">🎨 Doodle Pad</span>
+  </div>
+  <div class="doodle-toolbar">
+    <div class="tool-group">
+      <button class="d-btn active" id="tool-pen"    onclick="setDTool('pen',this)"   title="Pen">✏️</button>
+      <button class="d-btn"        id="tool-marker" onclick="setDTool('marker',this)" title="Marker">🖌️</button>
+      <button class="d-btn"        id="tool-spray"  onclick="setDTool('spray',this)"  title="Spray">💨</button>
+      <button class="d-btn"        id="tool-eraser" onclick="setDTool('eraser',this)" title="Eraser">🧹</button>
+    </div>
+    <div class="tool-sep"></div>
+    <div class="tool-group">
+      <button class="sz-btn s1" onclick="setDSize(3,this)"><div class="sz-dot"></div></button>
+      <button class="sz-btn s2 active" onclick="setDSize(8,this)"><div class="sz-dot"></div></button>
+      <button class="sz-btn s3" onclick="setDSize(18,this)"><div class="sz-dot"></div></button>
+    </div>
+    <div class="tool-sep"></div>
+    <div class="tool-group" id="d-swatches"></div>
+    <div class="tool-sep"></div>
+    <div class="tool-group">
+      <button class="act-btn" onclick="toggleStickers()">🌟 Stickers</button>
+      <button class="act-btn" onclick="undoDraw()">↩ Undo</button>
+      <button class="act-btn" onclick="saveDrawing()">💾 Save</button>
+      <button class="act-btn danger" onclick="clearDraw()">🗑 Clear</button>
+    </div>
+  </div>
+  <div class="canvas-wrap" id="canvas-wrap">
+    <canvas id="draw-canvas"></canvas>
+  </div>
+  <div class="sticker-tray" id="sticker-tray"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-/* ─── STATE ─── */
-let who = 'sana';
-let solvedCount = 0, totalRiddles = 0;
-let currentStoryPages = [], currentPageIdx = 0;
-let storyCache = {};
-window._retryTheme = null;
+'use strict';
+/* ══════════════════════════════════════════════════
+   ★  CONFIG — ADD YOUR ANTHROPIC API KEY HERE  ★
+   Get one at https://console.anthropic.com
+   For a private family site this is fine; just set
+   a monthly spend limit in your Anthropic dashboard.
+══════════════════════════════════════════════════ */
+const API_KEY = 'YOUR_ANTHROPIC_API_KEY_HERE';
 
-const name1 = () => who === 'tara' ? 'Tara' : 'Sana';
-const name2 = () => who === 'sana' ? 'Tara' : who === 'tara' ? 'Sana' : 'Tara';
-const greet = () => who === 'sana' ? 'Hey Sana 🌸' : who === 'tara' ? 'Hey Tara 🌊' : 'Hey Sana & Tara 👯';
+/* ════════════════════════════════
+   STAR-CANVAS BACKGROUND
+════════════════════════════════ */
+(function () {
+  const c = document.getElementById('bg-canvas'), ctx = c.getContext('2d');
+  let W, H, stars = [], meteors = [];
+  function resize() { W = c.width = window.innerWidth; H = c.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+  for (let i = 0; i < 170; i++) stars.push({ x: Math.random(), y: Math.random(), r: Math.random() * 1.6 + .4, a: Math.random(), da: (Math.random() * .009 + .002) * (Math.random() > .5 ? 1 : -1) });
+  function sm() { meteors.push({ x: Math.random() * .6, y: Math.random() * .35, len: 130 + Math.random() * 90, a: 1, speed: 4 + Math.random() * 4 }); setTimeout(sm, 3500 + Math.random() * 5000); } sm();
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#080720'); g.addColorStop(1, '#0d0b30');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    stars.forEach(s => { s.a += s.da; if (s.a <= 0 || s.a >= 1) s.da *= -1; ctx.beginPath(); ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2); ctx.fillStyle = `rgba(255,255,255,${s.a})`; ctx.fill(); });
+    meteors.forEach((m, i) => { ctx.save(); ctx.globalAlpha = m.a; const gm = ctx.createLinearGradient(m.x * W, m.y * H, m.x * W + m.len, m.y * H + m.len * .6); gm.addColorStop(0, 'rgba(255,255,255,1)'); gm.addColorStop(1, 'rgba(255,255,255,0)'); ctx.strokeStyle = gm; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(m.x * W, m.y * H); ctx.lineTo(m.x * W + m.len, m.y * H + m.len * .6); ctx.stroke(); ctx.restore(); m.x += m.speed / W; m.y += m.speed * .6 / H; m.a -= .025; if (m.a <= 0) meteors.splice(i, 1); });
+    requestAnimationFrame(draw);
+  } draw();
+})();
 
-function setWho(w, el) {
-  who = w;
-  document.querySelectorAll('.who-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
+/* ════════════════════════════════
+   SPARKLES
+════════════════════════════════ */
+function sparkle(x, y) {
+  ['✨', '⭐', '🌟', '💫', '🎉', '🌈', '🦄', '💜'].forEach((e, i) => {
+    const el = document.createElement('div'); el.className = 'sparkle'; el.textContent = e;
+    el.style.left = (x + (Math.random() - .5) * 130) + 'px';
+    el.style.top  = (y + (Math.random() - .5) * 70)  + 'px';
+    el.style.animationDelay = (i * .05) + 's';
+    document.body.appendChild(el); setTimeout(() => el.remove(), 1600);
+  });
 }
+
+/* ════════════════════════════════
+   TOAST
+════════════════════════════════ */
+let _toastTimer;
+function toast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(_toastTimer); _toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* ════════════════════════════════
+   ROUTER — in-memory only, no pushState
+   (pushState throws SecurityError in sandboxed iframes)
+════════════════════════════════ */
+const PAGES = ['home', 'riddles', 'stories', 'jokes', 'doodle'];
+let currentPage = 'home';
 
 function goTo(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
-  if (id === 'riddles-page') loadRiddles();
-  if (id === 'stories-page') loadStories();
+  currentPage = id;
+  if (id === 'riddles') initRiddles();
+  if (id === 'stories') initStories();
+  if (id === 'jokes')   initJokes();
+  if (id === 'doodle')  initDoodle();
 }
 
-function backFromStories() { closeReader(); goTo('home'); }
+/* ════════════════════════════════
+   WHO SELECTOR
+════════════════════════════════ */
+let who = 'sana';
+const name1 = () => who === 'tara' ? 'Tara' : 'Sana';
+const name2 = () => who === 'sana' ? 'Tara' : who === 'tara' ? 'Sana' : 'Tara';
+const greet  = () => who === 'sana' ? 'Hey Sana 🌸' : who === 'tara' ? 'Hey Tara 🌊' : 'Hey Sana & Tara 👯';
 
-/* ─── CANVAS STARS ─── */
-(function() {
-  const canvas = document.getElementById('bg-canvas');
-  const ctx = canvas.getContext('2d');
-  let W, H, stars = [], meteors = [];
-  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-  resize(); window.addEventListener('resize', resize);
-  for (let i = 0; i < 160; i++) stars.push({ x:Math.random(), y:Math.random(), r:Math.random()*1.5+.4, a:Math.random(), da:(Math.random()*.008+.002)*(Math.random()>.5?1:-1) });
-  function spawnMeteor() {
-    meteors.push({ x:Math.random()*.6, y:Math.random()*.4, len:120+Math.random()*80, a:1, speed:4+Math.random()*3 });
-    setTimeout(spawnMeteor, 3000+Math.random()*5000);
-  }
-  spawnMeteor();
-  function draw() {
-    ctx.clearRect(0,0,W,H);
-    const g = ctx.createLinearGradient(0,0,0,H);
-    g.addColorStop(0,'#080720'); g.addColorStop(1,'#0d0b30');
-    ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
-    stars.forEach(s => {
-      s.a += s.da; if (s.a<=0||s.a>=1) s.da*=-1;
-      ctx.beginPath(); ctx.arc(s.x*W,s.y*H,s.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(255,255,255,${s.a})`; ctx.fill();
-    });
-    meteors.forEach((m,i) => {
-      ctx.save(); ctx.globalAlpha=m.a;
-      const gm=ctx.createLinearGradient(m.x*W,m.y*H,m.x*W+m.len,m.y*H+m.len*.6);
-      gm.addColorStop(0,'rgba(255,255,255,1)'); gm.addColorStop(1,'rgba(255,255,255,0)');
-      ctx.strokeStyle=gm; ctx.lineWidth=1.5;
-      ctx.beginPath(); ctx.moveTo(m.x*W,m.y*H); ctx.lineTo(m.x*W+m.len,m.y*H+m.len*.6); ctx.stroke();
-      ctx.restore();
-      m.x+=m.speed/W; m.y+=m.speed*.6/H; m.a-=.025;
-      if (m.a<=0) meteors.splice(i,1);
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
-
-/* ─── SPARKLES ─── */
-function sparkle(x, y) {
-  ['✨','⭐','🌟','💫','🎉','🌈','🦄','💜'].forEach((e,i) => {
-    const el = document.createElement('div');
-    el.className = 'sparkle'; el.textContent = e;
-    el.style.left = (x+(Math.random()-.5)*130)+'px';
-    el.style.top  = (y+(Math.random()-.5)*70)+'px';
-    el.style.animationDelay = (i*.05)+'s';
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(), 1600);
-  });
+function setWho(w, el) {
+  who = w;
+  document.querySelectorAll('.who-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const r = el.getBoundingClientRect();
+  sparkle(r.left + el.offsetWidth / 2, r.top);
 }
 
-/* ─── LOADER / ERROR HTML ─── */
-const loaderHTML = msg => `<div class="loader-wrap">
-  <div class="magic-loader">
-    <div class="ring ring1"></div><div class="ring ring2"></div>
-    <div class="ring ring3"></div><div class="ring ring4"></div>
-    <div class="ring-center"></div>
-  </div>
-  <div class="loader-text">${msg}<span class="loader-dots"></span></div>
-</div>`;
+/* ════════════════════════════════
+   COUNTDOWNS
+════════════════════════════════ */
+function pad(n) { return String(n).padStart(2, '0'); }
+function setNum(id, val) {
+  const el = document.getElementById(id); if (!el) return;
+  const s = pad(val);
+  if (el.textContent !== s) { el.textContent = s; el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick'); }
+}
+function cdUpdate(target, ids, msgId, celebMsg, celebEmoji) {
+  const diff = target - Date.now();
+  if (diff <= 0) {
+    const numsEl = document.getElementById(ids[0])?.closest('.cd-numbers');
+    if (numsEl) numsEl.style.display = 'none';
+    const m = document.getElementById(msgId);
+    if (m) m.innerHTML = `<span class="cd-today">${celebEmoji} ${celebMsg} ${celebEmoji}</span>`;
+    return;
+  }
+  const d = Math.floor(diff / 86400000), h = Math.floor((diff % 86400000) / 3600000),
+        m = Math.floor((diff % 3600000) / 60000),  s = Math.floor((diff % 60000) / 1000);
+  setNum(ids[0], d); setNum(ids[1], h); setNum(ids[2], m); setNum(ids[3], s);
+}
+function getTarget(month, day) {
+  const now = Date.now(), yr = new Date().getFullYear();
+  let t = new Date(yr, month - 1, day, 0, 0, 0).getTime();
+  if (t < now) t = new Date(yr + 1, month - 1, day, 0, 0, 0).getTime();
+  return t;
+}
+const tSana = getTarget(4, 17), tIre = getTarget(5, 18), tDad = getTarget(5, 21), tMom = getTarget(9, 19);
+function tickAll() {
+  cdUpdate(tSana, ['cs-d','cs-h','cs-m','cs-s'], 'cs-msg', "IT'S SANA'S BIRTHDAY!", '🎂');
+  cdUpdate(tIre,  ['ci-d','ci-h','ci-m','ci-s'], 'ci-msg', "IT'S IRELAND DAY!",     '✈️');
+  cdUpdate(tDad,  ['cd-d','cd-h','cd-m','cd-s'], 'cd-msg', "HAPPY BIRTHDAY DADDY!", '🎉');
+  cdUpdate(tMom,  ['cm-d','cm-h','cm-m','cm-s'], 'cm-msg', "HAPPY BIRTHDAY AMMA!",  '🌹');
+}
+tickAll(); setInterval(tickAll, 1000);
 
-const errHTML = (msg, fn) => `<div class="err-box">
-  <h3>🌙 Oops!</h3><p>${msg}</p>
-  <button class="retry-btn" onclick="${fn}()">✨ Try Again</button>
-</div>`;
-
-/* ─── CLAUDE API ─── */
+/* ════════════════════════════════
+   CLAUDE API HELPER
+════════════════════════════════ */
 async function callClaude(system, user) {
+  if (!API_KEY || API_KEY === 'YOUR_ANTHROPIC_API_KEY_HERE') {
+    throw new Error('no-key');
+  }
   const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': API_KEY,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
     body: JSON.stringify({
-      model:'claude-sonnet-4-20250514',
-      max_tokens:1000,
-      system,
-      messages:[{role:'user',content:user}]
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system, messages: [{ role: 'user', content: user }]
     })
   });
-  if (!res.ok) throw new Error('API '+res.status);
+  if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error?.message || 'API ' + res.status); }
   const data = await res.json();
-  return data.content.find(b=>b.type==='text')?.text || '';
+  return data.content.find(b => b.type === 'text')?.text || '';
 }
 
-/* ─── RIDDLES ─── */
-async function loadRiddles() {
-  const body = document.getElementById('riddles-body');
-  const sub  = document.getElementById('riddle-sub');
-  sub.textContent = greet() + ' — fresh riddles loading!';
-  body.innerHTML = loaderHTML('Summoning magical riddles');
+function parseJSON(raw) { return JSON.parse(raw.replace(/```json|```/g, '').trim()); }
+
+function loaderHTML(msg) {
+  return `<div class="loader-wrap"><div class="magic-loader"><div class="ring ring1"></div><div class="ring ring2"></div><div class="ring ring3"></div><div class="ring ring4"></div><div class="ring-c"></div></div><div class="loader-text">${msg}</div></div>`;
+}
+function errHTML(msg, fn) {
+  const noKey = msg === 'no-key';
+  const text = noKey
+    ? 'No API key set! Open <code>index.html</code>, find <code>API_KEY</code> at the top and paste your Anthropic key.'
+    : 'The magic fizzled! ' + msg;
+  return `<div class="err-box"><h3>🌙 Oops!</h3><p>${text}</p>${noKey ? '' : `<button class="retry-btn" onclick="${fn}()">✨ Try Again</button>`}</div>`;
+}
+
+/* ════════════════════════════════
+   RIDDLES
+════════════════════════════════ */
+let solvedCount = 0, totalRiddles = 0;
+
+function initRiddles() {
   solvedCount = 0; totalRiddles = 0;
+  document.getElementById('jar').innerHTML = '';
+  document.getElementById('riddle-sub').textContent = greet() + ' — loading fresh riddles!';
+  loadRiddles();
+}
 
-  const prompt = `Generate 8 fun, age-appropriate riddles for children aged 6-9 named ${name1()}.
-Each riddle must be imaginative with a surprising simple answer.
-Return ONLY a JSON array (no markdown, no extra text):
-[{"q":"riddle question","hint":"short hint","answer":"The Answer!","explain":"Fun 1-sentence explanation with emoji"}]`;
-
+async function loadRiddles() {
+  document.getElementById('riddles-body').innerHTML = loaderHTML('Summoning magical riddles');
   try {
-    const raw = await callClaude('You are a creative children\'s riddle writer. Return ONLY valid JSON arrays, no markdown, no preamble.', prompt);
-    const riddles = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    const raw = await callClaude(
+      'You are a creative children riddle writer. Return ONLY valid JSON arrays, no markdown, no preamble.',
+      `Generate 8 fun age-appropriate riddles for children aged 6-9. Imaginative with surprising simple answers.
+Return ONLY a JSON array: [{"q":"riddle question","hint":"short hint","answer":"The Answer!","explain":"Fun 1-sentence explanation with emoji"}]`
+    );
+    const riddles = parseJSON(raw);
     totalRiddles = riddles.length;
     renderRiddles(riddles);
-    sub.textContent = greet() + ' — can you solve all ' + totalRiddles + ' riddles? 🧩';
-  } catch(e) {
-    body.innerHTML = errHTML('The magic spell fizzled! Could not load riddles.','loadRiddles');
+    document.getElementById('riddle-sub').textContent = greet() + ` — can you solve all ${totalRiddles} riddles? 🧩`;
+  } catch (e) {
+    document.getElementById('riddles-body').innerHTML = errHTML(e.message, 'loadRiddles');
   }
 }
 
 function renderRiddles(riddles) {
   const body = document.getElementById('riddles-body');
-  body.innerHTML = `<div class="score-banner">
-    <span class="score-label" id="score-lbl">Solved: 0 / ${riddles.length}</span>
-    <span class="stars-track" id="stars-track">${'⭐'.repeat(riddles.length)}</span>
-  </div>`;
+  body.innerHTML = `<div class="score-banner"><span class="score-label" id="score-lbl">Solved: 0 / ${riddles.length}</span><span class="stars-track" id="stars-track">${'⭐'.repeat(riddles.length)}</span></div>`;
   riddles.forEach((r, i) => {
-    const card = document.createElement('div');
-    card.className = 'riddle-card'; card.id = 'rc'+i;
-    card.innerHTML = `
-      <div class="riddle-num">Riddle #${i+1}</div>
-      <div class="riddle-q">${r.q}</div>
-      <div class="riddle-hint">💡 Hint: ${r.hint}</div>
-      <button class="reveal-btn" id="rb${i}" onclick="revealRiddle(${i},event)">🔮 Reveal Answer</button>
-      <div class="answer-box" id="ab${i}">
-        <div class="ans">🎉 ${r.answer}</div>
-        <div class="exp">${r.explain}</div>
-      </div>`;
+    const card = document.createElement('div'); card.className = 'riddle-card'; card.id = 'rc' + i;
+    card.style.animationDelay = (i * .07) + 's';
+    card.innerHTML = `<div class="riddle-num">Riddle #${i + 1}</div><div class="riddle-q">${r.q}</div><div class="riddle-hint">💡 Hint: ${r.hint}</div><button class="reveal-btn" id="rb${i}" onclick="revealRiddle(${i},event)">🔮 Reveal Answer</button><div class="answer-box" id="ab${i}"><div class="ans">🎉 ${r.answer}</div><div class="exp">${r.explain}</div></div>`;
     body.appendChild(card);
   });
 }
 
 function revealRiddle(i, e) {
-  const ab=document.getElementById('ab'+i), rb=document.getElementById('rb'+i), card=document.getElementById('rc'+i);
-  if (!ab.classList.contains('show')) {
-    ab.classList.add('show'); card.classList.add('solved');
-    rb.textContent='✅ Solved!'; rb.classList.add('done');
-    solvedCount++;
-    document.getElementById('score-lbl').textContent = `Solved: ${solvedCount} / ${totalRiddles}`;
-    document.getElementById('stars-track').textContent = '🌟'.repeat(solvedCount)+'⭐'.repeat(totalRiddles-solvedCount);
-    sparkle(e.clientX, e.clientY);
+  const ab = document.getElementById('ab' + i), rb = document.getElementById('rb' + i), card = document.getElementById('rc' + i);
+  if (ab.classList.contains('show')) return;
+  ab.classList.add('show'); card.classList.add('solved'); rb.textContent = '✅ Solved!'; rb.classList.add('done');
+  solvedCount++;
+  document.getElementById('score-lbl').textContent = `Solved: ${solvedCount} / ${totalRiddles}`;
+  document.getElementById('stars-track').textContent = '🌟'.repeat(solvedCount) + '⭐'.repeat(totalRiddles - solvedCount);
+  const star = document.createElement('span'); star.className = 'jar-star'; star.textContent = '⭐';
+  document.getElementById('jar').appendChild(star);
+  sparkle(e.clientX, e.clientY);
+  if (solvedCount === totalRiddles) {
+    setTimeout(() => { document.getElementById('riddles-body').insertAdjacentHTML('beforeend', `<div class="all-done"><span class="trophy">🏆</span><h2>You solved them ALL!</h2><p>Absolute riddle master! 🌟</p></div>`); }, 400);
   }
 }
 
-/* ─── STORY LIST ─── */
+/* ════════════════════════════════
+   STORIES
+════════════════════════════════ */
+let storyMood = 'magical', storyPages = [], storyPageIdx = 0, storyRetry = null;
+const moodDesc = {
+  magical:   'enchanting and full of magic and wonder',
+  funny:     'hilarious, full of silly jokes and slapstick fun',
+  spooky:    'mildly spooky with friendly ghosts or silly monsters — nothing scary, just giggly',
+  adventure: 'action-packed with brave quests and exciting discoveries',
+  cosy:      'warm and snuggly, perfect for drifting off to sleep'
+};
 const storyThemes = [
-  {emoji:'🌙',id:'moon',   label:'Moon Adventure'},
-  {emoji:'🐉',id:'dragon', label:'The Tiny Dragon'},
-  {emoji:'🌳',id:'forest', label:'Magic Forest'},
-  {emoji:'☁️',id:'cloud',  label:'Cloud Factory'},
-  {emoji:'⭐',id:'star',   label:'Star Catchers'},
-  {emoji:'🧜',id:'mermaid',label:'Mermaid Cove'},
+  { emoji:'🌙', id:'moon',     label:'Moon Adventure'  },
+  { emoji:'🐉', id:'dragon',   label:'The Tiny Dragon' },
+  { emoji:'🌳', id:'forest',   label:'Magic Forest'    },
+  { emoji:'☁️', id:'cloud',    label:'Cloud Factory'   },
+  { emoji:'⭐', id:'star',     label:'Star Catchers'   },
+  { emoji:'🧜', id:'mermaid',  label:'Mermaid Cove'    },
+  { emoji:'🦁', id:'lion',     label:'The Kind Lion'   },
+  { emoji:'🍄', id:'mushroom', label:'Mushroom Village'},
 ];
 
-function loadStories() {
-  document.getElementById('story-list-wrap').style.display='';
-  document.getElementById('story-reader').classList.remove('open');
-  document.getElementById('stories-heading').textContent='📖 Story Corner';
-  document.getElementById('stories-sub').textContent=greet()+' — pick a story & snuggle up! 🌙';
-  const grid = document.getElementById('story-grid');
-  grid.innerHTML = '';
-  storyThemes.forEach(t => {
-    const card = document.createElement('div');
-    card.className='story-card';
-    card.innerHTML=`<span class="s-emoji">${t.emoji}</span><h3>${t.label}</h3><p>Tap to begin!</p>`;
-    card.onclick=()=>openStory(t);
-    grid.appendChild(card);
+function initStories() {
+  closeStoryReader();
+  document.getElementById('stories-sub').textContent = greet() + ' — pick a mood & a story! 🌙';
+  const grid = document.getElementById('story-grid'); grid.innerHTML = '';
+  storyThemes.forEach((t, i) => {
+    const c = document.createElement('div'); c.className = 'story-card'; c.style.animationDelay = (i * .06) + 's';
+    c.innerHTML = `<span class="s-emoji">${t.emoji}</span><h3>${t.label}</h3><p>Tap to begin!</p>`;
+    c.onclick = () => openStory(t); grid.appendChild(c);
   });
-  storyCache={};
 }
 
-/* ─── STORY READER ─── */
+function setMood(m, el) {
+  storyMood = m;
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
 async function openStory(theme) {
-  const listWrap   = document.getElementById('story-list-wrap');
-  const reader     = document.getElementById('story-reader');
-  const pagesWrap  = document.getElementById('story-pages-wrap');
-  const dots       = document.getElementById('prog-dots');
-
-  listWrap.style.display='none';
-  reader.classList.add('open');
-  pagesWrap.innerHTML = loaderHTML('Weaving your story');
-  dots.innerHTML='';
-  document.getElementById('prev-btn').disabled=true;
-  document.getElementById('next-btn').disabled=true;
-  document.getElementById('pg-counter').textContent='';
-  document.getElementById('stories-heading').textContent=theme.emoji+' '+theme.label;
-  window.scrollTo(0,0);
-  window._retryTheme = theme;
-
-  const n1=name1(), n2=name2();
-  const prompt=`Write a short magical bedtime story titled "${theme.label}" for children aged 6-9.
-The two main characters are sisters named ${n1} and ${n2}.
-Split the story into exactly 5 pages. Each page = 3-4 warm imaginative sentences.
-End with a sleepy happy ending.
-Return ONLY a JSON array of 5 objects (no markdown):
-[{"icon":"one emoji","title":"page title","text":"story text using ${n1} and ${n2} by name"}]`;
-
+  storyRetry = theme;
+  document.getElementById('story-list').style.display = 'none';
+  document.getElementById('story-reader').classList.add('open');
+  document.getElementById('stories-heading').textContent = theme.emoji + ' ' + theme.label;
+  document.getElementById('stories-back').textContent = '← Stories';
+  document.getElementById('story-pages-wrap').innerHTML = loaderHTML('Weaving your ' + storyMood + ' story');
+  document.getElementById('prog-dots').innerHTML = '';
+  document.getElementById('prev-btn').disabled = true; document.getElementById('next-btn').disabled = true;
+  document.getElementById('pg-counter').textContent = ''; window.scrollTo(0, 0);
   try {
-    const raw = await callClaude(`You are a warm bedtime story writer. Heroes are ${n1} and ${n2}. Return ONLY valid JSON, no markdown.`, prompt);
-    const pages = JSON.parse(raw.replace(/```json|```/g,'').trim());
-    storyCache[theme.id]=pages;
-    currentStoryPages=pages; currentPageIdx=0;
-    renderStoryPage();
-  } catch(e) {
-    pagesWrap.innerHTML=errHTML('The story magic fizzled! Try again.','retryStory');
+    const raw = await callClaude(
+      `You are a warm bedtime story writer. Heroes are ${name1()} and ${name2()}. Return ONLY valid JSON arrays, no markdown.`,
+      `Write a short ${storyMood} bedtime story titled "${theme.label}" for children aged 6-9.
+Tone: ${moodDesc[storyMood]}. Main characters are sisters ${name1()} and ${name2()}.
+Exactly 5 pages, 3-4 warm sentences each. End with a sleepy happy ending.
+Return ONLY JSON: [{"icon":"emoji","title":"page title","text":"story text using character names"}]`
+    );
+    storyPages = parseJSON(raw); storyPageIdx = 0; renderStoryPage();
+  } catch (e) {
+    document.getElementById('story-pages-wrap').innerHTML = errHTML(e.message, 'retryStory');
   }
 }
 
-window.retryStory = ()=>{ if(window._retryTheme) openStory(window._retryTheme); };
+function retryStory() { if (storyRetry) openStory(storyRetry); }
+
+function closeStoryReader() {
+  document.getElementById('story-reader').classList.remove('open');
+  document.getElementById('story-list').style.display = '';
+  document.getElementById('stories-heading').textContent = '📖 Story Corner';
+  document.getElementById('stories-back').textContent = '← Home';
+  window.scrollTo(0, 0);
+}
+
+function storiesBack() {
+  if (document.getElementById('story-reader').classList.contains('open')) closeStoryReader();
+  else goTo('home');
+}
 
 function renderStoryPage() {
-  const pages=currentStoryPages, i=currentPageIdx;
-  const pagesWrap=document.getElementById('story-pages-wrap');
-  const dots=document.getElementById('prog-dots');
-  const n1=name1(), n2=name2();
-
-  dots.innerHTML=pages.map((_,j)=>`<div class="p-dot${j<=i?' lit':''}"></div>`).join('');
-
-  const p=pages[i];
-  const re1=new RegExp(n1.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g');
-  const re2=new RegExp(n2.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g');
-  const txt=p.text.replace(re1,`<span class="ns">${n1}</span>`).replace(re2,`<span class="nt">${n2}</span>`);
-
-  pagesWrap.innerHTML=`<div class="story-page show">
-    <span class="sp-icon">${p.icon}</span>
-    <div class="sp-title">${p.title}</div>
-    <div class="sp-text">${txt}</div>
-  </div>`;
-
-  document.getElementById('prev-btn').disabled = i===0;
-  document.getElementById('next-btn').disabled = i>=pages.length-1;
-  document.getElementById('pg-counter').textContent=`Page ${i+1} of ${pages.length}`;
+  const p = storyPages[storyPageIdx], n1 = name1(), n2 = name2();
+  const re1 = new RegExp(n1.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+  const re2 = new RegExp(n2.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+  const txt = p.text.replace(re1, `<span class="ns">${n1}</span>`).replace(re2, `<span class="nt">${n2}</span>`);
+  document.getElementById('prog-dots').innerHTML = storyPages.map((_, j) => `<div class="p-dot${j <= storyPageIdx ? ' lit' : ''}"></div>`).join('');
+  document.getElementById('story-pages-wrap').innerHTML = `<div class="story-page show"><span class="sp-icon">${p.icon}</span><div class="sp-title">${p.title}</div><div class="sp-text">${txt}</div></div>`;
+  document.getElementById('prev-btn').disabled = storyPageIdx === 0;
+  document.getElementById('next-btn').disabled = storyPageIdx >= storyPages.length - 1;
+  document.getElementById('pg-counter').textContent = `Page ${storyPageIdx + 1} of ${storyPages.length}`;
 }
 
 function turnPage(dir) {
-  const n=currentPageIdx+dir;
-  if (n<0||n>=currentStoryPages.length) return;
-  currentPageIdx=n; renderStoryPage();
-  if (dir===1) sparkle(window.innerWidth/2, window.innerHeight/3);
+  const n = storyPageIdx + dir;
+  if (n < 0 || n >= storyPages.length) return;
+  storyPageIdx = n; renderStoryPage();
+  if (dir === 1) sparkle(window.innerWidth / 2, window.innerHeight / 3);
 }
 
-function closeReader() {
-  document.getElementById('story-reader').classList.remove('open');
-  document.getElementById('story-list-wrap').style.display='';
-  document.getElementById('stories-heading').textContent='📖 Story Corner';
-  window.scrollTo(0,0);
+/* ════════════════════════════════
+   JOKES
+════════════════════════════════ */
+let jokes = [], jokeIdx = 0, jokeRevealed = false;
+
+function initJokes() {
+  jokes = []; jokeIdx = 0;
+  document.getElementById('joke-sub').textContent = greet() + ' — get ready to LAUGH! 🤣';
+  document.getElementById('joke-stage').innerHTML = loaderHTML('Cooking up silly jokes');
+  document.getElementById('joke-counter').textContent = '';
+  document.getElementById('next-j-btn').classList.remove('show');
+  loadJokes();
+}
+
+async function loadJokes() {
+  try {
+    const raw = await callClaude(
+      'You write hilarious kid-friendly jokes. Return ONLY valid JSON arrays, no markdown.',
+      `Generate 8 funny, age-appropriate knock-knock or question jokes for children aged 6-9.
+Silly, clean, groan-worthy. Return ONLY a JSON array: [{"emoji":"one fun emoji","setup":"joke setup","punchline":"punchline"}]`
+    );
+    jokes = parseJSON(raw); jokeIdx = 0; showJoke();
+  } catch (e) {
+    document.getElementById('joke-stage').innerHTML = errHTML(e.message, 'loadJokes');
+  }
+}
+
+function showJoke() {
+  if (jokeIdx >= jokes.length) {
+    document.getElementById('joke-stage').innerHTML = `<div class="all-done"><span class="trophy">🏆</span><h2>You heard them all!</h2><p>Officially hilarious 😂</p><button class="retry-btn" style="margin-top:1rem" onclick="initJokes()">🔄 Fresh Jokes!</button></div>`;
+    document.getElementById('joke-counter').textContent = '';
+    document.getElementById('next-j-btn').classList.remove('show');
+    return;
+  }
+  jokeRevealed = false;
+  const j = jokes[jokeIdx];
+  document.getElementById('joke-counter').textContent = `Joke ${jokeIdx + 1} of ${jokes.length}`;
+  document.getElementById('joke-stage').innerHTML = `<span class="joke-emoji">${j.emoji}</span><div class="joke-setup">${j.setup}</div><button class="punch-btn" onclick="revealPunch()">🥁 Punchline!</button><div class="punchline" id="punchline">${j.punchline}</div>`;
+  document.getElementById('next-j-btn').classList.remove('show');
+}
+
+function revealPunch() {
+  if (jokeRevealed) return; jokeRevealed = true;
+  document.getElementById('punchline').classList.add('show');
+  document.querySelector('.punch-btn').style.display = 'none';
+  document.getElementById('next-j-btn').classList.add('show');
+  sparkle(window.innerWidth / 2, window.innerHeight / 2);
+}
+
+function nextJoke() { jokeIdx++; showJoke(); }
+
+function react(e) {
+  sparkle(window.innerWidth / 2, window.innerHeight / 2);
+  const el = document.createElement('div');
+  el.style.cssText = 'position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);font-size:5rem;z-index:999;pointer-events:none;animation:sp 1.2s ease forwards;';
+  el.textContent = e; document.body.appendChild(el); setTimeout(() => el.remove(), 1300);
+}
+
+/* ════════════════════════════════
+   DOODLE PAD
+════════════════════════════════ */
+let dCanvas, dCtx, dTool = 'pen', dSize = 8, dColor = '#f472b6';
+let dDrawing = false, dLX = 0, dLY = 0, dHistory = [], dInited = false, dStickerMode = null;
+
+const D_COLORS   = ['#f472b6','#67e8f9','#fcd34d','#6ee7b7','#a78bfa','#fb923c','#f87171','#4ade80','#38bdf8','#ffffff','#c084fc','#fde68a','#000000','#1e293b'];
+const D_STICKERS = ['⭐','🌙','🌈','🦄','🌸','🎉','💜','🐉','🌟','🍀','🐶','🐱','🦁','🐘','🦋','🌺','🎀','🍭','🍦','🎈','🏠','🌴','☁️','⚡','🔥','❤️','💛','💚','💙','🌊'];
+
+function initDoodle() {
+  document.getElementById('doodle-title').textContent = `🎨 ${name1()}'s Doodle Pad`;
+  if (dInited) { resizeDCanvas(); return; }
+  dInited = true;
+  dCanvas = document.getElementById('draw-canvas');
+  dCtx = dCanvas.getContext('2d');
+  resizeDCanvas();
+
+  // Swatches
+  const sw = document.getElementById('d-swatches');
+  D_COLORS.forEach(c => {
+    const s = document.createElement('button'); s.className = 'swatch' + (c === dColor ? ' active' : '');
+    s.style.background = c; s.style.border = c === '#000000' ? '2.5px solid rgba(255,255,255,.3)' : '';
+    s.onclick = () => { dColor = c; document.querySelectorAll('.swatch').forEach(x => x.classList.remove('active')); s.classList.add('active'); if (dTool === 'eraser') setDTool('pen', document.getElementById('tool-pen')); };
+    sw.appendChild(s);
+  });
+
+  // Sticker tray
+  const tray = document.getElementById('sticker-tray');
+  D_STICKERS.forEach(st => {
+    const s = document.createElement('span'); s.className = 'sticker'; s.textContent = st;
+    s.onclick = () => { dStickerMode = st; tray.classList.remove('open'); dCanvas.style.cursor = 'cell'; toast('Tap the canvas to stamp ' + st); };
+    tray.appendChild(s);
+  });
+
+  // Pointer events (mouse + touch)
+  dCanvas.addEventListener('pointerdown', dStart, { passive: false });
+  dCanvas.addEventListener('pointermove', dMove,  { passive: false });
+  dCanvas.addEventListener('pointerup',   dEnd,   { passive: false });
+  dCanvas.addEventListener('pointerleave',dEnd,   { passive: false });
+  dCanvas.addEventListener('click', dClick);
+  window.addEventListener('resize', resizeDCanvas);
+}
+
+function resizeDCanvas() {
+  if (!dCanvas) return;
+  const wrap = document.getElementById('canvas-wrap');
+  const snap = dCtx.getImageData(0, 0, dCanvas.width || 1, dCanvas.height || 1);
+  dCanvas.width  = wrap.clientWidth;
+  dCanvas.height = wrap.clientHeight;
+  dCtx.fillStyle = '#0f0e2e'; dCtx.fillRect(0, 0, dCanvas.width, dCanvas.height);
+  try { dCtx.putImageData(snap, 0, 0); } catch (_) {}
+}
+
+function dGetPos(e) {
+  const r = dCanvas.getBoundingClientRect();
+  return [e.clientX - r.left, e.clientY - r.top];
+}
+
+function dSaveHistory() {
+  if (dHistory.length > 30) dHistory.shift();
+  dHistory.push(dCtx.getImageData(0, 0, dCanvas.width, dCanvas.height));
+}
+
+function dStart(e) {
+  e.preventDefault();
+  if (dStickerMode) return;
+  dSaveHistory(); dDrawing = true;
+  [dLX, dLY] = dGetPos(e);
+  if (dTool === 'spray') dSpray(dLX, dLY);
+}
+
+function dMove(e) {
+  e.preventDefault(); if (!dDrawing) return;
+  const [x, y] = dGetPos(e);
+  if (dTool === 'spray') { dSpray(x, y); dLX = x; dLY = y; return; }
+  dCtx.beginPath(); dCtx.moveTo(dLX, dLY); dCtx.lineTo(x, y);
+  if (dTool === 'eraser') {
+    dCtx.globalCompositeOperation = 'destination-out'; dCtx.strokeStyle = 'rgba(0,0,0,1)'; dCtx.lineWidth = dSize * 3;
+  } else if (dTool === 'marker') {
+    dCtx.globalCompositeOperation = 'source-over'; dCtx.strokeStyle = dColor + '99'; dCtx.lineWidth = dSize * 2.5;
+  } else {
+    dCtx.globalCompositeOperation = 'source-over'; dCtx.strokeStyle = dColor; dCtx.lineWidth = dSize;
+  }
+  dCtx.lineCap = 'round'; dCtx.lineJoin = 'round'; dCtx.stroke();
+  dCtx.globalCompositeOperation = 'source-over';
+  [dLX, dLY] = [x, y];
+}
+
+function dEnd(e) { e.preventDefault(); dDrawing = false; }
+
+function dClick(e) {
+  if (!dStickerMode) return;
+  const [x, y] = dGetPos(e);
+  dCtx.font = (dSize * 4 + 20) + 'px serif'; dCtx.textAlign = 'center'; dCtx.textBaseline = 'middle';
+  dCtx.fillText(dStickerMode, x, y);
+  sparkle(e.clientX, e.clientY); dStickerMode = null; dCanvas.style.cursor = 'crosshair';
+}
+
+function dSpray(x, y) {
+  dCtx.globalCompositeOperation = 'source-over'; dCtx.fillStyle = dColor;
+  const r = dSize * 3;
+  for (let i = 0; i < 25; i++) {
+    const a = Math.random() * Math.PI * 2, d = Math.random() * r;
+    dCtx.beginPath(); dCtx.arc(x + d * Math.cos(a), y + d * Math.sin(a), Math.random() * 1.5 + .5, 0, Math.PI * 2); dCtx.fill();
+  }
+}
+
+function setDTool(t, el) { dTool = t; document.querySelectorAll('.d-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
+function setDSize(s, el) { dSize = s; document.querySelectorAll('.sz-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
+function toggleStickers() { document.getElementById('sticker-tray').classList.toggle('open'); }
+function undoDraw()   { if (dHistory.length) dCtx.putImageData(dHistory.pop(), 0, 0); }
+function clearDraw()  { dSaveHistory(); dCtx.fillStyle = '#0f0e2e'; dCtx.fillRect(0, 0, dCanvas.width, dCanvas.height); toast('Canvas cleared! Start fresh 🌟'); }
+function saveDrawing() {
+  const link = document.createElement('a');
+  link.download = name1().toLowerCase() + '-doodle.png';
+  link.href = dCanvas.toDataURL('image/png'); link.click();
+  toast('Saved! 💾 Check your downloads!'); sparkle(window.innerWidth / 2, window.innerHeight / 2);
 }
 </script>
 </body>
