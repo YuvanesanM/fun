@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sana & Tara's Magic Kingdom 🌙</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Pacifico&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+:root {
+  --night: #080720;
+  --card: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.1);
+  --pink: #f472b6;
+  --sky: #67e8f9;
+  --gold: #fcd34d;
+  --mint: #6ee7b7;
+  --purple: #a78bfa;
+  --cream: #fef3c7;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Baloo 2',cursive; background:var(--night); color:#e2e8f0; min-height:100vh; overflow-x:hidden; }
+#bg-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; }
+
+/* PAGES */
+.page { display:none; position:relative; z-index:1; min-height:100vh; padding-bottom:5rem; animation:fadeUp .5s ease; }
+.page.active { display:block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;} }
+#home { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:2rem 1.5rem 5rem; }
+#home.active { display:flex; }
+
+/* HOME */
+.big-moon { font-size:5.5rem; display:block; animation:float 5s ease-in-out infinite; filter:drop-shadow(0 0 40px #fcd34d88); margin-bottom:.5rem; }
+@keyframes float { 0%,100%{transform:translateY(0) rotate(-3deg);}50%{transform:translateY(-16px) rotate(3deg);} }
+.site-title { font-family:'Pacifico',cursive; font-size:clamp(2.4rem,8vw,4.8rem); background:linear-gradient(135deg,#fcd34d 0%,#f472b6 45%,#a78bfa 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height:1.15; margin-bottom:.5rem; }
+.site-sub { color:var(--purple); font-size:1.1rem; font-weight:600; margin-bottom:2rem; letter-spacing:.5px; }
+
+.who-row { display:flex; gap:.75rem; margin-bottom:2.5rem; flex-wrap:wrap; justify-content:center; }
+.who-btn { padding:.5rem 1.6rem; border-radius:999px; border:2.5px solid transparent; font-family:'Fredoka One',cursive; font-size:1.1rem; cursor:pointer; transition:all .25s; color:white; }
+.who-btn.sana { background:linear-gradient(135deg,#be185d,#7c3aed); }
+.who-btn.both { background:linear-gradient(135deg,#b45309,#be185d); }
+.who-btn.tara { background:linear-gradient(135deg,#0369a1,#0d9488); }
+.who-btn.active { border-color:white; transform:scale(1.1); box-shadow:0 0 22px rgba(255,255,255,.3); }
+
+.nav-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; max-width:480px; width:100%; }
+@media(max-width:400px){ .nav-grid{ grid-template-columns:1fr; } }
+.nav-card { background:var(--card); border:2px solid var(--border); border-radius:24px; padding:2rem 1.5rem; cursor:pointer; transition:all .3s; text-align:center; backdrop-filter:blur(12px); }
+.nav-card:hover { background:rgba(255,255,255,.11); transform:translateY(-7px) scale(1.03); }
+.nav-card.riddle:hover { border-color:var(--gold); box-shadow:0 18px 40px rgba(252,211,77,.2); }
+.nav-card.story:hover  { border-color:var(--sky);  box-shadow:0 18px 40px rgba(103,232,249,.2); }
+.nav-card .nav-icon { font-size:3.2rem; margin-bottom:.6rem; display:block; }
+.nav-card h2 { font-family:'Fredoka One',cursive; font-size:1.5rem; }
+.nav-card.riddle h2 { color:var(--gold); }
+.nav-card.story  h2 { color:var(--sky); }
+.nav-card p { font-size:.88rem; color:#94a3b8; margin-top:.3rem; }
+
+/* INNER PAGES */
+.inner-header { max-width:720px; margin:0 auto; padding:2rem 1.5rem 0; }
+.back-btn { display:inline-flex; align-items:center; gap:.5rem; background:rgba(255,255,255,.08); border:1.5px solid var(--border); color:white; padding:.55rem 1.3rem; border-radius:999px; cursor:pointer; font-family:'Baloo 2',cursive; font-size:.95rem; font-weight:700; transition:all .2s; margin-bottom:1.5rem; }
+.back-btn:hover { background:rgba(255,255,255,.16); }
+.page-heading { font-family:'Fredoka One',cursive; font-size:clamp(2rem,6vw,3rem); margin-bottom:.3rem; }
+.page-heading.gold { color:var(--gold); }
+.page-heading.sky  { color:var(--sky); }
+.page-sub { color:var(--purple); font-size:1rem; }
+
+/* LOADER */
+.loader-wrap { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:50vh; gap:1.5rem; text-align:center; padding:2rem; }
+.magic-loader { position:relative; width:100px; height:100px; }
+.ring { position:absolute; border-radius:50%; border:3px solid transparent; animation:spin var(--s) linear infinite; }
+.ring1 { inset:0;    border-top-color:var(--pink);   --s:1.2s; }
+.ring2 { inset:12px; border-top-color:var(--purple); --s:1.8s; animation-direction:reverse; }
+.ring3 { inset:24px; border-top-color:var(--sky);    --s:2.4s; }
+.ring4 { inset:36px; border-top-color:var(--gold);   --s:3s;   animation-direction:reverse; }
+.ring-center { position:absolute; inset:44px; background:var(--gold); border-radius:50%; animation:pulse 1s ease-in-out infinite; }
+@keyframes spin  { to{transform:rotate(360deg);} }
+@keyframes pulse { 0%,100%{transform:scale(.8);opacity:.6;}50%{transform:scale(1.2);opacity:1;} }
+.loader-text { font-family:'Fredoka One',cursive; font-size:1.3rem; color:var(--purple); }
+.loader-dots::after { content:''; animation:dots 1.5s infinite; }
+@keyframes dots { 0%{content:'';}33%{content:'.';}66%{content:'..';}100%{content:'...';} }
+
+/* ERROR */
+.err-box { background:rgba(239,68,68,.12); border:1.5px solid rgba(239,68,68,.4); border-radius:18px; padding:1.5rem; text-align:center; max-width:480px; margin:2rem auto; }
+.err-box h3 { color:#fca5a5; font-family:'Fredoka One',cursive; margin-bottom:.5rem; }
+.err-box p  { color:#fca5a5; font-size:.9rem; }
+.retry-btn { margin-top:1rem; background:linear-gradient(135deg,#7c3aed,#db2777); border:none; color:white; padding:.6rem 1.6rem; border-radius:999px; cursor:pointer; font-family:'Fredoka One',cursive; font-size:1rem; transition:all .2s; }
+.retry-btn:hover { transform:scale(1.05); }
+
+/* RIDDLES */
+.riddles-wrap { max-width:680px; margin:0 auto; padding:0 1.25rem; }
+.score-banner { background:rgba(252,211,77,.08); border:1.5px solid rgba(252,211,77,.25); border-radius:16px; padding:1rem 1.5rem; display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; flex-wrap:wrap; gap:.5rem; }
+.score-label { font-family:'Fredoka One',cursive; color:var(--gold); font-size:1.1rem; }
+.stars-track { font-size:1.3rem; letter-spacing:2px; }
+.riddle-card { background:var(--card); border:2px solid var(--border); border-radius:20px; padding:1.5rem 1.75rem; margin-bottom:1.1rem; transition:border-color .3s; backdrop-filter:blur(8px); }
+.riddle-card.solved { border-color:var(--mint); background:rgba(110,231,183,.06); }
+.riddle-num { color:var(--gold); font-size:.9rem; font-weight:700; margin-bottom:.4rem; }
+.riddle-q   { font-size:1.08rem; font-weight:700; line-height:1.6; color:var(--cream); margin-bottom:.75rem; }
+.riddle-hint{ font-size:.88rem; color:var(--purple); margin-bottom:1rem; font-style:italic; }
+.reveal-btn { background:linear-gradient(135deg,#7c3aed,#db2777); border:none; color:white; padding:.5rem 1.3rem; border-radius:999px; cursor:pointer; font-family:'Fredoka One',cursive; font-size:.98rem; transition:all .2s; display:inline-flex; align-items:center; gap:.4rem; }
+.reveal-btn:hover { transform:scale(1.05); box-shadow:0 6px 20px rgba(219,39,119,.4); }
+.reveal-btn.done { background:linear-gradient(135deg,#059669,#0284c7); }
+.answer-box { display:none; margin-top:1rem; background:linear-gradient(135deg,rgba(110,231,183,.12),rgba(103,232,249,.12)); border:1.5px solid var(--mint); border-radius:14px; padding:1rem 1.25rem; }
+.answer-box.show { display:block; animation:pop .3s ease; }
+@keyframes pop { from{transform:scale(.9);opacity:0;}to{transform:scale(1);opacity:1;} }
+.answer-box .ans { font-size:1.05rem; color:var(--mint); font-weight:800; }
+.answer-box .exp { font-size:.9rem; color:#a7f3d0; margin-top:.3rem; }
+
+/* STORY LIST */
+.stories-wrap { max-width:760px; margin:0 auto; padding:0 1.25rem; }
+.story-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1.1rem; }
+.story-card { background:var(--card); border:2px solid var(--border); border-radius:20px; padding:1.5rem 1.25rem; cursor:pointer; text-align:center; transition:all .3s; backdrop-filter:blur(8px); }
+.story-card:hover { border-color:var(--sky); transform:translateY(-6px); box-shadow:0 16px 35px rgba(103,232,249,.2); }
+.story-card .s-emoji { font-size:2.8rem; display:block; margin-bottom:.6rem; }
+.story-card h3 { font-family:'Fredoka One',cursive; font-size:1.1rem; color:var(--sky); }
+.story-card p  { font-size:.82rem; color:#94a3b8; margin-top:.25rem; line-height:1.4; }
+
+/* STORY READER */
+#story-reader { display:none; max-width:680px; margin:0 auto; padding:0 1.25rem; animation:fadeUp .4s ease; }
+#story-reader.open { display:block; }
+.book-wrap { background:var(--card); border:2px solid var(--border); border-radius:26px; padding:2rem; backdrop-filter:blur(12px); min-height:360px; }
+.prog-dots { display:flex; justify-content:center; gap:.5rem; margin-bottom:1.5rem; }
+.p-dot { width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,.15); transition:all .3s; }
+.p-dot.lit { background:var(--mint); box-shadow:0 0 8px var(--mint); }
+.story-page { display:none; text-align:center; animation:fadeUp .4s ease; }
+.story-page.show { display:block; }
+.sp-icon  { font-size:3.8rem; display:block; margin-bottom:.75rem; }
+.sp-title { font-family:'Fredoka One',cursive; font-size:1.7rem; color:var(--gold); margin-bottom:1.2rem; }
+.sp-text  { font-size:1.08rem; line-height:1.95; color:var(--cream); }
+.sp-text .ns { color:var(--pink); font-weight:800; }
+.sp-text .nt { color:var(--sky);  font-weight:800; }
+.book-nav { display:flex; justify-content:space-between; align-items:center; margin-top:1.75rem; gap:.75rem; }
+.nav-pg-btn { background:rgba(255,255,255,.08); border:1.5px solid var(--border); color:white; padding:.55rem 1.3rem; border-radius:999px; cursor:pointer; font-family:'Fredoka One',cursive; font-size:.98rem; transition:all .2s; display:flex; align-items:center; gap:.35rem; }
+.nav-pg-btn:hover:not(:disabled) { background:rgba(255,255,255,.18); transform:scale(1.05); }
+.nav-pg-btn:disabled { opacity:.25; cursor:default; }
+.pg-counter { font-family:'Fredoka One',cursive; color:var(--purple); font-size:.98rem; }
+
+/* SPARKLES */
+.sparkle { position:fixed; pointer-events:none; font-size:1.6rem; z-index:999; animation:sparkle-anim 1.4s ease forwards; }
+@keyframes sparkle-anim { 0%{opacity:1;transform:translateY(0) scale(1) rotate(0deg);}100%{opacity:0;transform:translateY(90px) scale(.2) rotate(400deg);} }
+
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-thumb { background:#7c3aed; border-radius:99px; }
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<div id="app">
+
+  <!-- HOME -->
+  <div id="home" class="page active">
+    <span class="big-moon">🌙</span>
+    <h1 class="site-title">Sana & Tara's<br>Magic Kingdom</h1>
+    <p class="site-sub">✨ New riddles &amp; stories every single time ✨</p>
+
+    <div class="who-row">
+      <button class="who-btn sana active" onclick="setWho('sana',this)">🌸 Sana</button>
+      <button class="who-btn both"        onclick="setWho('both',this)">👯 Both</button>
+      <button class="who-btn tara"        onclick="setWho('tara',this)">🌊 Tara</button>
+    </div>
+
+    <div class="nav-grid">
+      <div class="nav-card riddle" onclick="goTo('riddles-page')">
+        <span class="nav-icon">🧩</span>
+        <h2>Riddle Time!</h2>
+        <p>8 brand-new magical riddles</p>
+      </div>
+      <div class="nav-card story" onclick="goTo('stories-page')">
+        <span class="nav-icon">📖</span>
+        <h2>Story Corner</h2>
+        <p>Fresh bedtime adventures await</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIDDLES PAGE -->
+  <div id="riddles-page" class="page">
+    <div class="inner-header">
+      <button class="back-btn" onclick="goTo('home')">← Back</button>
+      <div class="page-heading gold">🧩 Riddle Time!</div>
+      <p class="page-sub" id="riddle-sub">Loading fresh riddles…</p>
+    </div>
+    <div class="riddles-wrap" id="riddles-body"></div>
+  </div>
+
+  <!-- STORIES PAGE -->
+  <div id="stories-page" class="page">
+    <div class="inner-header">
+      <button class="back-btn" onclick="backFromStories()">← Back</button>
+      <div class="page-heading sky" id="stories-heading">📖 Story Corner</div>
+      <p class="page-sub" id="stories-sub">Choose your adventure!</p>
+    </div>
+    <div class="stories-wrap">
+      <div id="story-list-wrap">
+        <div class="story-grid" id="story-grid"></div>
+      </div>
+      <div id="story-reader">
+        <button class="back-btn" style="margin-top:1rem" onclick="closeReader()">← Pick another story</button>
+        <div class="book-wrap">
+          <div class="prog-dots" id="prog-dots"></div>
+          <div id="story-pages-wrap"></div>
+          <div class="book-nav">
+            <button class="nav-pg-btn" id="prev-btn" onclick="turnPage(-1)" disabled>◀ Prev</button>
+            <span class="pg-counter" id="pg-counter"></span>
+            <button class="nav-pg-btn" id="next-btn" onclick="turnPage(1)" disabled>Next ▶</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+/* ─── STATE ─── */
+let who = 'sana';
+let solvedCount = 0, totalRiddles = 0;
+let currentStoryPages = [], currentPageIdx = 0;
+let storyCache = {};
+window._retryTheme = null;
+
+const name1 = () => who === 'tara' ? 'Tara' : 'Sana';
+const name2 = () => who === 'sana' ? 'Tara' : who === 'tara' ? 'Sana' : 'Tara';
+const greet = () => who === 'sana' ? 'Hey Sana 🌸' : who === 'tara' ? 'Hey Tara 🌊' : 'Hey Sana & Tara 👯';
+
+function setWho(w, el) {
+  who = w;
+  document.querySelectorAll('.who-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function goTo(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'riddles-page') loadRiddles();
+  if (id === 'stories-page') loadStories();
+}
+
+function backFromStories() { closeReader(); goTo('home'); }
+
+/* ─── CANVAS STARS ─── */
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, stars = [], meteors = [];
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+  for (let i = 0; i < 160; i++) stars.push({ x:Math.random(), y:Math.random(), r:Math.random()*1.5+.4, a:Math.random(), da:(Math.random()*.008+.002)*(Math.random()>.5?1:-1) });
+  function spawnMeteor() {
+    meteors.push({ x:Math.random()*.6, y:Math.random()*.4, len:120+Math.random()*80, a:1, speed:4+Math.random()*3 });
+    setTimeout(spawnMeteor, 3000+Math.random()*5000);
+  }
+  spawnMeteor();
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    const g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#080720'); g.addColorStop(1,'#0d0b30');
+    ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+    stars.forEach(s => {
+      s.a += s.da; if (s.a<=0||s.a>=1) s.da*=-1;
+      ctx.beginPath(); ctx.arc(s.x*W,s.y*H,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${s.a})`; ctx.fill();
+    });
+    meteors.forEach((m,i) => {
+      ctx.save(); ctx.globalAlpha=m.a;
+      const gm=ctx.createLinearGradient(m.x*W,m.y*H,m.x*W+m.len,m.y*H+m.len*.6);
+      gm.addColorStop(0,'rgba(255,255,255,1)'); gm.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.strokeStyle=gm; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(m.x*W,m.y*H); ctx.lineTo(m.x*W+m.len,m.y*H+m.len*.6); ctx.stroke();
+      ctx.restore();
+      m.x+=m.speed/W; m.y+=m.speed*.6/H; m.a-=.025;
+      if (m.a<=0) meteors.splice(i,1);
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ─── SPARKLES ─── */
+function sparkle(x, y) {
+  ['✨','⭐','🌟','💫','🎉','🌈','🦄','💜'].forEach((e,i) => {
+    const el = document.createElement('div');
+    el.className = 'sparkle'; el.textContent = e;
+    el.style.left = (x+(Math.random()-.5)*130)+'px';
+    el.style.top  = (y+(Math.random()-.5)*70)+'px';
+    el.style.animationDelay = (i*.05)+'s';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 1600);
+  });
+}
+
+/* ─── LOADER / ERROR HTML ─── */
+const loaderHTML = msg => `<div class="loader-wrap">
+  <div class="magic-loader">
+    <div class="ring ring1"></div><div class="ring ring2"></div>
+    <div class="ring ring3"></div><div class="ring ring4"></div>
+    <div class="ring-center"></div>
+  </div>
+  <div class="loader-text">${msg}<span class="loader-dots"></span></div>
+</div>`;
+
+const errHTML = (msg, fn) => `<div class="err-box">
+  <h3>🌙 Oops!</h3><p>${msg}</p>
+  <button class="retry-btn" onclick="${fn}()">✨ Try Again</button>
+</div>`;
+
+/* ─── CLAUDE API ─── */
+async function callClaude(system, user) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      system,
+      messages:[{role:'user',content:user}]
+    })
+  });
+  if (!res.ok) throw new Error('API '+res.status);
+  const data = await res.json();
+  return data.content.find(b=>b.type==='text')?.text || '';
+}
+
+/* ─── RIDDLES ─── */
+async function loadRiddles() {
+  const body = document.getElementById('riddles-body');
+  const sub  = document.getElementById('riddle-sub');
+  sub.textContent = greet() + ' — fresh riddles loading!';
+  body.innerHTML = loaderHTML('Summoning magical riddles');
+  solvedCount = 0; totalRiddles = 0;
+
+  const prompt = `Generate 8 fun, age-appropriate riddles for children aged 6-9 named ${name1()}.
+Each riddle must be imaginative with a surprising simple answer.
+Return ONLY a JSON array (no markdown, no extra text):
+[{"q":"riddle question","hint":"short hint","answer":"The Answer!","explain":"Fun 1-sentence explanation with emoji"}]`;
+
+  try {
+    const raw = await callClaude('You are a creative children\'s riddle writer. Return ONLY valid JSON arrays, no markdown, no preamble.', prompt);
+    const riddles = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    totalRiddles = riddles.length;
+    renderRiddles(riddles);
+    sub.textContent = greet() + ' — can you solve all ' + totalRiddles + ' riddles? 🧩';
+  } catch(e) {
+    body.innerHTML = errHTML('The magic spell fizzled! Could not load riddles.','loadRiddles');
+  }
+}
+
+function renderRiddles(riddles) {
+  const body = document.getElementById('riddles-body');
+  body.innerHTML = `<div class="score-banner">
+    <span class="score-label" id="score-lbl">Solved: 0 / ${riddles.length}</span>
+    <span class="stars-track" id="stars-track">${'⭐'.repeat(riddles.length)}</span>
+  </div>`;
+  riddles.forEach((r, i) => {
+    const card = document.createElement('div');
+    card.className = 'riddle-card'; card.id = 'rc'+i;
+    card.innerHTML = `
+      <div class="riddle-num">Riddle #${i+1}</div>
+      <div class="riddle-q">${r.q}</div>
+      <div class="riddle-hint">💡 Hint: ${r.hint}</div>
+      <button class="reveal-btn" id="rb${i}" onclick="revealRiddle(${i},event)">🔮 Reveal Answer</button>
+      <div class="answer-box" id="ab${i}">
+        <div class="ans">🎉 ${r.answer}</div>
+        <div class="exp">${r.explain}</div>
+      </div>`;
+    body.appendChild(card);
+  });
+}
+
+function revealRiddle(i, e) {
+  const ab=document.getElementById('ab'+i), rb=document.getElementById('rb'+i), card=document.getElementById('rc'+i);
+  if (!ab.classList.contains('show')) {
+    ab.classList.add('show'); card.classList.add('solved');
+    rb.textContent='✅ Solved!'; rb.classList.add('done');
+    solvedCount++;
+    document.getElementById('score-lbl').textContent = `Solved: ${solvedCount} / ${totalRiddles}`;
+    document.getElementById('stars-track').textContent = '🌟'.repeat(solvedCount)+'⭐'.repeat(totalRiddles-solvedCount);
+    sparkle(e.clientX, e.clientY);
+  }
+}
+
+/* ─── STORY LIST ─── */
+const storyThemes = [
+  {emoji:'🌙',id:'moon',   label:'Moon Adventure'},
+  {emoji:'🐉',id:'dragon', label:'The Tiny Dragon'},
+  {emoji:'🌳',id:'forest', label:'Magic Forest'},
+  {emoji:'☁️',id:'cloud',  label:'Cloud Factory'},
+  {emoji:'⭐',id:'star',   label:'Star Catchers'},
+  {emoji:'🧜',id:'mermaid',label:'Mermaid Cove'},
+];
+
+function loadStories() {
+  document.getElementById('story-list-wrap').style.display='';
+  document.getElementById('story-reader').classList.remove('open');
+  document.getElementById('stories-heading').textContent='📖 Story Corner';
+  document.getElementById('stories-sub').textContent=greet()+' — pick a story & snuggle up! 🌙';
+  const grid = document.getElementById('story-grid');
+  grid.innerHTML = '';
+  storyThemes.forEach(t => {
+    const card = document.createElement('div');
+    card.className='story-card';
+    card.innerHTML=`<span class="s-emoji">${t.emoji}</span><h3>${t.label}</h3><p>Tap to begin!</p>`;
+    card.onclick=()=>openStory(t);
+    grid.appendChild(card);
+  });
+  storyCache={};
+}
+
+/* ─── STORY READER ─── */
+async function openStory(theme) {
+  const listWrap   = document.getElementById('story-list-wrap');
+  const reader     = document.getElementById('story-reader');
+  const pagesWrap  = document.getElementById('story-pages-wrap');
+  const dots       = document.getElementById('prog-dots');
+
+  listWrap.style.display='none';
+  reader.classList.add('open');
+  pagesWrap.innerHTML = loaderHTML('Weaving your story');
+  dots.innerHTML='';
+  document.getElementById('prev-btn').disabled=true;
+  document.getElementById('next-btn').disabled=true;
+  document.getElementById('pg-counter').textContent='';
+  document.getElementById('stories-heading').textContent=theme.emoji+' '+theme.label;
+  window.scrollTo(0,0);
+  window._retryTheme = theme;
+
+  const n1=name1(), n2=name2();
+  const prompt=`Write a short magical bedtime story titled "${theme.label}" for children aged 6-9.
+The two main characters are sisters named ${n1} and ${n2}.
+Split the story into exactly 5 pages. Each page = 3-4 warm imaginative sentences.
+End with a sleepy happy ending.
+Return ONLY a JSON array of 5 objects (no markdown):
+[{"icon":"one emoji","title":"page title","text":"story text using ${n1} and ${n2} by name"}]`;
+
+  try {
+    const raw = await callClaude(`You are a warm bedtime story writer. Heroes are ${n1} and ${n2}. Return ONLY valid JSON, no markdown.`, prompt);
+    const pages = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    storyCache[theme.id]=pages;
+    currentStoryPages=pages; currentPageIdx=0;
+    renderStoryPage();
+  } catch(e) {
+    pagesWrap.innerHTML=errHTML('The story magic fizzled! Try again.','retryStory');
+  }
+}
+
+window.retryStory = ()=>{ if(window._retryTheme) openStory(window._retryTheme); };
+
+function renderStoryPage() {
+  const pages=currentStoryPages, i=currentPageIdx;
+  const pagesWrap=document.getElementById('story-pages-wrap');
+  const dots=document.getElementById('prog-dots');
+  const n1=name1(), n2=name2();
+
+  dots.innerHTML=pages.map((_,j)=>`<div class="p-dot${j<=i?' lit':''}"></div>`).join('');
+
+  const p=pages[i];
+  const re1=new RegExp(n1.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g');
+  const re2=new RegExp(n2.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g');
+  const txt=p.text.replace(re1,`<span class="ns">${n1}</span>`).replace(re2,`<span class="nt">${n2}</span>`);
+
+  pagesWrap.innerHTML=`<div class="story-page show">
+    <span class="sp-icon">${p.icon}</span>
+    <div class="sp-title">${p.title}</div>
+    <div class="sp-text">${txt}</div>
+  </div>`;
+
+  document.getElementById('prev-btn').disabled = i===0;
+  document.getElementById('next-btn').disabled = i>=pages.length-1;
+  document.getElementById('pg-counter').textContent=`Page ${i+1} of ${pages.length}`;
+}
+
+function turnPage(dir) {
+  const n=currentPageIdx+dir;
+  if (n<0||n>=currentStoryPages.length) return;
+  currentPageIdx=n; renderStoryPage();
+  if (dir===1) sparkle(window.innerWidth/2, window.innerHeight/3);
+}
+
+function closeReader() {
+  document.getElementById('story-reader').classList.remove('open');
+  document.getElementById('story-list-wrap').style.display='';
+  document.getElementById('stories-heading').textContent='📖 Story Corner';
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
