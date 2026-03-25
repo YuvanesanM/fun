@@ -2,11 +2,1069 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="refresh" content="0; url=fun.html">
-<link rel="canonical" href="fun.html">
-<title>Redirecting…</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sana & Tara's magical kingdom of riddles, stories, jokes and doodles!">
+<meta name="theme-color" content="#080720">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Sana & Tara's Magic Kingdom 🌙</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Pacifico&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+:root {
+  --night:#080720;
+  --pink:#f472b6;  --sky:#67e8f9;   --gold:#fcd34d;
+  --mint:#6ee7b7;  --purple:#a78bfa; --cream:#fef3c7;
+  --card:rgba(255,255,255,.07);
+  --border:rgba(255,255,255,.12);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Baloo 2',cursive;
+  background:var(--night);
+  color:#e2e8f0;
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+button { font-family:inherit; cursor:pointer; touch-action:manipulation; }
+button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
+#bg-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; }
+
+@keyframes fadeUp  { from{opacity:0;transform:translateY(18px);}  to{opacity:1;transform:none;} }
+@keyframes float   { 0%,100%{transform:translateY(0) rotate(-3deg);} 50%{transform:translateY(-16px) rotate(3deg);} }
+@keyframes pop     { from{transform:scale(.88);opacity:0;} to{transform:scale(1);opacity:1;} }
+@keyframes bounce  { 0%,100%{transform:scale(1);} 50%{transform:scale(1.12);} }
+@keyframes pulse-g { 0%,100%{opacity:1;} 50%{opacity:.5;} }
+@keyframes tick    { 0%{transform:scale(1);} 50%{transform:scale(1.28);} 100%{transform:scale(1);} }
+@keyframes sp      { 0%{opacity:1;transform:translateY(0) scale(1) rotate(0);}
+                    100%{opacity:0;transform:translateY(90px) scale(.2) rotate(400deg);} }
+@keyframes wob     { 0%,100%{transform:rotate(-5deg);} 50%{transform:rotate(5deg);} }
+
+/* ── PAGES ── */
+.page { display:none; position:relative; z-index:1; max-width:820px; margin:0 auto; padding:2rem 1.25rem 6rem; animation:fadeUp .5s ease; }
+.page.active { display:block; }
+#home.active { display:flex; flex-direction:column; align-items:center; text-align:center; }
+
+/* ── TOP BAR ── */
+.top-bar { display:flex; align-items:center; gap:.75rem; margin-bottom:1.75rem; flex-wrap:wrap; }
+.back-btn { background:rgba(255,255,255,.09); border:1.5px solid var(--border); color:white; padding:.5rem 1.2rem; border-radius:999px; font-family:'Fredoka One',cursive; font-size:.92rem; transition:all .2s; white-space:nowrap; }
+.back-btn:hover { background:rgba(255,255,255,.18); }
+.page-heading { font-family:'Fredoka One',cursive; font-size:clamp(1.8rem,5vw,2.8rem); }
+.page-heading.gold { color:var(--gold); }
+.page-heading.sky  { color:var(--sky); }
+.page-heading.pink { color:var(--pink); }
+.page-heading.mint { color:var(--mint); }
+.page-sub { color:var(--purple); font-size:1rem; margin-bottom:1.5rem; }
+
+/* ── HOME HERO ── */
+.big-moon { font-size:5.5rem; display:block; animation:float 5s ease-in-out infinite; filter:drop-shadow(0 0 45px #fcd34d88); margin-bottom:.3rem; }
+.site-title {
+  font-family:'Pacifico',cursive;
+  font-size:clamp(2.2rem,7vw,4.5rem);
+  background:linear-gradient(135deg,#fcd34d,#f472b6,#a78bfa);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+  line-height:1.15; margin-bottom:.3rem;
+}
+.site-sub { color:var(--purple); font-size:1rem; font-weight:600; letter-spacing:.5px; margin-bottom:1.75rem; }
+
+/* ── WHO ── */
+.who-row { display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; margin-bottom:2rem; }
+.who-btn { padding:.5rem 1.7rem; border-radius:999px; border:2.5px solid transparent; font-family:'Fredoka One',cursive; font-size:1.1rem; color:white; transition:all .25s; }
+.who-btn.sana  { background:linear-gradient(135deg,#be185d,#7c3aed); }
+.who-btn.both  { background:linear-gradient(135deg,#b45309,#be185d); }
+.who-btn.tara  { background:linear-gradient(135deg,#0369a1,#0d9488); }
+.who-btn.active { border-color:white; transform:scale(1.1); box-shadow:0 0 22px rgba(255,255,255,.3); }
+
+/* ── COUNTDOWNS ── */
+.section-label { font-family:'Fredoka One',cursive; font-size:1.25rem; color:rgba(255,255,255,.4); text-align:center; margin-bottom:1rem; letter-spacing:1px; width:100%; }
+.countdowns { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:1.1rem; margin-bottom:2.5rem; width:100%; }
+.cd-card { border-radius:22px; padding:1.2rem .9rem; text-align:center; position:relative; overflow:hidden; border:2px solid transparent; transition:transform .3s,box-shadow .3s; }
+.cd-card:hover { transform:translateY(-5px); }
+.cd-card::before { content:''; position:absolute; inset:0; border-radius:inherit; opacity:.13; }
+.cd-sana    { background:linear-gradient(135deg,rgba(219,39,119,.18),rgba(124,58,237,.18)); border-color:rgba(244,114,182,.4); box-shadow:0 8px 30px rgba(244,114,182,.15); }
+.cd-sana::before    { background:radial-gradient(circle at 50% 0%,#f472b6,transparent 70%); }
+.cd-sana:hover      { box-shadow:0 16px 45px rgba(244,114,182,.3); }
+.cd-ireland { background:linear-gradient(135deg,rgba(5,150,105,.18),rgba(2,132,199,.18)); border-color:rgba(110,231,183,.4); box-shadow:0 8px 30px rgba(110,231,183,.12); }
+.cd-ireland::before { background:radial-gradient(circle at 50% 0%,#6ee7b7,transparent 70%); }
+.cd-ireland:hover   { box-shadow:0 16px 45px rgba(110,231,183,.25); }
+.cd-dad     { background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(239,68,68,.15)); border-color:rgba(252,211,77,.4); box-shadow:0 8px 30px rgba(252,211,77,.12); }
+.cd-dad::before     { background:radial-gradient(circle at 50% 0%,#fcd34d,transparent 70%); }
+.cd-dad:hover       { box-shadow:0 16px 45px rgba(252,211,77,.25); }
+.cd-mom     { background:linear-gradient(135deg,rgba(251,113,133,.18),rgba(251,191,36,.15)); border-color:rgba(251,113,133,.4); box-shadow:0 8px 30px rgba(251,113,133,.12); }
+.cd-mom::before     { background:radial-gradient(circle at 50% 0%,#fb7185,transparent 70%); }
+.cd-mom:hover       { box-shadow:0 16px 45px rgba(251,113,133,.25); }
+.cd-emoji { font-size:2.4rem; display:block; margin-bottom:.35rem; animation:bounce 2.2s ease-in-out infinite; }
+.cd-title { font-family:'Fredoka One',cursive; font-size:1.1rem; margin-bottom:.75rem; }
+.cd-sana    .cd-title { color:var(--pink); }
+.cd-ireland .cd-title { color:var(--mint); }
+.cd-dad     .cd-title { color:var(--gold); }
+.cd-mom     .cd-title { color:#fb7185; }
+.cd-numbers { display:flex; justify-content:center; gap:.2rem; margin-bottom:.5rem; flex-wrap:nowrap; }
+.cd-unit    { display:flex; flex-direction:column; align-items:center; }
+.cd-num { font-family:'Fredoka One',cursive; font-size:clamp(1.15rem,2.4vw,1.65rem); line-height:1; min-width:1.8rem; padding:.18rem .22rem; border-radius:9px; text-align:center; }
+.cd-sana    .cd-num { background:rgba(244,114,182,.2); color:var(--pink); }
+.cd-ireland .cd-num { background:rgba(110,231,183,.2); color:var(--mint); }
+.cd-dad     .cd-num { background:rgba(252,211,77,.2);  color:var(--gold); }
+.cd-mom     .cd-num { background:rgba(251,113,133,.2); color:#fb7185; }
+.cd-num.tick { animation:tick .22s ease; }
+.cd-sep  { font-family:'Fredoka One',cursive; font-size:1.1rem; color:rgba(255,255,255,.22); align-self:flex-start; margin-top:.15rem; }
+.cd-lbl  { font-size:.6rem; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.8px; margin-top:.2rem; }
+.cd-msg  { font-size:.8rem; color:rgba(255,255,255,.45); font-style:italic; }
+.cd-today { font-family:'Fredoka One',cursive; font-size:1.3rem; color:var(--gold); animation:pulse-g 1s ease-in-out infinite; }
+
+/* ── NAV CARDS ── */
+.nav-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1.1rem; margin-bottom:2.5rem; width:100%; }
+.nav-card { background:var(--card); border:2px solid var(--border); border-radius:22px; padding:1.75rem 1.1rem; text-align:center; transition:all .3s; backdrop-filter:blur(12px); position:relative; overflow:hidden; }
+.nav-card::after { content:''; position:absolute; inset:0; opacity:0; transition:opacity .3s; border-radius:inherit; }
+.nav-card:hover { transform:translateY(-6px) scale(1.03); }
+.nav-card:hover::after { opacity:1; }
+.nav-card.riddle::after { background:radial-gradient(circle at 50% 90%,rgba(252,211,77,.15),transparent 70%); }
+.nav-card.story::after  { background:radial-gradient(circle at 50% 90%,rgba(103,232,249,.15),transparent 70%); }
+.nav-card.joke::after   { background:radial-gradient(circle at 50% 90%,rgba(244,114,182,.15),transparent 70%); }
+.nav-card.doodle::after { background:radial-gradient(circle at 50% 90%,rgba(110,231,183,.15),transparent 70%); }
+.nav-card.riddle:hover { border-color:var(--gold); box-shadow:0 18px 45px rgba(252,211,77,.22); }
+.nav-card.story:hover  { border-color:var(--sky);  box-shadow:0 18px 45px rgba(103,232,249,.22); }
+.nav-card.joke:hover   { border-color:var(--pink); box-shadow:0 18px 45px rgba(244,114,182,.22); }
+.nav-card.doodle:hover { border-color:var(--mint); box-shadow:0 18px 45px rgba(110,231,183,.22); }
+.nav-icon { font-size:2.8rem; display:block; margin-bottom:.55rem; }
+.nav-card h2 { font-family:'Fredoka One',cursive; font-size:1.35rem; }
+.nav-card.riddle h2 { color:var(--gold); }
+.nav-card.story  h2 { color:var(--sky);  }
+.nav-card.joke   h2 { color:var(--pink); }
+.nav-card.doodle h2 { color:var(--mint); }
+.nav-card p { font-size:.8rem; color:#94a3b8; margin-top:.25rem; }
+.footer { color:rgba(255,255,255,.18); font-size:.8rem; margin-top:1rem; width:100%; }
+
+/* ── RIDDLES ── */
+.score-banner { background:rgba(252,211,77,.08); border:1.5px solid rgba(252,211,77,.25); border-radius:16px; padding:.9rem 1.4rem; display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; flex-wrap:wrap; gap:.5rem; }
+.score-label  { font-family:'Fredoka One',cursive; color:var(--gold); font-size:1.1rem; }
+.stars-track  { font-size:1.2rem; letter-spacing:2px; }
+.star-jar-wrap { text-align:center; margin-bottom:1.25rem; }
+.star-jar-label { font-family:'Fredoka One',cursive; color:var(--purple); font-size:.9rem; margin-bottom:.4rem; }
+.star-jar { display:inline-flex; flex-wrap:wrap; justify-content:center; gap:.3rem; background:rgba(255,255,255,.04); border:1.5px solid rgba(255,255,255,.1); border-radius:16px; padding:.65rem 1rem; min-width:120px; min-height:44px; }
+.jar-star { font-size:1.4rem; animation:pop .3s ease both; }
+.riddle-card { background:var(--card); border:2px solid var(--border); border-radius:20px; padding:1.4rem 1.6rem; margin-bottom:1rem; transition:border-color .3s; backdrop-filter:blur(8px); animation:fadeUp .4s ease both; }
+.riddle-card.solved { border-color:var(--mint); background:rgba(110,231,183,.06); }
+.riddle-num  { color:var(--gold); font-size:.88rem; font-weight:700; margin-bottom:.3rem; }
+.riddle-q    { font-size:1.08rem; font-weight:700; line-height:1.65; color:var(--cream); margin-bottom:.65rem; }
+.riddle-hint { font-size:.86rem; color:var(--purple); margin-bottom:.9rem; font-style:italic; }
+.reveal-btn { background:linear-gradient(135deg,#7c3aed,#db2777); border:none; color:white; padding:.48rem 1.25rem; border-radius:999px; font-family:'Fredoka One',cursive; font-size:.95rem; transition:all .2s; display:inline-flex; align-items:center; gap:.35rem; }
+.reveal-btn:hover { transform:scale(1.05); box-shadow:0 6px 20px rgba(219,39,119,.4); }
+.reveal-btn.done { background:linear-gradient(135deg,#059669,#0284c7); }
+.answer-box { display:none; margin-top:.9rem; background:linear-gradient(135deg,rgba(110,231,183,.12),rgba(103,232,249,.12)); border:1.5px solid var(--mint); border-radius:14px; padding:.9rem 1.1rem; }
+.answer-box.show { display:block; animation:pop .3s ease; }
+.answer-box .ans { font-size:1rem; color:var(--mint); font-weight:800; }
+.answer-box .exp { font-size:.86rem; color:#a7f3d0; margin-top:.25rem; }
+.all-done { text-align:center; padding:1.5rem 0; animation:fadeUp .5s ease; }
+.all-done .trophy { font-size:4rem; display:block; animation:bounce 1s ease-in-out infinite; }
+.all-done h2 { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--gold); margin:.4rem 0; }
+.all-done p  { color:var(--purple); }
+
+/* ── STORIES ── */
+.story-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:1rem; }
+.story-card { background:var(--card); border:2px solid var(--border); border-radius:20px; padding:1.4rem 1.1rem; text-align:center; transition:all .3s; backdrop-filter:blur(8px); animation:fadeUp .4s ease both; }
+.story-card:hover { border-color:var(--sky); transform:translateY(-5px); box-shadow:0 14px 32px rgba(103,232,249,.18); }
+.s-emoji { font-size:2.6rem; display:block; margin-bottom:.5rem; }
+.story-card h3 { font-family:'Fredoka One',cursive; font-size:1.05rem; color:var(--sky); }
+.story-card p  { font-size:.78rem; color:#94a3b8; margin-top:.2rem; }
+#story-reader { display:none; animation:fadeUp .4s ease; }
+#story-reader.open { display:block; }
+.book-wrap { background:var(--card); border:2px solid var(--border); border-radius:26px; padding:2rem; backdrop-filter:blur(12px); min-height:370px; }
+.prog-dots { display:flex; justify-content:center; gap:.5rem; margin-bottom:1.4rem; }
+.p-dot { width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,.15); transition:all .3s; }
+.p-dot.lit { background:var(--mint); box-shadow:0 0 8px var(--mint); }
+.story-page      { display:none; text-align:center; animation:fadeUp .4s ease; }
+.story-page.show { display:block; }
+.sp-icon  { font-size:3.8rem; display:block; margin-bottom:.7rem; }
+.sp-title { font-family:'Fredoka One',cursive; font-size:1.65rem; color:var(--gold); margin-bottom:1.1rem; }
+.sp-text  { font-size:1.08rem; line-height:1.95; color:var(--cream); }
+.sp-text .ns { color:var(--pink); font-weight:800; }
+.sp-text .nt { color:var(--sky);  font-weight:800; }
+.book-nav { display:flex; justify-content:space-between; align-items:center; margin-top:1.6rem; gap:.6rem; }
+.pg-btn { background:rgba(255,255,255,.08); border:1.5px solid var(--border); color:white; padding:.5rem 1.2rem; border-radius:999px; font-family:'Fredoka One',cursive; font-size:.95rem; transition:all .2s; }
+.pg-btn:hover:not(:disabled) { background:rgba(255,255,255,.18); transform:scale(1.05); }
+.pg-btn:disabled { opacity:.25; cursor:default; }
+.pg-counter { font-family:'Fredoka One',cursive; color:var(--purple); font-size:.95rem; }
+
+/* ── JOKES ── */
+.joke-stage { background:var(--card); border:2px solid var(--border); border-radius:26px; padding:2.5rem 2rem; text-align:center; margin-bottom:1.25rem; min-height:210px; display:flex; flex-direction:column; align-items:center; justify-content:center; backdrop-filter:blur(12px); }
+.joke-emoji  { font-size:3.8rem; display:block; margin-bottom:.7rem; animation:wob 2s ease-in-out infinite; }
+.joke-setup  { font-size:1.18rem; font-weight:700; color:var(--cream); line-height:1.6; margin-bottom:.9rem; }
+.punchline   { font-size:1.18rem; font-weight:800; color:var(--pink); display:none; }
+.punchline.show { display:block; animation:pop .4s ease; }
+.punch-btn { background:linear-gradient(135deg,#db2777,#f59e0b); border:none; color:white; padding:.65rem 1.8rem; border-radius:999px; font-family:'Fredoka One',cursive; font-size:1.05rem; transition:all .2s; margin-top:.4rem; }
+.punch-btn:hover { transform:scale(1.07); box-shadow:0 8px 25px rgba(219,39,119,.4); }
+.next-j-btn { background:linear-gradient(135deg,#7c3aed,#0284c7); border:none; color:white; padding:.65rem 1.8rem; border-radius:999px; font-family:'Fredoka One',cursive; font-size:1.05rem; transition:all .2s; display:none; margin-top:.75rem; }
+.next-j-btn.show { display:inline-block; animation:fadeUp .4s ease; }
+.next-j-btn:hover { transform:scale(1.07); }
+.retry-btn { background:linear-gradient(135deg,#059669,#0284c7); border:none; color:white; padding:.65rem 1.8rem; border-radius:999px; font-family:'Fredoka One',cursive; font-size:1.05rem; transition:all .2s; cursor:pointer; }
+.retry-btn:hover { transform:scale(1.07); }
+.joke-counter { font-family:'Fredoka One',cursive; color:var(--purple); text-align:center; margin-bottom:.9rem; }
+.react-bar { text-align:center; }
+.react-label { color:rgba(255,255,255,.35); font-size:.82rem; margin-bottom:.45rem; }
+.ha-row { display:flex; justify-content:center; gap:.5rem; flex-wrap:wrap; }
+.ha-btn { background:rgba(255,255,255,.06); border:1.5px solid rgba(255,255,255,.12); border-radius:999px; padding:.35rem .9rem; font-size:1.1rem; transition:all .2s; }
+.ha-btn:hover { transform:scale(1.18); background:rgba(255,255,255,.15); }
+
+/* ── DOODLE ── */
+#doodle.active { display:flex; flex-direction:column; height:100vh; }
+#doodle { padding:0; max-width:100%; }
+#doodle .top-bar { padding:.6rem 1rem; background:rgba(255,255,255,.05); border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:0; flex-shrink:0; }
+.doodle-toolbar { display:flex; align-items:center; gap:.45rem; padding:.5rem .9rem; flex-wrap:wrap; background:rgba(255,255,255,.04); border-bottom:1px solid rgba(255,255,255,.07); flex-shrink:0; }
+.tool-group { display:flex; align-items:center; gap:.3rem; }
+.tool-sep   { width:1px; height:26px; background:rgba(255,255,255,.12); margin:0 .15rem; }
+.d-btn { width:34px; height:34px; border-radius:9px; border:2px solid rgba(255,255,255,.15); background:rgba(255,255,255,.07); display:flex; align-items:center; justify-content:center; font-size:1rem; transition:all .2s; color:white; }
+.d-btn:hover,.d-btn.active { background:rgba(110,231,183,.2); border-color:var(--mint); }
+.sz-btn { border-radius:50%; border:2px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); transition:all .2s; display:flex; align-items:center; justify-content:center; }
+.sz-btn:hover,.sz-btn.active { border-color:var(--mint); background:rgba(110,231,183,.2); }
+.sz-btn.s1{width:26px;height:26px;} .sz-btn.s2{width:32px;height:32px;} .sz-btn.s3{width:38px;height:38px;}
+.sz-dot { border-radius:50%; background:white; pointer-events:none; }
+.s1 .sz-dot{width:4px;height:4px;} .s2 .sz-dot{width:8px;height:8px;} .s3 .sz-dot{width:14px;height:14px;}
+.swatch { width:26px; height:26px; border-radius:7px; border:2.5px solid transparent; transition:all .2s; flex-shrink:0; }
+.swatch:hover { transform:scale(1.18); }
+.swatch.active { border-color:white; transform:scale(1.22); box-shadow:0 0 10px rgba(255,255,255,.4); }
+.act-btn { background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.15); color:white; padding:.3rem .8rem; border-radius:999px; font-family:'Fredoka One',cursive; font-size:.78rem; transition:all .2s; white-space:nowrap; }
+.act-btn:hover { background:rgba(255,255,255,.18); }
+.act-btn.danger:hover { background:rgba(239,68,68,.22); border-color:rgba(239,68,68,.5); }
+.canvas-wrap { flex:1; min-height:0; position:relative; overflow:hidden; cursor:crosshair; touch-action:none; }
+#draw-canvas { position:absolute; inset:0; width:100%; height:100%; touch-action:none; }
+.sticker-tray { position:fixed; bottom:0; left:0; right:0; background:rgba(8,7,32,.94); border-top:1px solid rgba(255,255,255,.1); padding:.5rem .9rem; padding-bottom:calc(.5rem + env(safe-area-inset-bottom)); display:none; flex-wrap:wrap; gap:.4rem; z-index:20; max-height:120px; overflow-y:auto; }
+.sticker-tray.open { display:flex; }
+.sticker { font-size:1.8rem; line-height:1; padding:.1rem; transition:transform .15s; }
+.sticker:hover { transform:scale(1.3); }
+
+/* ── TOAST ── */
+.toast { position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%) translateY(16px); background:rgba(110,231,183,.15); border:1.5px solid var(--mint); border-radius:999px; padding:.48rem 1.3rem; font-family:'Fredoka One',cursive; font-size:.9rem; color:var(--mint); opacity:0; transition:all .3s; pointer-events:none; z-index:99; white-space:nowrap; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.sparkle { position:fixed; pointer-events:none; font-size:1.6rem; z-index:999; animation:sp 1.4s ease forwards; }
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-thumb { background:#7c3aed; border-radius:99px; }
+
+/* ── MOBILE BREAKPOINT ── */
+@media (max-width:600px) {
+  .d-btn { width:40px; height:40px; font-size:1.1rem; }
+  .sz-btn.s1{width:32px;height:32px;} .sz-btn.s2{width:38px;height:38px;} .sz-btn.s3{width:44px;height:44px;}
+  .swatch { width:30px; height:30px; border-radius:8px; }
+  .act-btn { padding:.4rem .9rem; font-size:.82rem; }
+  .cd-num  { font-size:1.3rem; min-width:1.6rem; padding:.15rem .18rem; }
+  .cd-sep  { font-size:.95rem; }
+  .book-wrap { padding:1.4rem 1.1rem; }
+  .sp-title { font-size:1.4rem; }
+  .sp-text  { font-size:1rem; }
+}
+</style>
 </head>
 <body>
-<p><a href="fun.html">Click here if not redirected</a></p>
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+<div id="home" class="page active">
+  <span class="big-moon">🌙</span>
+  <h1 class="site-title">Sana & Tara's<br>Magic Kingdom</h1>
+  <p class="site-sub">✨ Riddles · Stories · Jokes · Doodles ✨</p>
+  <div class="who-row">
+    <button class="who-btn sana active" onclick="setWho('sana',this)">🌸 Sana</button>
+    <button class="who-btn both"        onclick="setWho('both',this)">👯 Both</button>
+    <button class="who-btn tara"        onclick="setWho('tara',this)">🌊 Tara</button>
+  </div>
+  <div class="section-label">⏳ EXCITING THINGS COMING UP!</div>
+  <div class="countdowns">
+    <div class="cd-card cd-sana">
+      <span class="cd-emoji">🎂</span>
+      <div class="cd-title">Sana's Birthday!</div>
+      <div class="cd-numbers">
+        <div class="cd-unit"><span class="cd-num" id="cs-d">--</span><span class="cd-lbl">days</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cs-h">--</span><span class="cd-lbl">hrs</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cs-m">--</span><span class="cd-lbl">mins</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cs-s">--</span><span class="cd-lbl">secs</span></div>
+      </div>
+      <div class="cd-msg" id="cs-msg">April 17th 🌸</div>
+    </div>
+    <div class="cd-card cd-ireland">
+      <span class="cd-emoji">✈️</span>
+      <div class="cd-title">Ireland Adventure!</div>
+      <div class="cd-numbers">
+        <div class="cd-unit"><span class="cd-num" id="ci-d">--</span><span class="cd-lbl">days</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="ci-h">--</span><span class="cd-lbl">hrs</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="ci-m">--</span><span class="cd-lbl">mins</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="ci-s">--</span><span class="cd-lbl">secs</span></div>
+      </div>
+      <div class="cd-msg" id="ci-msg">May 18th 🍀</div>
+    </div>
+    <div class="cd-card cd-dad">
+      <span class="cd-emoji">🎉</span>
+      <div class="cd-title">Daddy's Birthday!</div>
+      <div class="cd-numbers">
+        <div class="cd-unit"><span class="cd-num" id="cd-d">--</span><span class="cd-lbl">days</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cd-h">--</span><span class="cd-lbl">hrs</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cd-m">--</span><span class="cd-lbl">mins</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cd-s">--</span><span class="cd-lbl">secs</span></div>
+      </div>
+      <div class="cd-msg" id="cd-msg">May 21st 🎊</div>
+    </div>
+    <div class="cd-card cd-mom">
+      <span class="cd-emoji">🌹</span>
+      <div class="cd-title">Amma's Birthday!</div>
+      <div class="cd-numbers">
+        <div class="cd-unit"><span class="cd-num" id="cm-d">--</span><span class="cd-lbl">days</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cm-h">--</span><span class="cd-lbl">hrs</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cm-m">--</span><span class="cd-lbl">mins</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cm-s">--</span><span class="cd-lbl">secs</span></div>
+      </div>
+      <div class="cd-msg" id="cm-msg">September 19th 🌹</div>
+    </div>
+  </div>
+  <div class="section-label">🪄 WHAT SHALL WE DO?</div>
+  <div class="nav-grid">
+    <div class="nav-card riddle" onclick="goTo('riddles')"><span class="nav-icon">🧩</span><h2>Riddles!</h2><p>8 brand-new magical riddles</p></div>
+    <div class="nav-card story"  onclick="goTo('stories')"><span class="nav-icon">📖</span><h2>Stories!</h2><p>Fresh bedtime adventures</p></div>
+    <div class="nav-card joke"   onclick="goTo('jokes')"  ><span class="nav-icon">😂</span><h2>Jokes!</h2><p>Silly jokes just for you</p></div>
+    <div class="nav-card doodle" onclick="goTo('doodle')" ><span class="nav-icon">🎨</span><h2>Doodle!</h2><p>Draw anything you imagine</p></div>
+  </div>
+  <p class="footer">Made with 💜 just for Sana &amp; Tara · by Daddy</p>
+</div>
+
+<div id="riddles" class="page">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goTo('home')">← Home</button>
+    <div class="page-heading gold">🧩 Riddle Time!</div>
+  </div>
+  <p class="page-sub" id="riddle-sub">Loading fresh riddles…</p>
+  <div class="star-jar-wrap">
+    <div class="star-jar-label">⭐ Your Star Jar</div>
+    <div class="star-jar" id="jar"></div>
+  </div>
+  <div id="riddles-body"></div>
+</div>
+
+<div id="stories" class="page">
+  <div class="top-bar">
+    <button class="back-btn" id="stories-back" onclick="storiesBack()">← Home</button>
+    <div class="page-heading sky" id="stories-heading">📖 Story Corner</div>
+  </div>
+  <p class="page-sub" id="stories-sub">Pick a story &amp; snuggle up! 🌙</p>
+  <div id="story-list">
+    <div class="story-grid" id="story-grid"></div>
+  </div>
+  <div id="story-reader">
+    <div class="book-wrap">
+      <div class="prog-dots" id="prog-dots"></div>
+      <div id="story-pages-wrap"></div>
+      <div class="book-nav">
+        <button class="pg-btn" id="prev-btn" onclick="turnPage(-1)" disabled>◀ Prev</button>
+        <span class="pg-counter" id="pg-counter"></span>
+        <button class="pg-btn" id="next-btn" onclick="turnPage(1)"  disabled>Next ▶</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="jokes" class="page">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goTo('home')">← Home</button>
+    <div class="page-heading pink">😂 Joke Time!</div>
+  </div>
+  <p class="page-sub" id="joke-sub">Get ready to LAUGH! 🤣</p>
+  <div class="joke-counter" id="joke-counter"></div>
+  <div class="joke-stage" id="joke-stage"></div>
+  <div style="text-align:center;margin-bottom:1.25rem">
+    <button class="next-j-btn" id="next-j-btn" onclick="nextJoke()">Next Joke ➡️</button>
+  </div>
+  <div class="react-bar">
+    <div class="react-label">React to this joke:</div>
+    <div class="ha-row">
+      <button class="ha-btn" onclick="react('🤣')">🤣</button>
+      <button class="ha-btn" onclick="react('😄')">😄</button>
+      <button class="ha-btn" onclick="react('🙈')">🙈</button>
+      <button class="ha-btn" onclick="react('😐')">😐</button>
+      <button class="ha-btn" onclick="react('🥱')">🥱</button>
+    </div>
+  </div>
+</div>
+
+<div id="doodle" class="page">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goTo('home')">← Home</button>
+    <span class="page-heading mint" id="doodle-title">🎨 Doodle Pad</span>
+  </div>
+  <div class="doodle-toolbar">
+    <div class="tool-group">
+      <button class="d-btn active" id="tool-pen"    onclick="setDTool('pen',this)"    title="Pen">✏️</button>
+      <button class="d-btn"        id="tool-marker" onclick="setDTool('marker',this)"  title="Marker">🖌️</button>
+      <button class="d-btn"        id="tool-spray"  onclick="setDTool('spray',this)"   title="Spray">💨</button>
+      <button class="d-btn"        id="tool-eraser" onclick="setDTool('eraser',this)"  title="Eraser">🧹</button>
+    </div>
+    <div class="tool-sep"></div>
+    <div class="tool-group">
+      <button class="sz-btn s1" onclick="setDSize(3,this)"><div class="sz-dot"></div></button>
+      <button class="sz-btn s2 active" onclick="setDSize(8,this)"><div class="sz-dot"></div></button>
+      <button class="sz-btn s3" onclick="setDSize(18,this)"><div class="sz-dot"></div></button>
+    </div>
+    <div class="tool-sep"></div>
+    <div class="tool-group" id="d-swatches"></div>
+    <div class="tool-sep"></div>
+    <div class="tool-group">
+      <button class="act-btn" onclick="toggleStickers()">🌟 Stickers</button>
+      <button class="act-btn" onclick="undoDraw()">↩ Undo</button>
+      <button class="act-btn" onclick="saveDrawing()">💾 Save</button>
+      <button class="act-btn danger" onclick="clearDraw()">🗑 Clear</button>
+    </div>
+  </div>
+  <div class="canvas-wrap" id="canvas-wrap">
+    <canvas id="draw-canvas"></canvas>
+  </div>
+  <div class="sticker-tray" id="sticker-tray"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+
+'use strict';
+/* ════════════════════════════════
+   STAR-CANVAS BACKGROUND
+════════════════════════════════ */
+(function () {
+  const c = document.getElementById('bg-canvas'), ctx = c.getContext('2d');
+  let W, H, grad, stars = [], meteors = [];
+
+  function resize() {
+    W = c.width = window.innerWidth;
+    H = c.height = window.innerHeight;
+    // rebuild gradient only on resize, not every frame
+    grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#080720');
+    grad.addColorStop(1, '#0d0b30');
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // fewer stars on small screens for better performance
+  const starCount = window.innerWidth < 600 ? 80 : 170;
+  for (let i = 0; i < starCount; i++) {
+    stars.push({ x: Math.random(), y: Math.random(), r: Math.random() * 1.6 + .4, a: Math.random(), da: (Math.random() * .009 + .002) * (Math.random() > .5 ? 1 : -1) });
+  }
+
+  function spawnMeteor() {
+    meteors.push({ x: Math.random() * .6, y: Math.random() * .35, len: 130 + Math.random() * 90, a: 1, speed: 4 + Math.random() * 4 });
+    setTimeout(spawnMeteor, 3500 + Math.random() * 5000);
+  }
+  spawnMeteor();
+
+  function draw() {
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+    stars.forEach(s => {
+      s.a += s.da;
+      if (s.a <= 0 || s.a >= 1) s.da *= -1;
+      ctx.beginPath(); ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${s.a})`; ctx.fill();
+    });
+    // iterate backwards so splice doesn't skip elements
+    for (let i = meteors.length - 1; i >= 0; i--) {
+      const m = meteors[i];
+      ctx.save(); ctx.globalAlpha = m.a;
+      const gm = ctx.createLinearGradient(m.x * W, m.y * H, m.x * W + m.len, m.y * H + m.len * .6);
+      gm.addColorStop(0, 'rgba(255,255,255,1)'); gm.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.strokeStyle = gm; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(m.x * W, m.y * H); ctx.lineTo(m.x * W + m.len, m.y * H + m.len * .6);
+      ctx.stroke(); ctx.restore();
+      m.x += m.speed / W; m.y += m.speed * .6 / H; m.a -= .025;
+      if (m.a <= 0) meteors.splice(i, 1);
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ════════════════════════════════
+   SPARKLES
+════════════════════════════════ */
+function sparkle(x, y) {
+  ['✨', '⭐', '🌟', '💫', '🎉', '🌈', '🦄', '💜'].forEach((e, i) => {
+    const el = document.createElement('div'); el.className = 'sparkle'; el.textContent = e;
+    el.style.left = (x + (Math.random() - .5) * 130) + 'px';
+    el.style.top  = (y + (Math.random() - .5) * 70)  + 'px';
+    el.style.animationDelay = (i * .05) + 's';
+    document.body.appendChild(el); setTimeout(() => el.remove(), 1600);
+  });
+}
+
+/* ════════════════════════════════
+   TOAST
+════════════════════════════════ */
+let _toastTimer;
+function toast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(_toastTimer); _toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* ════════════════════════════════
+   ROUTER — in-memory only, no pushState
+   (pushState throws SecurityError in sandboxed iframes)
+════════════════════════════════ */
+let currentPage = 'home';
+
+function goTo(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+  currentPage = id;
+  if (id === 'riddles') initRiddles();
+  if (id === 'stories') initStories();
+  if (id === 'jokes')   initJokes();
+  if (id === 'doodle')  initDoodle();
+}
+
+/* ════════════════════════════════
+   WHO SELECTOR
+════════════════════════════════ */
+let who = 'sana';
+const name1 = () => who === 'tara' ? 'Tara' : 'Sana';
+const name2 = () => who === 'sana' ? 'Tara' : who === 'tara' ? 'Sana' : 'Tara';
+const greet  = () => who === 'sana' ? 'Hey Sana 🌸' : who === 'tara' ? 'Hey Tara 🌊' : 'Hey Sana & Tara 👯';
+
+function setWho(w, el) {
+  who = w;
+  document.querySelectorAll('.who-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const r = el.getBoundingClientRect();
+  sparkle(r.left + el.offsetWidth / 2, r.top);
+}
+
+/* ════════════════════════════════
+   COUNTDOWNS
+════════════════════════════════ */
+function pad(n) { return String(n).padStart(2, '0'); }
+function setNum(id, val) {
+  const el = document.getElementById(id); if (!el) return;
+  const s = pad(val);
+  if (el.textContent !== s) { el.textContent = s; el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick'); }
+}
+function cdUpdate(target, ids, msgId, celebMsg, celebEmoji) {
+  const diff = target - Date.now();
+  if (diff <= 0) {
+    const numsEl = document.getElementById(ids[0])?.closest('.cd-numbers');
+    if (numsEl) numsEl.style.display = 'none';
+    const m = document.getElementById(msgId);
+    if (m) m.innerHTML = `<span class="cd-today">${celebEmoji} ${celebMsg} ${celebEmoji}</span>`;
+    return;
+  }
+  const d = Math.floor(diff / 86400000), h = Math.floor((diff % 86400000) / 3600000),
+        m = Math.floor((diff % 3600000) / 60000),  s = Math.floor((diff % 60000) / 1000);
+  setNum(ids[0], d); setNum(ids[1], h); setNum(ids[2], m); setNum(ids[3], s);
+}
+function getTarget(month, day) {
+  const now = Date.now(), yr = new Date().getFullYear();
+  let t = new Date(yr, month - 1, day, 0, 0, 0).getTime();
+  if (t < now) t = new Date(yr + 1, month - 1, day, 0, 0, 0).getTime();
+  return t;
+}
+const tSana = getTarget(4, 17), tIre = getTarget(5, 18), tDad = getTarget(5, 21), tMom = getTarget(9, 19);
+function tickAll() {
+  cdUpdate(tSana, ['cs-d','cs-h','cs-m','cs-s'], 'cs-msg', "IT'S SANA'S BIRTHDAY!", '🎂');
+  cdUpdate(tIre,  ['ci-d','ci-h','ci-m','ci-s'], 'ci-msg', "IT'S IRELAND DAY!",     '✈️');
+  cdUpdate(tDad,  ['cd-d','cd-h','cd-m','cd-s'], 'cd-msg', "HAPPY BIRTHDAY DADDY!", '🎉');
+  cdUpdate(tMom,  ['cm-d','cm-h','cm-m','cm-s'], 'cm-msg', "HAPPY BIRTHDAY AMMA!",  '🌹');
+}
+tickAll(); setInterval(tickAll, 1000);
+
+/* ════════════════════════════════
+   CONTENT BANKS  (no API needed)
+════════════════════════════════ */
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i+1)); [a[i],a[j]] = [a[j],a[i]]; }
+  return a;
+}
+
+/* ── RIDDLE BANK (32 riddles, 8 picked randomly each visit) ── */
+const RIDDLE_BANK = [
+  {q:"I have hands but I can't clap, and I tell you something new every minute. What am I?", hint:"It ticks and tocks!", answer:"A clock! ⏰", explain:"A clock has hands that point to numbers but can't clap — they just go round and round! ⏰"},
+  {q:"The more you take, the more you leave behind. What am I?", hint:"Think about walking!", answer:"Footsteps! 👣", explain:"Every step you take leaves a footprint behind — so the more steps, the more footprints! 👣"},
+  {q:"I'm full of keys but I can't open any door. What am I?", hint:"Music plays with me!", answer:"A piano! 🎹", explain:"A piano has 88 keys but they make music, not open doors! 🎹"},
+  {q:"I have a tail and I can fly, but I'm not a bird. What am I?", hint:"You hold my string when the wind blows!", answer:"A kite! 🪁", explain:"A kite soars in the sky and has a tail — but you hold the string! 🪁"},
+  {q:"What gets wetter the more it dries?", hint:"You use it after a bath!", answer:"A towel! 🛁", explain:"The more you dry yourself, the wetter the towel gets — sneaky! 🛁"},
+  {q:"I speak without a mouth and hear without ears. I have no body but come alive with wind. What am I?", hint:"Try shouting in a cave!", answer:"An echo! 🏔️", explain:"Shout in a tunnel and your voice bounces back — that's an echo! 🏔️"},
+  {q:"What has 4 legs in the morning, 2 legs at noon, and 3 legs at night?", hint:"Think about a person growing old!", answer:"A human! 👶", explain:"Babies crawl on 4 legs, adults walk on 2, and old people use a walking stick — that's 3! 👶"},
+  {q:"I go up but never come down. What am I?", hint:"It's something you do every birthday!", answer:"Your age! 🎂", explain:"Every year you get older — your age only ever goes up, never down! 🎂"},
+  {q:"What has a neck but no head?", hint:"You might find it in a kitchen!", answer:"A bottle! 🍾", explain:"A bottle has a long neck at the top but no head — silly bottle! 🍾"},
+  {q:"I have cities but no houses. I have mountains but no trees. I have water but no fish. What am I?", hint:"You use me to find your way!", answer:"A map! 🗺️", explain:"A map shows cities, mountains and rivers — but they're all just drawings! 🗺️"},
+  {q:"What can run but never walks, has a mouth but never talks, has a head but never weeps?", hint:"It flows through forests and fields!", answer:"A river! 🏞️", explain:"Rivers run fast, have a mouth where they meet the sea, and a head where they begin! 🏞️"},
+  {q:"I am always in front of you but can never be seen. What am I?", hint:"Tomorrow holds it!", answer:"The future! 🚀", explain:"No matter how fast you run, the future is always just ahead — you can never catch it! 🚀"},
+  {q:"What has 13 hearts but no other organs?", hint:"You play games with it!", answer:"A deck of cards! 🃏", explain:"A deck of cards has 13 hearts in the hearts suit — but no real heart! 🃏"},
+  {q:"What can you catch but not throw?", hint:"Aachoo! 🤧", answer:"A cold! 🤧", explain:"You can catch a cold from a sneeze — but you can't throw one back at anyone! 🤧"},
+  {q:"What starts with E, ends with E, but only has one letter inside?", hint:"The postman delivers it!", answer:"An envelope! ✉️", explain:"E-N-V-E-L-O-P-E starts and ends with E, and holds one letter inside! ✉️"},
+  {q:"I have branches but no leaves, no trunk and no fruit. What am I?", hint:"You might visit me to borrow books!", answer:"A library! 📚", explain:"A library has many branches in a city — but no leaves or fruit! 📚"},
+  {q:"What is so fragile that just saying its name breaks it?", hint:"You need it when you sleep!", answer:"Silence! 🤫", explain:"The moment you say the word 'silence', you've broken it — sneaky! 🤫"},
+  {q:"I'm tall when I'm young and short when I'm old. What am I?", hint:"You use me in the dark!", answer:"A candle! 🕯️", explain:"A candle starts tall and gets shorter as it burns down — the older it gets, the shorter it is! 🕯️"},
+  {q:"What has one eye but cannot see?", hint:"Sewing uses it!", answer:"A needle! 🪡", explain:"A sewing needle has a hole called an eye — but it can't see anything! 🪡"},
+  {q:"I have a thumb and four fingers, but I'm not alive. What am I?", hint:"You wear me on cold days!", answer:"A glove! 🧤", explain:"A glove has the same shape as a hand with a thumb and four fingers! 🧤"},
+  {q:"The more you have of me, the less you see. What am I?", hint:"Think about nighttime!", answer:"Darkness! 🌑", explain:"The more darkness there is, the less you can see — turn off the lights and see! 🌑"},
+  {q:"What invention lets you look right through a wall?", hint:"You use it to see outside!", answer:"A window! 🪟", explain:"A window is in a wall and lets you see right through it to the other side! 🪟"},
+  {q:"What comes once in a minute, twice in a moment, but never in a thousand years?", hint:"Look at the spelling!", answer:"The letter M! 🔤", explain:"M-I-N-U-T-E has one M, M-O-M-E-N-T has two Ms, and T-H-O-U-S-A-N-D Y-E-A-R-S has none! 🔤"},
+  {q:"I have no legs but I travel far. I have no mouth but I carry news. What am I?", hint:"You hold me and read!", answer:"A letter! ✉️", explain:"A letter travels without legs and carries messages without speaking! ✉️"},
+  {q:"What can fill a room but takes up no space?", hint:"Think about what you do in a dark room!", answer:"Light! 💡", explain:"Light fills every corner of a room but doesn't take up any space at all! 💡"},
+  {q:"I'm light as a feather yet the strongest person cannot hold me for more than a few minutes. What am I?", hint:"You breathe it in and out!", answer:"Breath! 💨", explain:"A breath weighs almost nothing but you can only hold it for a short time! 💨"},
+  {q:"What has words but never speaks?", hint:"You find it in a library!", answer:"A book! 📖", explain:"A book is full of words but it never makes a sound — you do the reading! 📖"},
+  {q:"I am not alive but I grow. I don't have lungs but I need air. What am I?", hint:"Be careful, it's very hot!", answer:"Fire! 🔥", explain:"Fire grows bigger, needs air (oxygen) to burn, but is not alive! 🔥"},
+  {q:"What has a bottom at the top?", hint:"You put your feet in it!", answer:"Legs! 🦵", explain:"Your legs have a bottom — your feet — right at the top of where they attach! 🦵"},
+  {q:"I have no wings but I can fly. I have no eyes but I can cry. What am I?", hint:"Look outside on a rainy day!", answer:"A cloud! ☁️", explain:"Clouds float through the sky and cry — rain — without eyes or wings! ☁️"},
+  {q:"What do you throw out when you want to use it, and take in when you don't want to use it?", hint:"You do this when you fish!", answer:"An anchor! ⚓", explain:"You throw out an anchor to stop a boat, and pull it back in when you want to move! ⚓"},
+  {q:"I have teeth but I cannot bite. What am I?", hint:"You use me to fix messy hair!", answer:"A comb! 🪮", explain:"A comb has lots of little teeth but it can only untangle hair, never bite! 🪮"},
+];
+
+/* ── STORY BANK (2 stories per theme, names are always Sana & Tara) ── */
+const STORY_BANK = {
+  moon:[
+    [{icon:'🌙',title:'The Moon Rabbit',text:'High above the clouds, where stars sleep in tiny hammocks, lived a small white rabbit called Lumia. Every night, Lumia hopped across the moon leaving footprints of silver light. One magical evening, Lumia looked down and spotted two sisters stargazing from their rooftop in Chennai.'},
+     {icon:'✉️',title:"Lumia's Letter",text:'A paper airplane made of moonlight floated through their window. It was a letter! "Dear Sana and Tara," it read, "I have been watching you look up at me every night. Tonight I would like to say hello." Sana read it aloud three times just to make sure it was real.'},
+     {icon:'💫',title:'A Gift Each',text:'Lumia gave Sana a star that glowed soft pink, and Tara a star that glowed ocean blue. "Hold them tight when you sleep," said Lumia in a tiny voice like a bell. "They will carry you anywhere you dream of going."'},
+     {icon:'🌈',title:'Dream Travels',text:'Sana dreamed of a forest where the flowers sang lullabies in Tamil. Tara dreamed of an ocean where friendly dolphins taught her to do backflips. Both sisters smiled in their sleep all night long.'},
+     {icon:'😴',title:'Good Night Moon',text:'In the morning they found two tiny silver pebbles on their pillow — one pink, one blue. Lumia had made sure the dreams were real enough to leave something behind. Every night after, they looked for Lumia and always found a little wave. The End. 🌙'}],
+    [{icon:'🌙',title:'The Falling Star',text:'One Tuesday night a small star tumbled right out of the sky and landed in the garden with a soft thump. It was warm and glowing, about the size of a mango. Tara found it first because she had been sneaking biscuits from the kitchen.'},
+     {icon:'🌟',title:'A Lost Star',text:'The star blinked up at Tara with golden eyes. "I fell off the sky," it said in a tiny squeaky voice. "I was trying to do a somersault." Tara immediately called for Sana, who came running with her notebook ready to write everything down.'},
+     {icon:'🚀',title:'The Launch Plan',text:'"We can send you back!" said Sana. She had a plan. They built a launcher out of a cardboard tube, three rubber bands, and one very powerful puff of breath from Tara. Tara had always had remarkable lungs.'},
+     {icon:'✨',title:'Whoooosh!',text:'Sana counted down: three, two, one — and Tara blew with all her might. The star shot upward in a golden streak and slipped perfectly back into its gap in the Milky Way. The whole sky seemed to sparkle a little brighter.'},
+     {icon:'💛',title:'Always There',text:'From that night on, one star blinked in a special pattern — two quick blinks and one slow one — just for them. Every bedtime they found it. And it was always there. The End. 💛'}]
+  ],
+  dragon:[
+    [{icon:'🐉',title:'Fizz the Tiny Dragon',text:'In a cosy valley between two green hills lived Fizz, the smallest dragon in the whole world. Fizz was only as big as a teacup, but had the biggest heart anyone had ever seen. The other dragons were all very tall and breathed enormous flames, but Fizz could only manage a tiny golden flicker.'},
+     {icon:'😔',title:'The Big Problem',text:'One winter the valley fountain froze solid and nobody could get any water. The big dragons tried melting it with their huge flames — but they burned the pipes. The villagers looked very worried. Sana and Tara were visiting Grandma in the valley and could not bear to see everyone sad.'},
+     {icon:'💡',title:"Sana's Idea",text:'"Fizz!" called Sana. "Could you try just a tiny, gentle flame?" Fizz gulped. All the big dragons had already failed and Fizz was so much smaller. But Tara held Fizz\'s little claw and said, "We believe in you." That was all Fizz needed.'},
+     {icon:'🔥',title:'The Perfect Flame',text:'Fizz took the deepest breath ever taken by a teacup-sized dragon — and breathed the most perfectly sized golden flame. Not too big, not too small. It warmed the pipes just right, and the water gurgled and bubbled back to life! The whole valley cheered.'},
+     {icon:'🌟',title:'The Smallest Hero',text:'From that day on Fizz wore a tiny gold medal made by the village jeweller. Remember: it is never your size that matters — it is your heart. The End. 🐉✨'}],
+    [{icon:'🐉',title:'Dragon School',text:'At Dragon School, every dragon was learning to breathe fire for the big end-of-year show. All the dragons managed roaring orange flames — except little Ember, who only ever sneezed out colourful smoke rings. Ember felt terribly left out.'},
+     {icon:'🌸',title:'Two Visitors',text:'Sana and Tara were on a school trip to Dragon Mountain when they spotted Ember sitting alone behind the volcano. "What beautiful smoke rings!" said Tara, watching a purple ring drift by. Ember looked up in surprise — nobody had ever called them beautiful before.'},
+     {icon:'🎨',title:'A Different Gift',text:'"Can you make shapes?" asked Sana excitedly. Ember tried — and puffed out a perfect smoke butterfly, then a smoke elephant, then a smoke cake. Sana and Tara gasped with delight. These were not ordinary smoke rings at all.'},
+     {icon:'🎉',title:'The Show',text:'On show day, while every other dragon breathed plain fire, Ember filled the whole sky with colourful smoke animals that danced and twirled. The crowd went absolutely wild. Headmaster Scales declared it the best Dragon Show in one hundred years.'},
+     {icon:'😴',title:'Every Gift Matters',text:'That evening Ember flew home past Sana and Tara and left three perfect smoke hearts floating above their tent. They watched them drift away until they fell fast asleep. The End. 🐉🎨'}]
+  ],
+  forest:[
+    [{icon:'🌳',title:'The Whispering Forest',text:'Beyond the mango grove on the edge of Chennai, there was a forest where the trees whispered. Not in words most people understood — but if you listened very carefully on a quiet evening, you could almost hear stories. Sana had been trying to understand them for a whole year.'},
+     {icon:'🦉',title:'The Hollow Door',text:'One afternoon after rain, Sana and Tara found a tree with a hollow shaped exactly like a little door. A small owl peeked out, ruffled its feathers, and said, "Oh! Visitors! I have been waiting precisely three hundred and forty two days." Tara sat down immediately. Sana pulled out a snack.'},
+     {icon:'📜',title:"The Owl's Story",text:'The owl told them about a princess who traded her golden crown for a pair of wings and flew across seven seas to find where thunder was born. "And where WAS it born?" demanded Sana. The owl winked slowly. "Inside a child brave enough to roar."'},
+     {icon:'🌿',title:'The Forest Speaks',text:'As they walked home the trees seemed to lean in a little. Leaves brushed their shoulders gently. Tara realised the whispering was getting clearer — it was not one story, it was thousands, layered on top of each other like old music.'},
+     {icon:'🌙',title:'Home by Starlight',text:'They arrived home just as Amma called for dinner. That night as they fell asleep they could still hear — just at the edge of hearing — the forest whispering their names. The End. 🌳🦉'}],
+    [{icon:'🌳',title:'The Colour-Thief Tree',text:'Deep in the Magic Forest there was a very old tree who had stolen all the colours. The flowers were grey, the butterflies were grey, even the rainbow had gone pale. Every creature was very sad. Tara heard about it and told Sana immediately.'},
+     {icon:'🎨',title:'The Plan',text:'"We need to give it something better than colour," said Sana, thinking hard. They packed a bag with their best drawings, Tara\'s collection of singing stones, and three of Sana\'s stories written on bright paper. Then they walked into the forest.'},
+     {icon:'🌸',title:'Meeting the Tree',text:'The old tree was huge and grey and looked rather lonely. "Why did you take all the colours?" asked Tara gently. The tree\'s leaves rustled. "Because nobody ever looked at me," it rumbled. "They only looked at the bright flowers."'},
+     {icon:'✨',title:'The Gift',text:'Sana read one of her stories — about a tree so wise it remembered every creature that had ever sheltered under it. The old tree\'s bark began to glow. It gave back every colour, and kept only the stories. All the forest burst into bloom.'},
+     {icon:'😴',title:'Full of Stories',text:'As Sana and Tara walked home, the newly colourful forest sang around them. A bluebird left a single blue feather on Tara\'s shoulder. They kept it on their windowsill for years. The End. 🌳✨'}]
+  ],
+  cloud:[
+    [{icon:'☁️',title:'The Cloud Factory',text:'High above the highest mountain, where aeroplanes leave white lines, there is a Cloud Factory. Every morning, fluffy workers called Puffs roll out clouds like dough and cut them into shapes — round ones for lazy days, tall ones for thunderstorms, and wispy ones for dreaming.'},
+     {icon:'🎈',title:'Floating Up',text:'One Saturday a birthday balloon escaped from a party and drifted up and up. It carried two very surprised passengers: Sana, who had been holding the ribbon, and Tara, who had been holding Sana\'s hand. They rose through the clouds without even getting wet.'},
+     {icon:'🌩️',title:'Inside the Factory',text:'The Puffs were delighted to have visitors and gave them a full tour. "This section makes rain for farmers," said Head Puff proudly. Tara immediately shaped a cloud into a unicorn. It whinnied softly and trotted away across the sky.'},
+     {icon:'🌈',title:'A Cloud for Chennai',text:'"Could we make one for our city?" asked Sana. They spent an hour making the fluffiest, most perfect rain cloud and sent it south. That very afternoon back home it began to rain — and Amma and Daddy looked at the sky in surprise.'},
+     {icon:'🛌',title:'Safe Landing',text:'The balloon drifted home just as the streetlights came on. Was it real? They looked at each other. Tara\'s hair was still slightly damp. The End. ☁️🌈'}],
+    [{icon:'☁️',title:'The Sleepy Cloud',text:'One morning a very small cloud floated in through the bedroom window and fell asleep on the rug. It was snoring very quietly. Tara thought it was the most adorable thing she had ever seen. Sana immediately wanted to know where it had come from.'},
+     {icon:'🗺️',title:'Cloud Language',text:'By lunchtime Tara had worked out that the cloud communicated by changing shape. A round shape meant yes, a wiggly shape meant no, and a shape like a teapot apparently meant it was thirsty. They gave it a glass of water which it absorbed with a happy sigh.'},
+     {icon:'🌤️',title:'Taking It Home',text:'By evening the cloud\'s family arrived — a whole flock of clouds pressing against the window. "It got lost," Sana explained to the biggest cloud, who looked very relieved. The little cloud floated up and nuzzled both sisters on the cheek — it felt like a soft cold kiss.'},
+     {icon:'🌧️',title:'A Thank You Gift',text:'The next morning there were perfect little rainbow puddles on the windowsill — one for Sana, one for Tara. They were warm, like bathwater, and smelled of rain and something else: something warm and gentle, like being tucked in.'},
+     {icon:'😴',title:'The Best Visitors',text:'They kept one rainbow puddle each in a jar on the shelf. On grey days they opened the lids and the whole room smelled of cloud. The End. ☁️🌤️'}]
+  ],
+  star:[
+    [{icon:'⭐',title:'The Star Catchers',text:'Every night Sana and Tara counted the stars from their rooftop. Sana kept records in a notebook and Tara gave them all names. They had named four hundred and twelve stars so far. Number four hundred and thirteen turned out to be different from all the rest.'},
+     {icon:'🌟',title:'It Fell!',text:'It shot across the sky and landed in the garden with a soft golden thump. It was small and warm and looked up at them with curious eyes the colour of sunrise. "I was trying to see what the ground felt like," it explained in a voice like a tiny bell. "It is rather hard."'},
+     {icon:'🗺️',title:'Finding Its Place',text:'Tara looked up at the sky. There was a tiny dark gap in the Milky Way — exactly star-shaped. "There," she said, pointing. The star looked and its light brightened. "Oh! That IS my spot." Sana was already drawing a plan in her notebook.'},
+     {icon:'🚀',title:'The Launch',text:'They built a launcher from a paper towel tube with science-fair rubber bands. "Three, two, one—" counted Sana. Tara blew with all the power of someone who had been practising blowing out birthday candles her entire life. The star shot upward in a perfect golden arc and clicked back into place.'},
+     {icon:'💛',title:'A Private Signal',text:'From then on, star four hundred and thirteen blinked differently from every other star — two fast blinks and one slow one. Their signal. Every single bedtime. The End. ⭐💛'}],
+    [{icon:'⭐',title:'Star Paint',text:'The star-painter had run out of gold paint and several stars had gone dim and grey. The whole night sky looked a little patchy. Sana spotted it first with her notebook: "Six stars on the left — definitely grey." Tara confirmed: "Also four on the right."'},
+     {icon:'🎨',title:'A Bucket of Sunshine',text:'They collected the brightest sunshine they could find — bottled in a pickle jar at noon — and climbed the tallest hill. At the top a ladder appeared, made of moonbeams, just tall enough to reach the sky. They looked at each other. They climbed.'},
+     {icon:'✨',title:'Painting Stars',text:'The star-painter was a small woman with very gold fingernails and an enormous smile. She handed them each a brush. For two hours Sana and Tara painted, touching up every dim star until the sky blazed. It was the most satisfying work either of them had ever done.'},
+     {icon:'🌌',title:'The Sky at Night',text:'When they were done the painter said, "Whenever the sky looks extra bright, that is your section." They looked at the patch they had painted and it glittered magnificently. Tara left a tiny handprint in one corner.'},
+     {icon:'😴',title:'Their Stars',text:'Sliding back down the moonbeam ladder they landed softly in their beds. Looking out the window, they could see it — their patch, just a little brighter than the rest. The End. 🌌✨'}]
+  ],
+  mermaid:[
+    [{icon:'🧜',title:'Mermaid Cove',text:'At the bottom of a secret cove near the sea, where the water turned three shades of green, there lived a young mermaid named Pearl who had never met a human child before. She had heard stories — that humans had legs instead of tails, which she found absolutely extraordinary.'},
+     {icon:'🌊',title:'Two Visitors',text:'Sana and Tara were at the beach with Amma when a large wave swept them into a hidden lagoon. They were fine — the water was perfectly calm — but everything around them was suddenly glowing softly green. Then Pearl surfaced, eyes wide with wonder.'},
+     {icon:'🎵',title:'A Trade',text:'Pearl taught them how to float without moving a single muscle. In return Sana taught Pearl the words to her favourite song and Tara showed her how to do a cartwheel — or tried to, in water, which Tara insisted was "basically the same." Pearl disagreed but appreciated the effort.'},
+     {icon:'🐚',title:'The Gift',text:'Before they left Pearl gave each of them a shell. "Hold it to your ear," she said. Sana heard the sea. Tara heard something else — she thought it might have been Pearl\'s laugh, echoing. She held it to her ear every night for years.'},
+     {icon:'😴',title:'Salt and Stars',text:'They got home with sand in their shoes and salt in their hair and the biggest smiles Amma had ever seen. That night the sound of waves rocked them both to sleep before they had even finished their bedtime story. The End. 🧜🌊'}],
+    [{icon:'🧜',title:'The Lost Song',text:'The mermaids of Sapphire Bay had lost their most important song — the lullaby that called the fish home every evening. Without it the sea had gone strangely quiet. A message in a bottle washed up on the beach while Sana and Tara were building a sandcastle.'},
+     {icon:'📜',title:'The Message',text:'The note inside, written in blue-green ink, said: "Our song was stolen by the current and carried to the Shore of Echoes. We cannot leave the water. Can anyone help?" Tara read it twice and immediately said, "Yes." Sana was already drawing a map.'},
+     {icon:'🚶',title:'The Shore of Echoes',text:'The Shore of Echoes was around the headland, where the cliffs curved inward like cupped hands. Every sound made there bounced back twice. Sana called out "hello" and heard it come back three times — each time a little different.'},
+     {icon:'🎵',title:'Singing It Back',text:'They could hear it — tangled in the echoes — a melody like water over pebbles. Tara had always had a good ear. She hummed it first, then sang it clearly. Sana joined in on the second verse. The melody untangled itself and floated back out to sea.'},
+     {icon:'😴',title:'Evening Song',text:'That evening from the beach they heard it — rising from the waves, a mermaid lullaby — and every fish in the bay turned for home. The two sisters sat on the sand and listened until they were too sleepy to stay awake. The End. 🧜🎵'}]
+  ],
+  lion:[
+    [{icon:'🦁',title:'Leo the Nervous Lion',text:'Leo was the largest lion in Sunflower Savanna but secretly the most nervous. He was afraid of mice, surprised by butterflies, and went completely silent when anyone sang loudly. The other animals thought he was simply very dignified. In fact he was terrified.'},
+     {icon:'🌸',title:'Two Visitors',text:'Sana and Tara arrived in the savanna on a school trip. They sat near Leo at lunch — he was hiding behind a baobab tree — and Tara offered him half her sandwich without making a fuss about it. Leo accepted. It was the first time anyone had shared food with him.'},
+     {icon:'💬',title:'A Conversation',text:'"What are you afraid of?" asked Sana directly, because Sana always asked directly. Leo thought nobody had ever asked him that before. He told them about the mice. Tara immediately promised never to bring mice. Sana wrote "mice" in her notebook under things NOT to do.'},
+     {icon:'🌟',title:'The Secret Strength',text:'That afternoon a real danger came — a grass fire in the distance. Leo found, to his great surprise, that when his friends were in trouble he forgot to be nervous. He roared with a sound that shook the ground and organised every animal to safety in four minutes flat.'},
+     {icon:'😴',title:'The Bravest Kind',text:'That evening Leo walked Sana and Tara back to camp. "You were brave today," said Tara. "I was scared," said Leo. "That\'s exactly what brave is," said Sana. Leo thought about that all the way home. The End. 🦁🌟'}],
+    [{icon:'🦁',title:'The Crown Mix-Up',text:'In the Golden Pride, whoever found the Sunrise Stone got to wear the crown for a whole year. This year the Sunrise Stone rolled right out of the savanna and into the school bag of someone who was visiting — Tara, who had absolutely no idea.'},
+     {icon:'😮',title:'A Very Heavy Bag',text:'Tara noticed her bag was glowing during maths class. She opened it under the table and there it was — warm, golden, about the size of a large orange, humming quietly. She passed a note to Sana. The note said: "Bag situation. Lunch. Urgent."'},
+     {icon:'🗺️',title:'Returning It',text:'They carried the stone back to the savanna, which was further than it sounds when you have PE in the afternoon. The lions were very relieved. The senior lioness told them that by returning it honestly they had shown more nobility than any crown could give.'},
+     {icon:'👑',title:'An Honour',text:'She placed a tiny crown made of woven grass on each of their heads. It was the lightest thing Sana had ever worn but somehow felt important. Tara wore hers all the way home on the bus and nobody said a word.'},
+     {icon:'😴',title:'Noble Hearts',text:'They kept the grass crowns on their shelves beside the shell and the silver pebbles. Their shelves were becoming quite a collection of adventures. The End. 🦁👑'}]
+  ],
+  mushroom:[
+    [{icon:'🍄',title:'Mushroom Village',text:'Under the roots of the oldest oak tree in the garden, Mushroom Village had been there for three hundred years. The tiny mushroom-folk were excellent bakers, terrible at football, and extremely good at keeping secrets. Tara discovered them by accident while looking for a lost earring.'},
+     {icon:'🔍',title:'The Discovery',text:'She was digging near the oak when she heard music — very small music — and laughter. She called Sana. They both lay flat on the ground and peered under a large root. There was an entire village with lamp-posts made of fireflies and roads paved with polished acorns.'},
+     {icon:'🎉',title:'An Invitation',text:'The Mayor of Mushroom Village — a very serious mushroom called Bertram with an impressive hat — looked up at them calmly and said, "We wondered when you\'d notice. Would you like to come to the festival?" They would have to shrink, of course. Did they mind?'},
+     {icon:'🌟',title:'The Festival',text:'They did not mind at all. For one hour they were tiny. They ate mushroom-cake the size of a crumb but tasting of almonds and honey. They danced to fiddle music so fast their feet barely touched the ground. Sana wrote everything she could remember in her notebook.'},
+     {icon:'😴',title:'Back to Normal',text:'At exactly the right moment they were full-sized again, lying comfortably in the garden. The earring was sitting on a leaf nearby — cleaned and polished. Bertram\'s doing, probably. They never told anyone else. The End. 🍄✨'}],
+    [{icon:'🍄',title:'The Great Mushroom Bake',text:'Once a year, Mushroom Village held the Great Bake — a competition for the most magnificent mushroom cake. This year disaster struck: the Magic Honey had run out, and without it nothing would taste right. Head Baker Cora was in despair.'},
+     {icon:'🌸',title:'The Request',text:'A tiny letter arrived under Sana\'s pillow — she still doesn\'t know how. It was from Cora and it said, in extremely neat small handwriting, that the nearest Magic Honey was three gardens away in old Mrs Krishnan\'s beehive, and would the girls be so kind.'},
+     {icon:'🐝',title:'The Bees',text:'Sana wrote Mrs Krishnan a polite note asking for a small jar of honey for a special baking project. Mrs Krishnan gave them two jars and a slice of cake without asking a single question. Some adults are like that.'},
+     {icon:'🎂',title:'The Winning Cake',text:'Cora and her team worked all night. By morning the cake was seven mushroom-storeys tall with sugar butterflies on every tier. Bertram declared it the finest cake in three centuries. A tiny slice was left on the windowsill for the girls.'},
+     {icon:'😴',title:'One Tiny Bite',text:'It was barely a crumb. But it tasted exactly of almonds and honey and something they could not name — something warm and familiar, like being exactly where you are supposed to be. They fell asleep smiling. The End. 🍄🎂'}]
+  ]
+};
+
+/* ── JOKE BANK (32 jokes, 8 picked randomly each visit) ── */
+const JOKE_BANK = [
+  {emoji:'🦁',setup:'Why don\'t scientists trust atoms?',punchline:'Because they make up everything! 😄'},
+  {emoji:'🐄',setup:'What do you call a sleeping dinosaur?',punchline:'A dino-snore! 😴'},
+  {emoji:'🍕',setup:'Why did the pizza go to the doctor?',punchline:'Because it was feeling saucy! 🍅'},
+  {emoji:'🐸',setup:'What do you call a frog that is parked illegally?',punchline:'Toad! 🚗'},
+  {emoji:'🌙',setup:'Why did the moon skip dinner?',punchline:'Because it was already full! 🌕'},
+  {emoji:'🐧',setup:'Why can\'t you give Elsa a balloon?',punchline:'Because she will let it go! 🎈'},
+  {emoji:'🍌',setup:'Why did the banana go to the doctor?',punchline:'Because it wasn\'t peeling well! 🤒'},
+  {emoji:'🐶',setup:'What do you call a dog that does magic tricks?',punchline:'A labracadabrador! 🎩'},
+  {emoji:'🌈',setup:'Why did the teacher wear sunglasses?',punchline:'Because her students were so bright! ☀️'},
+  {emoji:'🐝',setup:'What do you call a bee that lives in America?',punchline:'A USB! 🐝'},
+  {emoji:'🦷',setup:'Why did the tooth go to school?',punchline:'To get a little wisdom! 🦷'},
+  {emoji:'🐠',setup:'Why are fish so clever?',punchline:'Because they live in schools! 🏫'},
+  {emoji:'🌺',setup:'What do you call a flower that runs on electricity?',punchline:'A power plant! 🌿'},
+  {emoji:'🦒',setup:'What do you call a sleeping giraffe?',punchline:'A high napper! 😂'},
+  {emoji:'⭐',setup:'What do stars do when they get in trouble?',punchline:'They twinkle! 🌟'},
+  {emoji:'🎂',setup:'What did one candle say to the other?',punchline:'Don\'t birthdays just burn you up? 🎉'},
+  {emoji:'🐮',setup:'What do you call a cow in an earthquake?',punchline:'A milkshake! 🥛'},
+  {emoji:'☁️',setup:'What did the cloud say to the lightning bolt?',punchline:'You\'re shocking! ⚡'},
+  {emoji:'🐙',setup:'Why don\'t octopuses ever get cold?',punchline:'They\'re always well armed! 💪'},
+  {emoji:'🧲',setup:'Why was the maths book so sad?',punchline:'Because it had too many problems! 📚'},
+  {emoji:'🦋',setup:'What do butterflies sleep in?',punchline:'Caterpillow cases! 😂'},
+  {emoji:'🍎',setup:'Why did the apple stop in the middle of the road?',punchline:'Because it ran out of juice! 🧃'},
+  {emoji:'🐻',setup:'What do you call a bear with no teeth?',punchline:'A gummy bear! 🐻'},
+  {emoji:'🌍',setup:'Did you know the Earth\'s rotation really makes my day?',punchline:'Get it? Makes my DAY! ☀️'},
+  {emoji:'🦜',setup:'What do you call cheese that isn\'t yours?',punchline:'Nacho cheese! 🧀'},
+  {emoji:'🚪',setup:'Knock knock! Who\'s there? Lettuce. Lettuce who?',punchline:'Lettuce in — it\'s cold out here! 🥬'},
+  {emoji:'🦊',setup:'Knock knock! Who\'s there? Boo. Boo who?',punchline:'Don\'t cry, it\'s only a joke! 😂'},
+  {emoji:'🌮',setup:'Why did the taco go to the dentist?',punchline:'Because it had a filling! 🦷'},
+  {emoji:'🐘',setup:'What do you call an elephant that doesn\'t matter?',punchline:'Irrelephant! 😂'},
+  {emoji:'🍩',setup:'What do you call a sad strawberry?',punchline:'A blueberry! 😂'},
+  {emoji:'🦸',setup:'Why did the superhero flush the toilet?',punchline:'Because it was her doody! 💩😂'},
+  {emoji:'🌵',setup:'What do you call a sad cactus?',punchline:'A sad-cactus! 😢🌵'},
+];
+
+/* ════════════════════════════════
+   RIDDLES
+════════════════════════════════ */
+let solvedCount = 0, totalRiddles = 0;
+
+function initRiddles() {
+  solvedCount = 0; totalRiddles = 0;
+  document.getElementById('jar').innerHTML = '';
+  document.getElementById('riddle-sub').textContent = greet() + ' — can you solve all 8 riddles? 🧩';
+  const riddles = shuffle(RIDDLE_BANK).slice(0, 8);
+  totalRiddles = riddles.length;
+  renderRiddles(riddles);
+}
+
+function renderRiddles(riddles) {
+  const body = document.getElementById('riddles-body');
+  body.innerHTML = `<div class="score-banner"><span class="score-label" id="score-lbl">Solved: 0 / ${riddles.length}</span><span class="stars-track" id="stars-track">${'⭐'.repeat(riddles.length)}</span></div>`;
+  riddles.forEach((r, i) => {
+    const card = document.createElement('div'); card.className = 'riddle-card'; card.id = 'rc' + i;
+    card.style.animationDelay = (i * .07) + 's';
+    card.innerHTML = `<div class="riddle-num">Riddle #${i + 1}</div><div class="riddle-q">${r.q}</div><div class="riddle-hint">💡 Hint: ${r.hint}</div><button class="reveal-btn" id="rb${i}" onclick="revealRiddle(${i},event)">🔮 Reveal Answer</button><div class="answer-box" id="ab${i}"><div class="ans">🎉 ${r.answer}</div><div class="exp">${r.explain}</div></div>`;
+    body.appendChild(card);
+  });
+}
+
+function revealRiddle(i, e) {
+  const ab = document.getElementById('ab' + i), rb = document.getElementById('rb' + i), card = document.getElementById('rc' + i);
+  if (ab.classList.contains('show')) return;
+  ab.classList.add('show'); card.classList.add('solved'); rb.textContent = '✅ Solved!'; rb.classList.add('done');
+  solvedCount++;
+  document.getElementById('score-lbl').textContent = `Solved: ${solvedCount} / ${totalRiddles}`;
+  document.getElementById('stars-track').textContent = '🌟'.repeat(solvedCount) + '⭐'.repeat(totalRiddles - solvedCount);
+  const star = document.createElement('span'); star.className = 'jar-star'; star.textContent = '⭐';
+  document.getElementById('jar').appendChild(star);
+  sparkle(e.clientX, e.clientY);
+  if (solvedCount === totalRiddles) {
+    setTimeout(() => { document.getElementById('riddles-body').insertAdjacentHTML('beforeend', `<div class="all-done"><span class="trophy">🏆</span><h2>You solved them ALL!</h2><p>Absolute riddle master! 🌟</p></div>`); }, 400);
+  }
+}
+
+/* ════════════════════════════════
+   STORIES
+════════════════════════════════ */
+let storyPages = [], storyPageIdx = 0;
+const storyThemes = [
+  { emoji:'🌙', id:'moon',     label:'Moon Adventure'  },
+  { emoji:'🐉', id:'dragon',   label:'The Tiny Dragon' },
+  { emoji:'🌳', id:'forest',   label:'Magic Forest'    },
+  { emoji:'☁️', id:'cloud',    label:'Cloud Factory'   },
+  { emoji:'⭐', id:'star',     label:'Star Catchers'   },
+  { emoji:'🧜', id:'mermaid',  label:'Mermaid Cove'    },
+  { emoji:'🦁', id:'lion',     label:'The Kind Lion'   },
+  { emoji:'🍄', id:'mushroom', label:'Mushroom Village'},
+];
+
+function initStories() {
+  closeStoryReader();
+  document.getElementById('stories-sub').textContent = greet() + ' — pick a story & snuggle up! 🌙';
+  const grid = document.getElementById('story-grid'); grid.innerHTML = '';
+  storyThemes.forEach((t, i) => {
+    const c = document.createElement('div'); c.className = 'story-card'; c.style.animationDelay = (i * .06) + 's';
+    c.innerHTML = `<span class="s-emoji">${t.emoji}</span><h3>${t.label}</h3><p>Tap to begin!</p>`;
+    c.onclick = () => openStory(t); grid.appendChild(c);
+  });
+}
+
+function openStory(theme) {
+  document.getElementById('story-list').style.display = 'none';
+  document.getElementById('story-reader').classList.add('open');
+  document.getElementById('stories-heading').textContent = theme.emoji + ' ' + theme.label;
+  document.getElementById('stories-back').textContent = '← Stories';
+  document.getElementById('prev-btn').disabled = true;
+  document.getElementById('next-btn').disabled = true;
+  document.getElementById('pg-counter').textContent = '';
+  window.scrollTo(0, 0);
+  // pick a random story variant for this theme
+  const variants = STORY_BANK[theme.id];
+  storyPages = variants[Math.floor(Math.random() * variants.length)];
+  storyPageIdx = 0;
+  renderStoryPage();
+}
+
+function closeStoryReader() {
+  document.getElementById('story-reader').classList.remove('open');
+  document.getElementById('story-list').style.display = '';
+  document.getElementById('stories-heading').textContent = '📖 Story Corner';
+  document.getElementById('stories-back').textContent = '← Home';
+  window.scrollTo(0, 0);
+}
+
+function storiesBack() {
+  if (document.getElementById('story-reader').classList.contains('open')) closeStoryReader();
+  else goTo('home');
+}
+
+let _storyRe1 = null, _storyRe2 = null, _storyReWho = null;
+function renderStoryPage() {
+  const p = storyPages[storyPageIdx], n1 = name1(), n2 = name2();
+  // rebuild regex only when name selection changes
+  if (_storyReWho !== who) {
+    _storyReWho = who;
+    _storyRe1 = new RegExp(n1.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+    _storyRe2 = new RegExp(n2.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+  }
+  const re1 = _storyRe1, re2 = _storyRe2;
+  const txt = p.text.replace(re1, `<span class="ns">${n1}</span>`).replace(re2, `<span class="nt">${n2}</span>`);
+  document.getElementById('prog-dots').innerHTML = storyPages.map((_, j) => `<div class="p-dot${j <= storyPageIdx ? ' lit' : ''}"></div>`).join('');
+  document.getElementById('story-pages-wrap').innerHTML = `<div class="story-page show"><span class="sp-icon">${p.icon}</span><div class="sp-title">${p.title}</div><div class="sp-text">${txt}</div></div>`;
+  document.getElementById('prev-btn').disabled = storyPageIdx === 0;
+  document.getElementById('next-btn').disabled = storyPageIdx >= storyPages.length - 1;
+  document.getElementById('pg-counter').textContent = `Page ${storyPageIdx + 1} of ${storyPages.length}`;
+}
+
+function turnPage(dir) {
+  const n = storyPageIdx + dir;
+  if (n < 0 || n >= storyPages.length) return;
+  storyPageIdx = n; renderStoryPage();
+  if (dir === 1) sparkle(window.innerWidth / 2, window.innerHeight / 3);
+}
+
+/* ════════════════════════════════
+   JOKES
+════════════════════════════════ */
+let jokes = [], jokeIdx = 0, jokeRevealed = false;
+
+function initJokes() {
+  jokeIdx = 0; jokeRevealed = false;
+  document.getElementById('joke-sub').textContent = greet() + ' — get ready to LAUGH! 🤣';
+  document.getElementById('joke-counter').textContent = '';
+  document.getElementById('next-j-btn').classList.remove('show');
+  jokes = shuffle(JOKE_BANK).slice(0, 8);
+  showJoke();
+}
+
+function showJoke() {
+  if (jokeIdx >= jokes.length) {
+    document.getElementById('joke-stage').innerHTML = `<div class="all-done"><span class="trophy">🏆</span><h2>You heard them all!</h2><p>Officially hilarious 😂</p><button class="retry-btn" style="margin-top:1rem" onclick="initJokes()">🔄 Fresh Jokes!</button></div>`;
+    document.getElementById('joke-counter').textContent = '';
+    document.getElementById('next-j-btn').classList.remove('show');
+    return;
+  }
+  jokeRevealed = false;
+  const j = jokes[jokeIdx];
+  document.getElementById('joke-counter').textContent = `Joke ${jokeIdx + 1} of ${jokes.length}`;
+  document.getElementById('joke-stage').innerHTML = `<span class="joke-emoji">${j.emoji}</span><div class="joke-setup">${j.setup}</div><button class="punch-btn" onclick="revealPunch()">🥁 Punchline!</button><div class="punchline" id="punchline">${j.punchline}</div>`;
+  document.getElementById('next-j-btn').classList.remove('show');
+}
+
+function revealPunch() {
+  if (jokeRevealed) return; jokeRevealed = true;
+  document.getElementById('punchline').classList.add('show');
+  document.querySelector('.punch-btn').style.display = 'none';
+  document.getElementById('next-j-btn').classList.add('show');
+  sparkle(window.innerWidth / 2, window.innerHeight / 2);
+}
+
+function nextJoke() { jokeIdx++; showJoke(); }
+
+function react(e) {
+  sparkle(window.innerWidth / 2, window.innerHeight / 2);
+  const el = document.createElement('div');
+  el.style.cssText = 'position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);font-size:5rem;z-index:999;pointer-events:none;animation:sp 1.2s ease forwards;';
+  el.textContent = e; document.body.appendChild(el); setTimeout(() => el.remove(), 1300);
+}
+
+/* ════════════════════════════════
+   DOODLE PAD
+════════════════════════════════ */
+let dCanvas, dCtx, dTool = 'pen', dSize = 8, dColor = '#f472b6';
+let dDrawing = false, dLX = 0, dLY = 0, dHistory = [], dInited = false, dStickerMode = null;
+
+const D_COLORS   = ['#f472b6','#67e8f9','#fcd34d','#6ee7b7','#a78bfa','#fb923c','#f87171','#4ade80','#38bdf8','#ffffff','#c084fc','#fde68a','#000000','#1e293b'];
+const D_STICKERS = ['⭐','🌙','🌈','🦄','🌸','🎉','💜','🐉','🌟','🍀','🐶','🐱','🦁','🐘','🦋','🌺','🎀','🍭','🍦','🎈','🏠','🌴','☁️','⚡','🔥','❤️','💛','💚','💙','🌊'];
+
+function initDoodle() {
+  document.getElementById('doodle-title').textContent = `🎨 ${name1()}'s Doodle Pad`;
+  if (dInited) { resizeDCanvas(); return; }
+  dInited = true;
+  dCanvas = document.getElementById('draw-canvas');
+  dCtx = dCanvas.getContext('2d');
+  resizeDCanvas();
+
+  // Swatches
+  const sw = document.getElementById('d-swatches');
+  D_COLORS.forEach(c => {
+    const s = document.createElement('button'); s.className = 'swatch' + (c === dColor ? ' active' : '');
+    s.style.background = c; s.style.border = c === '#000000' ? '2.5px solid rgba(255,255,255,.3)' : '';
+    s.onclick = () => { dColor = c; document.querySelectorAll('.swatch').forEach(x => x.classList.remove('active')); s.classList.add('active'); if (dTool === 'eraser') setDTool('pen', document.getElementById('tool-pen')); };
+    sw.appendChild(s);
+  });
+
+  // Sticker tray
+  const tray = document.getElementById('sticker-tray');
+  D_STICKERS.forEach(st => {
+    const s = document.createElement('span'); s.className = 'sticker'; s.textContent = st;
+    s.onclick = () => { dStickerMode = st; tray.classList.remove('open'); dCanvas.style.cursor = 'cell'; toast('Tap the canvas to stamp ' + st); };
+    tray.appendChild(s);
+  });
+
+  // Pointer events (mouse + touch)
+  dCanvas.addEventListener('pointerdown', dStart, { passive: false });
+  dCanvas.addEventListener('pointermove', dMove,  { passive: false });
+  dCanvas.addEventListener('pointerup',   dEnd,   { passive: false });
+  dCanvas.addEventListener('pointerleave',dEnd,   { passive: false });
+  dCanvas.addEventListener('click', dClick);
+  let _resizeTimer;
+  window.addEventListener('resize', () => { clearTimeout(_resizeTimer); _resizeTimer = setTimeout(resizeDCanvas, 120); });
+}
+
+function resizeDCanvas() {
+  if (!dCanvas) return;
+  const wrap = document.getElementById('canvas-wrap');
+  const snap = dCtx.getImageData(0, 0, dCanvas.width || 1, dCanvas.height || 1);
+  dCanvas.width  = wrap.clientWidth;
+  dCanvas.height = wrap.clientHeight;
+  dCtx.fillStyle = '#0f0e2e'; dCtx.fillRect(0, 0, dCanvas.width, dCanvas.height);
+  try { dCtx.putImageData(snap, 0, 0); } catch (_) {}
+}
+
+function dGetPos(e) {
+  const r = dCanvas.getBoundingClientRect();
+  return [e.clientX - r.left, e.clientY - r.top];
+}
+
+function dSaveHistory() {
+  if (dHistory.length > 30) dHistory.shift();
+  dHistory.push(dCtx.getImageData(0, 0, dCanvas.width, dCanvas.height));
+}
+
+function dStart(e) {
+  e.preventDefault();
+  if (dStickerMode) return;
+  dCanvas.setPointerCapture(e.pointerId);
+  dSaveHistory(); dDrawing = true;
+  [dLX, dLY] = dGetPos(e);
+  if (dTool === 'spray') dSpray(dLX, dLY);
+}
+
+function dMove(e) {
+  e.preventDefault(); if (!dDrawing) return;
+  const [x, y] = dGetPos(e);
+  if (dTool === 'spray') { dSpray(x, y); dLX = x; dLY = y; return; }
+  dCtx.beginPath(); dCtx.moveTo(dLX, dLY); dCtx.lineTo(x, y);
+  if (dTool === 'eraser') {
+    dCtx.globalCompositeOperation = 'destination-out'; dCtx.strokeStyle = 'rgba(0,0,0,1)'; dCtx.lineWidth = dSize * 3;
+  } else if (dTool === 'marker') {
+    dCtx.globalCompositeOperation = 'source-over'; dCtx.strokeStyle = dColor + '99'; dCtx.lineWidth = dSize * 2.5;
+  } else {
+    dCtx.globalCompositeOperation = 'source-over'; dCtx.strokeStyle = dColor; dCtx.lineWidth = dSize;
+  }
+  dCtx.lineCap = 'round'; dCtx.lineJoin = 'round'; dCtx.stroke();
+  dCtx.globalCompositeOperation = 'source-over';
+  [dLX, dLY] = [x, y];
+}
+
+function dEnd(e) { e.preventDefault(); dDrawing = false; }
+
+function dClick(e) {
+  if (!dStickerMode) return;
+  const [x, y] = dGetPos(e);
+  dCtx.font = (dSize * 4 + 20) + 'px serif'; dCtx.textAlign = 'center'; dCtx.textBaseline = 'middle';
+  dCtx.fillText(dStickerMode, x, y);
+  sparkle(e.clientX, e.clientY); dStickerMode = null; dCanvas.style.cursor = 'crosshair';
+}
+
+function dSpray(x, y) {
+  dCtx.globalCompositeOperation = 'source-over'; dCtx.fillStyle = dColor;
+  const r = dSize * 3;
+  for (let i = 0; i < 25; i++) {
+    const a = Math.random() * Math.PI * 2, d = Math.random() * r;
+    dCtx.beginPath(); dCtx.arc(x + d * Math.cos(a), y + d * Math.sin(a), Math.random() * 1.5 + .5, 0, Math.PI * 2); dCtx.fill();
+  }
+}
+
+function setDTool(t, el) { dTool = t; document.querySelectorAll('.d-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
+function setDSize(s, el) { dSize = s; document.querySelectorAll('.sz-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
+function toggleStickers() { document.getElementById('sticker-tray').classList.toggle('open'); }
+function undoDraw()   { if (dHistory.length) dCtx.putImageData(dHistory.pop(), 0, 0); }
+function clearDraw()  { dSaveHistory(); dCtx.fillStyle = '#0f0e2e'; dCtx.fillRect(0, 0, dCanvas.width, dCanvas.height); toast('Canvas cleared! Start fresh 🌟'); }
+function saveDrawing() {
+  const link = document.createElement('a');
+  link.download = name1().toLowerCase() + '-doodle.png';
+  link.href = dCanvas.toDataURL('image/png'); link.click();
+  toast('Saved! 💾 Check your downloads!'); sparkle(window.innerWidth / 2, window.innerHeight / 2);
+}
+
+/* ════════════════════════════════
+   KEYBOARD NAVIGATION
+════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (currentPage === 'stories') {
+    if (e.key === 'ArrowRight') { e.preventDefault(); turnPage(1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); turnPage(-1); }
+    else if (e.key === 'Escape') { e.preventDefault(); storiesBack(); }
+  }
+  if (currentPage === 'jokes') {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); jokeRevealed ? nextJoke() : revealPunch(); }
+    else if (e.key === 'Escape') { e.preventDefault(); goTo('home'); }
+  }
+  if (currentPage === 'riddles' && e.key === 'Escape') { e.preventDefault(); goTo('home'); }
+  if (currentPage === 'doodle' && e.key === 'Escape') { e.preventDefault(); goTo('home'); }
+});
+</script>
 </body>
 </html>
