@@ -199,6 +199,8 @@ button { font-family:inherit; cursor:pointer; touch-action:manipulation; }
 .next-j-btn { background:linear-gradient(135deg,#7c3aed,#0284c7); border:none; color:white; padding:.65rem 1.8rem; border-radius:999px; font-family:'Fredoka One',cursive; font-size:1.05rem; transition:all .2s; display:none; margin-top:.75rem; }
 .next-j-btn.show { display:inline-block; animation:fadeUp .4s ease; }
 .next-j-btn:hover { transform:scale(1.07); }
+.retry-btn { background:linear-gradient(135deg,#059669,#0284c7); border:none; color:white; padding:.65rem 1.8rem; border-radius:999px; font-family:'Fredoka One',cursive; font-size:1.05rem; transition:all .2s; cursor:pointer; }
+.retry-btn:hover { transform:scale(1.07); }
 .joke-counter { font-family:'Fredoka One',cursive; color:var(--purple); text-align:center; margin-bottom:.9rem; }
 .react-bar { text-align:center; }
 .react-label { color:rgba(255,255,255,.35); font-size:.82rem; margin-bottom:.45rem; }
@@ -608,7 +610,7 @@ const RIDDLE_BANK = [
   {q:"What starts with E, ends with E, but only has one letter inside?", hint:"The postman delivers it!", answer:"An envelope! ✉️", explain:"E-N-V-E-L-O-P-E starts and ends with E, and holds one letter inside! ✉️"},
   {q:"I have branches but no leaves, no trunk and no fruit. What am I?", hint:"You might visit me to borrow books!", answer:"A library! 📚", explain:"A library has many branches in a city — but no leaves or fruit! 📚"},
   {q:"What is so fragile that just saying its name breaks it?", hint:"You need it when you sleep!", answer:"Silence! 🤫", explain:"The moment you say the word 'silence', you've broken it — sneaky! 🤫"},
-  {q:"I run all day and never walk. I have a mouth but never talk. I have a bed but never sleep. What am I?", hint:"Find me in nature flowing downhill!", answer:"A river! 🌊", explain:"Rivers run, have a mouth and a bed — but they never sleep or talk! 🌊"},
+  {q:"I'm tall when I'm young and short when I'm old. What am I?", hint:"You use me in the dark!", answer:"A candle! 🕯️", explain:"A candle starts tall and gets shorter as it burns down — the older it gets, the shorter it is! 🕯️"},
   {q:"What has one eye but cannot see?", hint:"Sewing uses it!", answer:"A needle! 🪡", explain:"A sewing needle has a hole called an eye — but it can't see anything! 🪡"},
   {q:"I have a thumb and four fingers, but I'm not alive. What am I?", hint:"You wear me on cold days!", answer:"A glove! 🧤", explain:"A glove has the same shape as a hand with a thumb and four fingers! 🧤"},
   {q:"The more you have of me, the less you see. What am I?", hint:"Think about nighttime!", answer:"Darkness! 🌑", explain:"The more darkness there is, the less you can see — turn off the lights and see! 🌑"},
@@ -751,12 +753,12 @@ const JOKE_BANK = [
   {emoji:'🍎',setup:'Why did the apple stop in the middle of the road?',punchline:'Because it ran out of juice! 🧃'},
   {emoji:'🐻',setup:'What do you call a bear with no teeth?',punchline:'A gummy bear! 🐻'},
   {emoji:'🌍',setup:'Did you know the Earth\'s rotation really makes my day?',punchline:'Get it? Makes my DAY! ☀️'},
-  {emoji:'🦜',setup:'Why can\'t Elsa have a kite?',punchline:'She keeps letting it go! 🎈'},
+  {emoji:'🦜',setup:'What do you call cheese that isn\'t yours?',punchline:'Nacho cheese! 🧀'},
   {emoji:'🚪',setup:'Knock knock! Who\'s there? Lettuce. Lettuce who?',punchline:'Lettuce in — it\'s cold out here! 🥬'},
   {emoji:'🦊',setup:'Knock knock! Who\'s there? Boo. Boo who?',punchline:'Don\'t cry, it\'s only a joke! 😂'},
   {emoji:'🌮',setup:'Why did the taco go to the dentist?',punchline:'Because it had a filling! 🦷'},
   {emoji:'🐘',setup:'What do you call an elephant that doesn\'t matter?',punchline:'Irrelephant! 😂'},
-  {emoji:'🍩',setup:'Why did the donut go to the dentist?',punchline:'To get a filling! 🦷'},
+  {emoji:'🍩',setup:'What do you call a sad strawberry?',punchline:'A blueberry! 😂'},
   {emoji:'🦸',setup:'Why did the superhero flush the toilet?',punchline:'Because it was her doody! 💩😂'},
   {emoji:'🌵',setup:'What do you call a sad cactus?',punchline:'A sad-cactus! 😢🌵'},
 ];
