@@ -29,6 +29,7 @@ body {
   padding-bottom:env(safe-area-inset-bottom);
 }
 button { font-family:inherit; cursor:pointer; touch-action:manipulation; }
+button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
 #bg-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; }
 
 @keyframes fadeUp  { from{opacity:0;transform:translateY(18px);}  to{opacity:1;transform:none;} }
@@ -257,7 +258,7 @@ button { font-family:inherit; cursor:pointer; touch-action:manipulation; }
 </style>
 </head>
 <body>
-<canvas id="bg-canvas"></canvas>
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
 
 <div id="home" class="page active">
   <span class="big-moon">🌙</span>
@@ -429,7 +430,7 @@ button { font-family:inherit; cursor:pointer; touch-action:manipulation; }
   <div class="sticker-tray" id="sticker-tray"></div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 
 'use strict';
@@ -515,7 +516,6 @@ function toast(msg) {
    ROUTER — in-memory only, no pushState
    (pushState throws SecurityError in sandboxed iframes)
 ════════════════════════════════ */
-const PAGES = ['home', 'riddles', 'stories', 'jokes', 'doodle'];
 let currentPage = 'home';
 
 function goTo(id) {
@@ -858,10 +858,16 @@ function storiesBack() {
   else goTo('home');
 }
 
+let _storyRe1 = null, _storyRe2 = null, _storyReWho = null;
 function renderStoryPage() {
   const p = storyPages[storyPageIdx], n1 = name1(), n2 = name2();
-  const re1 = new RegExp(n1.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-  const re2 = new RegExp(n2.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+  // rebuild regex only when name selection changes
+  if (_storyReWho !== who) {
+    _storyReWho = who;
+    _storyRe1 = new RegExp(n1.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+    _storyRe2 = new RegExp(n2.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+  }
+  const re1 = _storyRe1, re2 = _storyRe2;
   const txt = p.text.replace(re1, `<span class="ns">${n1}</span>`).replace(re2, `<span class="nt">${n2}</span>`);
   document.getElementById('prog-dots').innerHTML = storyPages.map((_, j) => `<div class="p-dot${j <= storyPageIdx ? ' lit' : ''}"></div>`).join('');
   document.getElementById('story-pages-wrap').innerHTML = `<div class="story-page show"><span class="sp-icon">${p.icon}</span><div class="sp-title">${p.title}</div><div class="sp-text">${txt}</div></div>`;
@@ -962,7 +968,8 @@ function initDoodle() {
   dCanvas.addEventListener('pointerup',   dEnd,   { passive: false });
   dCanvas.addEventListener('pointerleave',dEnd,   { passive: false });
   dCanvas.addEventListener('click', dClick);
-  window.addEventListener('resize', resizeDCanvas);
+  let _resizeTimer;
+  window.addEventListener('resize', () => { clearTimeout(_resizeTimer); _resizeTimer = setTimeout(resizeDCanvas, 120); });
 }
 
 function resizeDCanvas() {
@@ -1041,6 +1048,23 @@ function saveDrawing() {
   link.href = dCanvas.toDataURL('image/png'); link.click();
   toast('Saved! 💾 Check your downloads!'); sparkle(window.innerWidth / 2, window.innerHeight / 2);
 }
+
+/* ════════════════════════════════
+   KEYBOARD NAVIGATION
+════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (currentPage === 'stories') {
+    if (e.key === 'ArrowRight') { e.preventDefault(); turnPage(1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); turnPage(-1); }
+    else if (e.key === 'Escape') { e.preventDefault(); storiesBack(); }
+  }
+  if (currentPage === 'jokes') {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); jokeRevealed ? nextJoke() : revealPunch(); }
+    else if (e.key === 'Escape') { e.preventDefault(); goTo('home'); }
+  }
+  if (currentPage === 'riddles' && e.key === 'Escape') { e.preventDefault(); goTo('home'); }
+  if (currentPage === 'doodle' && e.key === 'Escape') { e.preventDefault(); goTo('home'); }
+});
 </script>
 </body>
 </html>
