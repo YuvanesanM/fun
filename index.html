@@ -210,7 +210,7 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
 .ha-btn:hover { transform:scale(1.18); background:rgba(255,255,255,.15); }
 
 /* ── DOODLE ── */
-#doodle.active { display:flex; flex-direction:column; height:100vh; }
+#doodle.active { display:flex; flex-direction:column; height:100vh; overflow:hidden; }
 #doodle { padding:0; max-width:100%; }
 #doodle .top-bar { padding:.6rem 1rem; background:rgba(255,255,255,.05); border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:0; flex-shrink:0; }
 .doodle-toolbar { display:flex; align-items:center; gap:.45rem; padding:.5rem .9rem; flex-wrap:wrap; background:rgba(255,255,255,.04); border-bottom:1px solid rgba(255,255,255,.07); flex-shrink:0; }
@@ -245,6 +245,7 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
 
 /* ── MOBILE BREAKPOINT ── */
 @media (max-width:600px) {
+  .doodle-toolbar { flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; }
   .d-btn { width:40px; height:40px; font-size:1.1rem; }
   .sz-btn.s1{width:32px;height:32px;} .sz-btn.s2{width:38px;height:38px;} .sz-btn.s3{width:44px;height:44px;}
   .swatch { width:30px; height:30px; border-radius:8px; }
