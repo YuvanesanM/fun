@@ -262,9 +262,45 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
   .sp-title { font-size:1.4rem; }
   .sp-text  { font-size:1rem; }
 }
+
+/* ── LOCK SCREEN ── */
+#lock-screen { position:fixed; inset:0; z-index:500; display:flex; align-items:center; justify-content:center; background:rgba(8,7,32,.92); backdrop-filter:blur(3px); }
+#lock-screen.unlocking { animation:ls-fade .9s ease forwards; pointer-events:none; }
+@keyframes ls-fade { to { opacity:0; transform:scale(1.04); } }
+.lock-box { text-align:center; padding:2rem 1.25rem; max-width:440px; width:100%; }
+.lock-crystal { font-size:3.8rem; display:block; animation:float 4s ease-in-out infinite; filter:drop-shadow(0 0 22px #a78bfa); margin-bottom:.4rem; }
+.lock-title { font-family:'Pacifico',cursive; font-size:clamp(1.9rem,6vw,2.8rem); background:linear-gradient(135deg,#fcd34d,#f472b6,#a78bfa); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; padding-bottom:.2em; margin-bottom:.3rem; }
+.lock-hint { color:var(--purple); font-family:'Fredoka One',cursive; font-size:1rem; margin-bottom:1.25rem; }
+.lock-progress { display:flex; justify-content:center; gap:.65rem; margin-bottom:1.4rem; }
+.lp-dot { width:34px; height:34px; border-radius:50%; border:2.5px solid rgba(255,255,255,.18); background:rgba(255,255,255,.04); transition:all .35s; }
+.lp-dot.lit { border-color:white; box-shadow:0 0 14px currentColor; transform:scale(1.18); }
+@keyframes lp-shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(7px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+.lp-dot.wrong { animation:lp-shake .4s ease; }
+.color-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:.65rem; margin-bottom:1rem; }
+.c-tile { border-radius:18px; padding:1rem .4rem .7rem; display:flex; flex-direction:column; align-items:center; gap:.3rem; border:2.5px solid transparent; cursor:pointer; transition:transform .15s,box-shadow .15s; font-family:'Fredoka One',cursive; font-size:.78rem; color:white; text-shadow:0 1px 4px rgba(0,0,0,.6); user-select:none; -webkit-tap-highlight-color:transparent; }
+.c-tile:hover { transform:scale(1.09) translateY(-3px); }
+.c-tile:active { transform:scale(.93); }
+@keyframes tile-pop  { 0%{transform:scale(1)} 45%{transform:scale(1.25)} 100%{transform:scale(1)} }
+@keyframes tile-wrong{ 0%,100%{transform:rotate(0)} 25%{transform:rotate(-9deg)} 75%{transform:rotate(9deg)} }
+.c-tile.correct { animation:tile-pop  .3s ease; }
+.c-tile.wrong   { animation:tile-wrong .3s ease; }
+.tile-emoji { font-size:1.75rem; pointer-events:none; }
+.lock-msg { font-family:'Fredoka One',cursive; font-size:1rem; min-height:1.5rem; transition:all .3s; color:rgba(255,255,255,.45); }
+.lock-msg.err  { color:#f87171; }
+.lock-msg.win  { color:var(--mint); font-size:1.15rem; }
 </style>
 </head>
 <body>
+<div id="lock-screen" role="dialog" aria-label="Secret code lock">
+  <div class="lock-box">
+    <span class="lock-crystal">🔮</span>
+    <h2 class="lock-title">Secret Code!</h2>
+    <p class="lock-hint">Tap the magic colours in the right order ✨</p>
+    <div class="lock-progress" id="lock-progress"></div>
+    <div class="color-grid" id="color-grid"></div>
+    <div class="lock-msg" id="lock-msg">&nbsp;</div>
+  </div>
+</div>
 <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
 <div id="home" class="page active">
@@ -1080,6 +1116,81 @@ function saveDrawing() {
   link.href = dCanvas.toDataURL('image/png'); link.click();
   toast('Saved! 💾 Check your downloads!'); sparkle(window.innerWidth / 2, window.innerHeight / 2);
 }
+
+/* ════════════════════════════════
+   LOCK SCREEN
+════════════════════════════════ */
+(function () {
+  if (sessionStorage.getItem('unlocked')) {
+    document.getElementById('lock-screen').style.display = 'none';
+    return;
+  }
+  const TILES = [
+    { id:'purple',  color:'#a78bfa', glow:'rgba(167,139,250,.55)', emoji:'💜', label:'Purple'  },
+    { id:'red',     color:'#ef4444', glow:'rgba(239,68,68,.55)',   emoji:'❤️',  label:'Red'     },
+    { id:'blue',    color:'#3b82f6', glow:'rgba(59,130,246,.55)',  emoji:'💙', label:'Blue'    },
+    { id:'yellow',  color:'#fbbf24', glow:'rgba(251,191,36,.55)',  emoji:'💛', label:'Yellow'  },
+    { id:'teal',    color:'#14b8a6', glow:'rgba(20,184,166,.55)',  emoji:'🩵', label:'Teal'    },
+    { id:'pink',    color:'#ec4899', glow:'rgba(236,72,153,.55)',  emoji:'🩷', label:'Pink'    },
+    { id:'saffron', color:'#f97316', glow:'rgba(249,115,22,.55)',  emoji:'🧡', label:'Saffron' },
+    { id:'green',   color:'#22c55e', glow:'rgba(34,197,94,.55)',   emoji:'💚', label:'Green'   },
+  ];
+  const SEQUENCE = ['red', 'yellow', 'saffron', 'teal'];
+  let step = 0;
+
+  // Progress dots
+  const prog = document.getElementById('lock-progress');
+  SEQUENCE.forEach(() => { const d = document.createElement('div'); d.className = 'lp-dot'; prog.appendChild(d); });
+
+  // Tiles (shuffle order so correct ones aren't clumped)
+  const ORDER = ['purple','red','blue','yellow','teal','pink','saffron','green'];
+  const grid = document.getElementById('color-grid');
+  ORDER.forEach(id => {
+    const t = TILES.find(x => x.id === id);
+    const btn = document.createElement('button');
+    btn.className = 'c-tile';
+    btn.style.cssText = `background:${t.color};border-color:${t.glow};box-shadow:0 6px 18px ${t.glow};`;
+    btn.innerHTML = `<span class="tile-emoji">${t.emoji}</span><span>${t.label}</span>`;
+    btn.addEventListener('click', () => handleTap(t, btn));
+    grid.appendChild(btn);
+  });
+
+  function dots() { return prog.querySelectorAll('.lp-dot'); }
+  function setMsg(txt, cls) { const m = document.getElementById('lock-msg'); m.textContent = txt || '\u00a0'; m.className = 'lock-msg' + (cls ? ' ' + cls : ''); }
+
+  function handleTap(t, btn) {
+    if (t.id === SEQUENCE[step]) {
+      btn.classList.add('correct');
+      setTimeout(() => btn.classList.remove('correct'), 320);
+      const d = dots()[step];
+      d.style.background = t.color;
+      d.style.boxShadow  = `0 0 14px ${t.glow}`;
+      d.classList.add('lit');
+      const r = btn.getBoundingClientRect();
+      sparkle(r.left + r.width / 2, r.top + r.height / 2);
+      setMsg('');
+      step++;
+      if (step === SEQUENCE.length) setTimeout(unlock, 500);
+    } else {
+      btn.classList.add('wrong');
+      setTimeout(() => btn.classList.remove('wrong'), 320);
+      dots().forEach(d => { d.classList.remove('lit'); d.style.background = ''; d.style.boxShadow = ''; d.classList.add('wrong'); setTimeout(() => d.classList.remove('wrong'), 420); });
+      step = 0;
+      setMsg('Oops! Try again! 🌈', 'err');
+    }
+  }
+
+  function unlock() {
+    setMsg('🎉 You\'re in! Welcome! 🎉', 'win');
+    for (let i = 0; i < 6; i++) setTimeout(() => sparkle(Math.random() * window.innerWidth, Math.random() * window.innerHeight * .7), i * 130);
+    sessionStorage.setItem('unlocked', '1');
+    setTimeout(() => {
+      const ls = document.getElementById('lock-screen');
+      ls.classList.add('unlocking');
+      setTimeout(() => { ls.style.display = 'none'; }, 900);
+    }, 1100);
+  }
+})();
 
 /* ════════════════════════════════
    KEYBOARD NAVIGATION
