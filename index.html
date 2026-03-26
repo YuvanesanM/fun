@@ -1136,7 +1136,7 @@ function saveDrawing() {
     { id:'green',   color:'#22c55e', glow:'rgba(34,197,94,.55)',   emoji:'💚', label:'Green'   },
   ];
   const SEQUENCE = ['red', 'yellow', 'saffron', 'teal'];
-  let step = 0;
+  let step = 0, tapped = [];
 
   // Progress dots
   const prog = document.getElementById('lock-progress');
@@ -1159,24 +1159,27 @@ function saveDrawing() {
   function setMsg(txt, cls) { const m = document.getElementById('lock-msg'); m.textContent = txt || '\u00a0'; m.className = 'lock-msg' + (cls ? ' ' + cls : ''); }
 
   function handleTap(t, btn) {
-    if (t.id === SEQUENCE[step]) {
-      btn.classList.add('correct');
-      setTimeout(() => btn.classList.remove('correct'), 320);
-      const d = dots()[step];
-      d.style.background = t.color;
-      d.style.boxShadow  = `0 0 14px ${t.glow}`;
-      d.classList.add('lit');
-      const r = btn.getBoundingClientRect();
-      sparkle(r.left + r.width / 2, r.top + r.height / 2);
-      setMsg('');
-      step++;
-      if (step === SEQUENCE.length) setTimeout(unlock, 500);
-    } else {
-      btn.classList.add('wrong');
-      setTimeout(() => btn.classList.remove('wrong'), 320);
-      dots().forEach(d => { d.classList.remove('lit'); d.style.background = ''; d.style.boxShadow = ''; d.classList.add('wrong'); setTimeout(() => d.classList.remove('wrong'), 420); });
-      step = 0;
-      setMsg('Oops! Try again! 🌈', 'err');
+    if (step >= SEQUENCE.length) return;
+    btn.classList.add('correct');
+    setTimeout(() => btn.classList.remove('correct'), 320);
+    const d = dots()[step];
+    d.style.background = t.color;
+    d.style.boxShadow  = `0 0 14px ${t.glow}`;
+    d.classList.add('lit');
+    const r = btn.getBoundingClientRect();
+    sparkle(r.left + r.width / 2, r.top + r.height / 2);
+    tapped.push(t.id);
+    step++;
+    if (step === SEQUENCE.length) {
+      if (tapped.every((id, i) => id === SEQUENCE[i])) {
+        setTimeout(unlock, 500);
+      } else {
+        setTimeout(() => {
+          setMsg('Oops! Try again! 🌈', 'err');
+          dots().forEach(d => { d.classList.remove('lit'); d.style.background = ''; d.style.boxShadow = ''; d.classList.add('wrong'); setTimeout(() => d.classList.remove('wrong'), 420); });
+          step = 0; tapped = [];
+        }, 400);
+      }
     }
   }
 
