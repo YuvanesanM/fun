@@ -288,6 +288,8 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
 .lock-msg { font-family:'Fredoka One',cursive; font-size:1rem; min-height:1.5rem; transition:all .3s; color:rgba(255,255,255,.45); }
 .lock-msg.err  { color:#f87171; }
 .lock-msg.win  { color:var(--mint); font-size:1.15rem; }
+.lock-fab { position:fixed; top:1rem; right:1rem; z-index:50; background:rgba(255,255,255,.08); border:1.5px solid rgba(255,255,255,.15); color:white; border-radius:50%; width:42px; height:42px; font-size:1.2rem; display:flex; align-items:center; justify-content:center; transition:all .2s; }
+.lock-fab:hover { background:rgba(255,255,255,.18); transform:scale(1.1); }
 </style>
 </head>
 <body>
@@ -302,6 +304,8 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
   </div>
 </div>
 <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+<button class="lock-fab" onclick="lockScreen()" title="Lock">🔒</button>
 
 <div id="home" class="page active">
   <span class="big-moon">🌙</span>
@@ -1193,6 +1197,16 @@ function saveDrawing() {
       setTimeout(() => { ls.style.display = 'none'; }, 900);
     }, 1100);
   }
+
+  window.lockScreen = function () {
+    sessionStorage.removeItem('unlocked');
+    step = 0; tapped = [];
+    dots().forEach(d => { d.classList.remove('lit','wrong'); d.style.background = ''; d.style.boxShadow = ''; });
+    setMsg('');
+    const ls = document.getElementById('lock-screen');
+    ls.classList.remove('unlocking');
+    ls.style.display = 'flex';
+  };
 })();
 
 /* ════════════════════════════════
