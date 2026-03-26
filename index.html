@@ -80,44 +80,45 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
 
 /* ── COUNTDOWNS ── */
 .section-label { font-family:'Fredoka One',cursive; font-size:1.25rem; color:rgba(255,255,255,.4); text-align:center; margin-bottom:1rem; letter-spacing:1px; width:100%; }
-.countdowns { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:1.1rem; margin-bottom:2.5rem; width:100%; }
-.cd-card { border-radius:22px; padding:1.2rem .9rem; text-align:center; position:relative; overflow:hidden; border:2px solid transparent; transition:transform .3s,box-shadow .3s; }
-.cd-card:hover { transform:translateY(-5px); }
+.countdowns { display:flex; flex-direction:column; gap:.65rem; margin-bottom:2.5rem; width:100%; }
+.cd-card { display:flex; flex-direction:row; align-items:center; gap:.9rem; border-radius:16px; padding:.75rem 1.1rem; text-align:left; position:relative; overflow:hidden; border:2px solid transparent; transition:transform .3s,box-shadow .3s; }
+.cd-card:hover { transform:translateY(-3px); }
 .cd-card::before { content:''; position:absolute; inset:0; border-radius:inherit; opacity:.13; }
 .cd-sana    { background:linear-gradient(135deg,rgba(219,39,119,.18),rgba(124,58,237,.18)); border-color:rgba(244,114,182,.4); box-shadow:0 8px 30px rgba(244,114,182,.15); }
-.cd-sana::before    { background:radial-gradient(circle at 50% 0%,#f472b6,transparent 70%); }
+.cd-sana::before    { background:radial-gradient(circle at 0% 50%,#f472b6,transparent 70%); }
 .cd-sana:hover      { box-shadow:0 16px 45px rgba(244,114,182,.3); }
 .cd-ireland { background:linear-gradient(135deg,rgba(5,150,105,.18),rgba(2,132,199,.18)); border-color:rgba(110,231,183,.4); box-shadow:0 8px 30px rgba(110,231,183,.12); }
-.cd-ireland::before { background:radial-gradient(circle at 50% 0%,#6ee7b7,transparent 70%); }
+.cd-ireland::before { background:radial-gradient(circle at 0% 50%,#6ee7b7,transparent 70%); }
 .cd-ireland:hover   { box-shadow:0 16px 45px rgba(110,231,183,.25); }
 .cd-dad     { background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(239,68,68,.15)); border-color:rgba(252,211,77,.4); box-shadow:0 8px 30px rgba(252,211,77,.12); }
-.cd-dad::before     { background:radial-gradient(circle at 50% 0%,#fcd34d,transparent 70%); }
+.cd-dad::before     { background:radial-gradient(circle at 0% 50%,#fcd34d,transparent 70%); }
 .cd-dad:hover       { box-shadow:0 16px 45px rgba(252,211,77,.25); }
 .cd-mom     { background:linear-gradient(135deg,rgba(251,113,133,.18),rgba(251,191,36,.15)); border-color:rgba(251,113,133,.4); box-shadow:0 8px 30px rgba(251,113,133,.12); }
-.cd-mom::before     { background:radial-gradient(circle at 50% 0%,#fb7185,transparent 70%); }
+.cd-mom::before     { background:radial-gradient(circle at 0% 50%,#fb7185,transparent 70%); }
 .cd-mom:hover       { box-shadow:0 16px 45px rgba(251,113,133,.25); }
 .cd-tara    { background:linear-gradient(135deg,rgba(2,132,199,.18),rgba(13,148,136,.18)); border-color:rgba(103,232,249,.4); box-shadow:0 8px 30px rgba(103,232,249,.12); }
-.cd-tara::before    { background:radial-gradient(circle at 50% 0%,#67e8f9,transparent 70%); }
+.cd-tara::before    { background:radial-gradient(circle at 0% 50%,#67e8f9,transparent 70%); }
 .cd-tara:hover      { box-shadow:0 16px 45px rgba(103,232,249,.25); }
-.cd-emoji { font-size:2.4rem; display:block; margin-bottom:.35rem; animation:bounce 2.2s ease-in-out infinite; }
-.cd-title { font-family:'Fredoka One',cursive; font-size:1.1rem; margin-bottom:.75rem; }
+.cd-emoji { font-size:1.9rem; display:block; flex-shrink:0; animation:bounce 2.2s ease-in-out infinite; }
+.cd-label { flex:1; min-width:0; }
+.cd-title { font-family:'Fredoka One',cursive; font-size:1rem; margin-bottom:.1rem; }
 .cd-sana    .cd-title { color:var(--pink); }
 .cd-ireland .cd-title { color:var(--mint); }
 .cd-dad     .cd-title { color:var(--gold); }
 .cd-mom     .cd-title { color:#fb7185; }
 .cd-tara    .cd-title { color:var(--sky); }
-.cd-numbers { display:flex; justify-content:center; gap:.2rem; margin-bottom:.5rem; flex-wrap:nowrap; }
+.cd-numbers { display:flex; align-items:center; gap:.2rem; flex-wrap:nowrap; flex-shrink:0; }
 .cd-unit    { display:flex; flex-direction:column; align-items:center; }
-.cd-num { font-family:'Fredoka One',cursive; font-size:clamp(1.15rem,2.4vw,1.65rem); line-height:1; min-width:1.8rem; padding:.18rem .22rem; border-radius:9px; text-align:center; }
+.cd-num { font-family:'Fredoka One',cursive; font-size:clamp(1rem,2.2vw,1.3rem); line-height:1; min-width:1.6rem; padding:.15rem .2rem; border-radius:8px; text-align:center; }
 .cd-sana    .cd-num { background:rgba(244,114,182,.2); color:var(--pink); }
 .cd-ireland .cd-num { background:rgba(110,231,183,.2); color:var(--mint); }
 .cd-dad     .cd-num { background:rgba(252,211,77,.2);  color:var(--gold); }
 .cd-mom     .cd-num { background:rgba(251,113,133,.2); color:#fb7185; }
 .cd-tara    .cd-num { background:rgba(103,232,249,.2); color:var(--sky); }
 .cd-num.tick { animation:tick .22s ease; }
-.cd-sep  { font-family:'Fredoka One',cursive; font-size:1.1rem; color:rgba(255,255,255,.22); align-self:flex-start; margin-top:.15rem; }
-.cd-lbl  { font-size:.6rem; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.8px; margin-top:.2rem; }
-.cd-msg  { font-size:.8rem; color:rgba(255,255,255,.45); font-style:italic; }
+.cd-sep  { font-family:'Fredoka One',cursive; font-size:.95rem; color:rgba(255,255,255,.22); align-self:flex-start; margin-top:.1rem; }
+.cd-lbl  { font-size:.55rem; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.8px; margin-top:.15rem; }
+.cd-msg  { font-size:.75rem; color:rgba(255,255,255,.45); font-style:italic; }
 .cd-today { font-family:'Fredoka One',cursive; font-size:1.3rem; color:var(--gold); animation:pulse-g 1s ease-in-out infinite; }
 
 /* ── NAV CARDS ── */
@@ -277,23 +278,12 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
   </div>
   <div class="section-label">⏳ EXCITING THINGS COMING UP!</div>
   <div class="countdowns">
-    <div class="cd-card cd-tara">
-      <span class="cd-emoji">🎂</span>
-      <div class="cd-title">Tara's Birthday!</div>
-      <div class="cd-numbers">
-        <div class="cd-unit"><span class="cd-num" id="ct-d">--</span><span class="cd-lbl">days</span></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><span class="cd-num" id="ct-h">--</span><span class="cd-lbl">hrs</span></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><span class="cd-num" id="ct-m">--</span><span class="cd-lbl">mins</span></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><span class="cd-num" id="ct-s">--</span><span class="cd-lbl">secs</span></div>
-      </div>
-      <div class="cd-msg" id="ct-msg">January 11th 🌊</div>
-    </div>
     <div class="cd-card cd-sana">
       <span class="cd-emoji">🎂</span>
-      <div class="cd-title">Sana's Birthday!</div>
+      <div class="cd-label">
+        <div class="cd-title">Sana's Birthday!</div>
+        <div class="cd-msg" id="cs-msg">April 17th 🌸</div>
+      </div>
       <div class="cd-numbers">
         <div class="cd-unit"><span class="cd-num" id="cs-d">--</span><span class="cd-lbl">days</span></div>
         <div class="cd-sep">:</div>
@@ -303,11 +293,13 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
         <div class="cd-sep">:</div>
         <div class="cd-unit"><span class="cd-num" id="cs-s">--</span><span class="cd-lbl">secs</span></div>
       </div>
-      <div class="cd-msg" id="cs-msg">April 17th 🌸</div>
     </div>
     <div class="cd-card cd-ireland">
       <span class="cd-emoji">✈️</span>
-      <div class="cd-title">Ireland Adventure!</div>
+      <div class="cd-label">
+        <div class="cd-title">Ireland!</div>
+        <div class="cd-msg" id="ci-msg">May 18th 🍀</div>
+      </div>
       <div class="cd-numbers">
         <div class="cd-unit"><span class="cd-num" id="ci-d">--</span><span class="cd-lbl">days</span></div>
         <div class="cd-sep">:</div>
@@ -317,11 +309,13 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
         <div class="cd-sep">:</div>
         <div class="cd-unit"><span class="cd-num" id="ci-s">--</span><span class="cd-lbl">secs</span></div>
       </div>
-      <div class="cd-msg" id="ci-msg">May 18th 🍀</div>
     </div>
     <div class="cd-card cd-dad">
       <span class="cd-emoji">🎉</span>
-      <div class="cd-title">Daddy's Birthday!</div>
+      <div class="cd-label">
+        <div class="cd-title">Daddy's Birthday!</div>
+        <div class="cd-msg" id="cd-msg">May 21st 🎊</div>
+      </div>
       <div class="cd-numbers">
         <div class="cd-unit"><span class="cd-num" id="cd-d">--</span><span class="cd-lbl">days</span></div>
         <div class="cd-sep">:</div>
@@ -331,11 +325,13 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
         <div class="cd-sep">:</div>
         <div class="cd-unit"><span class="cd-num" id="cd-s">--</span><span class="cd-lbl">secs</span></div>
       </div>
-      <div class="cd-msg" id="cd-msg">May 21st 🎊</div>
     </div>
     <div class="cd-card cd-mom">
       <span class="cd-emoji">🌹</span>
-      <div class="cd-title">Amma's Birthday!</div>
+      <div class="cd-label">
+        <div class="cd-title">Amma's Birthday!</div>
+        <div class="cd-msg" id="cm-msg">September 19th 🌹</div>
+      </div>
       <div class="cd-numbers">
         <div class="cd-unit"><span class="cd-num" id="cm-d">--</span><span class="cd-lbl">days</span></div>
         <div class="cd-sep">:</div>
@@ -345,7 +341,22 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
         <div class="cd-sep">:</div>
         <div class="cd-unit"><span class="cd-num" id="cm-s">--</span><span class="cd-lbl">secs</span></div>
       </div>
-      <div class="cd-msg" id="cm-msg">September 19th 🌹</div>
+    </div>
+    <div class="cd-card cd-tara">
+      <span class="cd-emoji">🎂</span>
+      <div class="cd-label">
+        <div class="cd-title">Tara's Birthday!</div>
+        <div class="cd-msg" id="ct-msg">January 11th 🌊</div>
+      </div>
+      <div class="cd-numbers">
+        <div class="cd-unit"><span class="cd-num" id="ct-d">--</span><span class="cd-lbl">days</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="ct-h">--</span><span class="cd-lbl">hrs</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="ct-m">--</span><span class="cd-lbl">mins</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="ct-s">--</span><span class="cd-lbl">secs</span></div>
+      </div>
     </div>
   </div>
   <div class="section-label">🪄 WHAT SHALL WE DO?</div>
