@@ -1150,7 +1150,7 @@ function saveDrawing() {
     const btn = document.createElement('button');
     btn.className = 'c-tile';
     btn.style.cssText = `background:${t.color};border-color:${t.glow};box-shadow:0 6px 18px ${t.glow};`;
-    btn.innerHTML = `<span class="tile-emoji">${t.emoji}</span><span>${t.label}</span>`;
+    btn.innerHTML = `<span class="tile-emoji">${t.emoji}</span>`;
     btn.addEventListener('click', () => handleTap(t, btn));
     grid.appendChild(btn);
   });
