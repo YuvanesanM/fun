@@ -96,12 +96,16 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
 .cd-mom     { background:linear-gradient(135deg,rgba(251,113,133,.18),rgba(251,191,36,.15)); border-color:rgba(251,113,133,.4); box-shadow:0 8px 30px rgba(251,113,133,.12); }
 .cd-mom::before     { background:radial-gradient(circle at 50% 0%,#fb7185,transparent 70%); }
 .cd-mom:hover       { box-shadow:0 16px 45px rgba(251,113,133,.25); }
+.cd-tara    { background:linear-gradient(135deg,rgba(2,132,199,.18),rgba(13,148,136,.18)); border-color:rgba(103,232,249,.4); box-shadow:0 8px 30px rgba(103,232,249,.12); }
+.cd-tara::before    { background:radial-gradient(circle at 50% 0%,#67e8f9,transparent 70%); }
+.cd-tara:hover      { box-shadow:0 16px 45px rgba(103,232,249,.25); }
 .cd-emoji { font-size:2.4rem; display:block; margin-bottom:.35rem; animation:bounce 2.2s ease-in-out infinite; }
 .cd-title { font-family:'Fredoka One',cursive; font-size:1.1rem; margin-bottom:.75rem; }
 .cd-sana    .cd-title { color:var(--pink); }
 .cd-ireland .cd-title { color:var(--mint); }
 .cd-dad     .cd-title { color:var(--gold); }
 .cd-mom     .cd-title { color:#fb7185; }
+.cd-tara    .cd-title { color:var(--sky); }
 .cd-numbers { display:flex; justify-content:center; gap:.2rem; margin-bottom:.5rem; flex-wrap:nowrap; }
 .cd-unit    { display:flex; flex-direction:column; align-items:center; }
 .cd-num { font-family:'Fredoka One',cursive; font-size:clamp(1.15rem,2.4vw,1.65rem); line-height:1; min-width:1.8rem; padding:.18rem .22rem; border-radius:9px; text-align:center; }
@@ -109,6 +113,7 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
 .cd-ireland .cd-num { background:rgba(110,231,183,.2); color:var(--mint); }
 .cd-dad     .cd-num { background:rgba(252,211,77,.2);  color:var(--gold); }
 .cd-mom     .cd-num { background:rgba(251,113,133,.2); color:#fb7185; }
+.cd-tara    .cd-num { background:rgba(103,232,249,.2); color:var(--sky); }
 .cd-num.tick { animation:tick .22s ease; }
 .cd-sep  { font-family:'Fredoka One',cursive; font-size:1.1rem; color:rgba(255,255,255,.22); align-self:flex-start; margin-top:.15rem; }
 .cd-lbl  { font-size:.6rem; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.8px; margin-top:.2rem; }
@@ -272,6 +277,20 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
   </div>
   <div class="section-label">⏳ EXCITING THINGS COMING UP!</div>
   <div class="countdowns">
+    <div class="cd-card cd-tara">
+      <span class="cd-emoji">🎂</span>
+      <div class="cd-title">Tara's Birthday!</div>
+      <div class="cd-numbers">
+        <div class="cd-unit"><span class="cd-num" id="ct-d">--</span><span class="cd-lbl">days</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="ct-h">--</span><span class="cd-lbl">hrs</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="ct-m">--</span><span class="cd-lbl">mins</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="ct-s">--</span><span class="cd-lbl">secs</span></div>
+      </div>
+      <div class="cd-msg" id="ct-msg">January 11th 🌊</div>
+    </div>
     <div class="cd-card cd-sana">
       <span class="cd-emoji">🎂</span>
       <div class="cd-title">Sana's Birthday!</div>
@@ -574,8 +593,9 @@ function getTarget(month, day) {
   if (t < now) t = new Date(yr + 1, month - 1, day, 0, 0, 0).getTime();
   return t;
 }
-const tSana = getTarget(4, 17), tIre = getTarget(5, 18), tDad = getTarget(5, 21), tMom = getTarget(9, 19);
+const tTara = getTarget(1, 11), tSana = getTarget(4, 17), tIre = getTarget(5, 18), tDad = getTarget(5, 21), tMom = getTarget(9, 19);
 function tickAll() {
+  cdUpdate(tTara, ['ct-d','ct-h','ct-m','ct-s'], 'ct-msg', "IT'S TARA'S BIRTHDAY!", '🌊');
   cdUpdate(tSana, ['cs-d','cs-h','cs-m','cs-s'], 'cs-msg', "IT'S SANA'S BIRTHDAY!", '🎂');
   cdUpdate(tIre,  ['ci-d','ci-h','ci-m','ci-s'], 'ci-msg', "IT'S IRELAND DAY!",     '✈️');
   cdUpdate(tDad,  ['cd-d','cd-h','cd-m','cd-s'], 'cd-msg', "HAPPY BIRTHDAY DADDY!", '🎉');
