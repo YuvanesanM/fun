@@ -325,7 +325,7 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
     <div class="cd-card cd-mom">
       <span class="cd-emoji">🌹</span>
       <div class="cd-label">
-        <div class="cd-title">Amma's Birthday!</div>
+        <div class="cd-title">Ramyaa's Birthday!</div>
         <div class="cd-msg" id="cm-msg">September 19th 🌹</div>
       </div>
       <div class="cd-numbers">
@@ -389,7 +389,7 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
     <div class="cd-card cd-dad">
       <span class="cd-emoji">🎉</span>
       <div class="cd-label">
-        <div class="cd-title">Daddy's Birthday!</div>
+        <div class="cd-title">Yuvan's Birthday!</div>
         <div class="cd-msg" id="cd-msg">May 21st 🎊</div>
       </div>
       <div class="cd-numbers">
@@ -406,7 +406,7 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
       <span class="cd-emoji">✈️</span>
       <div class="cd-label">
         <div class="cd-title">Ireland!</div>
-        <div class="cd-msg"><span class="cd-today">🍀 WE WENT TO IRELAND! 🍀</span></div>
+        <div class="cd-msg">Completed · May 18th 🍀</div>
       </div>
       <div class="cd-numbers">
         <div class="cd-unit"><span class="cd-num">00</span><span class="cd-lbl">days</span></div>
@@ -666,11 +666,11 @@ function getTarget(month, day) {
 }
 const tMom = getTarget(9, 19), tJapan = getTarget(1, 6), tTara = getTarget(1, 11), tSana = getTarget(4, 17), tDad = getTarget(5, 21);
 function tickAll() {
-  cdUpdate(tMom,   ['cm-d','cm-h','cm-m','cm-s'], 'cm-msg', "HAPPY BIRTHDAY AMMA!",  '🌹');
+  cdUpdate(tMom,   ['cm-d','cm-h','cm-m','cm-s'], 'cm-msg', "HAPPY BIRTHDAY RAMYAA!",  '🌹');
   cdUpdate(tJapan, ['cj-d','cj-h','cj-m','cj-s'], 'cj-msg', "IT'S JAPAN TIME!",      '⛩️');
   cdUpdate(tTara,  ['ct-d','ct-h','ct-m','ct-s'], 'ct-msg', "IT'S TARA'S BIRTHDAY!", '🌊');
   cdUpdate(tSana,  ['cs-d','cs-h','cs-m','cs-s'], 'cs-msg', "IT'S SANA'S BIRTHDAY!", '🎂');
-  cdUpdate(tDad,   ['cd-d','cd-h','cd-m','cd-s'], 'cd-msg', "HAPPY BIRTHDAY DADDY!", '🎉');
+  cdUpdate(tDad,   ['cd-d','cd-h','cd-m','cd-s'], 'cd-msg', "HAPPY BIRTHDAY YUVAN!", '🎉');
 }
 tickAll(); setInterval(tickAll, 1000);
 
