@@ -99,6 +99,9 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
 .cd-tara    { background:linear-gradient(135deg,rgba(2,132,199,.18),rgba(13,148,136,.18)); border-color:rgba(103,232,249,.4); box-shadow:0 8px 30px rgba(103,232,249,.12); }
 .cd-tara::before    { background:radial-gradient(circle at 0% 50%,#67e8f9,transparent 70%); }
 .cd-tara:hover      { box-shadow:0 16px 45px rgba(103,232,249,.25); }
+.cd-japan   { background:linear-gradient(135deg,rgba(185,28,28,.18),rgba(239,68,68,.12)); border-color:rgba(239,68,68,.4); box-shadow:0 8px 30px rgba(239,68,68,.12); }
+.cd-japan::before   { background:radial-gradient(circle at 0% 50%,#ef4444,transparent 70%); }
+.cd-japan:hover     { box-shadow:0 16px 45px rgba(239,68,68,.25); }
 .cd-emoji { font-size:1.9rem; display:block; flex-shrink:0; animation:bounce 2.2s ease-in-out infinite; }
 .cd-label { flex:1; min-width:0; }
 .cd-title { font-family:'Fredoka One',cursive; font-size:1rem; margin-bottom:.1rem; }
@@ -107,6 +110,7 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
 .cd-dad     .cd-title { color:var(--gold); }
 .cd-mom     .cd-title { color:#fb7185; }
 .cd-tara    .cd-title { color:var(--sky); }
+.cd-japan   .cd-title { color:#ef4444; }
 .cd-numbers { display:flex; align-items:center; gap:.2rem; flex-wrap:nowrap; flex-shrink:0; }
 .cd-unit    { display:flex; flex-direction:column; align-items:center; }
 .cd-num { font-family:'Fredoka One',cursive; font-size:clamp(1rem,2.2vw,1.3rem); line-height:1; min-width:1.6rem; padding:.15rem .2rem; border-radius:8px; text-align:center; }
@@ -115,6 +119,7 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
 .cd-dad     .cd-num { background:rgba(252,211,77,.2);  color:var(--gold); }
 .cd-mom     .cd-num { background:rgba(251,113,133,.2); color:#fb7185; }
 .cd-tara    .cd-num { background:rgba(103,232,249,.2); color:var(--sky); }
+.cd-japan   .cd-num { background:rgba(239,68,68,.2);  color:#ef4444; }
 .cd-num.tick { animation:tick .22s ease; }
 .cd-sep  { font-family:'Fredoka One',cursive; font-size:.95rem; color:rgba(255,255,255,.22); align-self:flex-start; margin-top:.1rem; }
 .cd-lbl  { font-size:.55rem; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.8px; margin-top:.15rem; }
@@ -382,6 +387,22 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
         <div class="cd-unit"><span class="cd-num" id="cm-s">--</span><span class="cd-lbl">secs</span></div>
       </div>
     </div>
+    <div class="cd-card cd-japan">
+      <span class="cd-emoji">⛩️</span>
+      <div class="cd-label">
+        <div class="cd-title">Japan!</div>
+        <div class="cd-msg" id="cj-msg">January 6th ⛩️</div>
+      </div>
+      <div class="cd-numbers">
+        <div class="cd-unit"><span class="cd-num" id="cj-d">--</span><span class="cd-lbl">days</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cj-h">--</span><span class="cd-lbl">hrs</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cj-m">--</span><span class="cd-lbl">mins</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cj-s">--</span><span class="cd-lbl">secs</span></div>
+      </div>
+    </div>
     <div class="cd-card cd-tara">
       <span class="cd-emoji">🎂</span>
       <div class="cd-label">
@@ -644,13 +665,14 @@ function getTarget(month, day) {
   if (t < now) t = new Date(yr + 1, month - 1, day, 0, 0, 0).getTime();
   return t;
 }
-const tTara = getTarget(1, 11), tSana = getTarget(4, 17), tIre = getTarget(5, 18), tDad = getTarget(5, 21), tMom = getTarget(9, 19);
+const tJapan = getTarget(1, 6), tTara = getTarget(1, 11), tSana = getTarget(4, 17), tIre = getTarget(5, 18), tDad = getTarget(5, 21), tMom = getTarget(9, 19);
 function tickAll() {
-  cdUpdate(tTara, ['ct-d','ct-h','ct-m','ct-s'], 'ct-msg', "IT'S TARA'S BIRTHDAY!", '🌊');
-  cdUpdate(tSana, ['cs-d','cs-h','cs-m','cs-s'], 'cs-msg', "IT'S SANA'S BIRTHDAY!", '🎂');
-  cdUpdate(tIre,  ['ci-d','ci-h','ci-m','ci-s'], 'ci-msg', "IT'S IRELAND DAY!",     '✈️');
-  cdUpdate(tDad,  ['cd-d','cd-h','cd-m','cd-s'], 'cd-msg', "HAPPY BIRTHDAY DADDY!", '🎉');
-  cdUpdate(tMom,  ['cm-d','cm-h','cm-m','cm-s'], 'cm-msg', "HAPPY BIRTHDAY AMMA!",  '🌹');
+  cdUpdate(tJapan, ['cj-d','cj-h','cj-m','cj-s'], 'cj-msg', "IT'S JAPAN TIME!",       '⛩️');
+  cdUpdate(tTara,  ['ct-d','ct-h','ct-m','ct-s'], 'ct-msg', "IT'S TARA'S BIRTHDAY!", '🌊');
+  cdUpdate(tSana,  ['cs-d','cs-h','cs-m','cs-s'], 'cs-msg', "IT'S SANA'S BIRTHDAY!", '🎂');
+  cdUpdate(tIre,   ['ci-d','ci-h','ci-m','ci-s'], 'ci-msg', "IT'S IRELAND DAY!",     '✈️');
+  cdUpdate(tDad,   ['cd-d','cd-h','cd-m','cd-s'], 'cd-msg', "HAPPY BIRTHDAY DADDY!", '🎉');
+  cdUpdate(tMom,   ['cm-d','cm-h','cm-m','cm-s'], 'cm-msg', "HAPPY BIRTHDAY AMMA!",  '🌹');
 }
 tickAll(); setInterval(tickAll, 1000);
 
