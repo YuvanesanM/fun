@@ -87,9 +87,6 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
 .cd-sana    { background:linear-gradient(135deg,rgba(219,39,119,.18),rgba(124,58,237,.18)); border-color:rgba(244,114,182,.4); box-shadow:0 8px 30px rgba(244,114,182,.15); }
 .cd-sana::before    { background:radial-gradient(circle at 0% 50%,#f472b6,transparent 70%); }
 .cd-sana:hover      { box-shadow:0 16px 45px rgba(244,114,182,.3); }
-.cd-ireland { background:linear-gradient(135deg,rgba(5,150,105,.18),rgba(2,132,199,.18)); border-color:rgba(110,231,183,.4); box-shadow:0 8px 30px rgba(110,231,183,.12); }
-.cd-ireland::before { background:radial-gradient(circle at 0% 50%,#6ee7b7,transparent 70%); }
-.cd-ireland:hover   { box-shadow:0 16px 45px rgba(110,231,183,.25); }
 .cd-dad     { background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(239,68,68,.15)); border-color:rgba(252,211,77,.4); box-shadow:0 8px 30px rgba(252,211,77,.12); }
 .cd-dad::before     { background:radial-gradient(circle at 0% 50%,#fcd34d,transparent 70%); }
 .cd-dad:hover       { box-shadow:0 16px 45px rgba(252,211,77,.25); }
@@ -106,7 +103,6 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
 .cd-label { flex:1; min-width:0; }
 .cd-title { font-family:'Fredoka One',cursive; font-size:1rem; margin-bottom:.1rem; }
 .cd-sana    .cd-title { color:var(--pink); }
-.cd-ireland .cd-title { color:var(--mint); }
 .cd-dad     .cd-title { color:var(--gold); }
 .cd-mom     .cd-title { color:#fb7185; }
 .cd-tara    .cd-title { color:var(--sky); }
@@ -115,7 +111,6 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
 .cd-unit    { display:flex; flex-direction:column; align-items:center; }
 .cd-num { font-family:'Fredoka One',cursive; font-size:clamp(1rem,2.2vw,1.3rem); line-height:1; min-width:1.6rem; padding:.15rem .2rem; border-radius:8px; text-align:center; }
 .cd-sana    .cd-num { background:rgba(244,114,182,.2); color:var(--pink); }
-.cd-ireland .cd-num { background:rgba(110,231,183,.2); color:var(--mint); }
 .cd-dad     .cd-num { background:rgba(252,211,77,.2);  color:var(--gold); }
 .cd-mom     .cd-num { background:rgba(251,113,133,.2); color:#fb7185; }
 .cd-tara    .cd-num { background:rgba(103,232,249,.2); color:var(--sky); }
@@ -323,54 +318,6 @@ button:focus-visible { outline:2.5px solid var(--sky); outline-offset:3px; }
   </div>
   <div class="section-label">⏳ EXCITING THINGS COMING UP!</div>
   <div class="countdowns">
-    <div class="cd-card cd-sana">
-      <span class="cd-emoji">🎂</span>
-      <div class="cd-label">
-        <div class="cd-title">Sana's Birthday!</div>
-        <div class="cd-msg" id="cs-msg">April 17th 🌸</div>
-      </div>
-      <div class="cd-numbers">
-        <div class="cd-unit"><span class="cd-num" id="cs-d">--</span><span class="cd-lbl">days</span></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><span class="cd-num" id="cs-h">--</span><span class="cd-lbl">hrs</span></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><span class="cd-num" id="cs-m">--</span><span class="cd-lbl">mins</span></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><span class="cd-num" id="cs-s">--</span><span class="cd-lbl">secs</span></div>
-      </div>
-    </div>
-    <div class="cd-card cd-ireland">
-      <span class="cd-emoji">✈️</span>
-      <div class="cd-label">
-        <div class="cd-title">Ireland!</div>
-        <div class="cd-msg" id="ci-msg">May 18th 🍀</div>
-      </div>
-      <div class="cd-numbers">
-        <div class="cd-unit"><span class="cd-num" id="ci-d">--</span><span class="cd-lbl">days</span></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><span class="cd-num" id="ci-h">--</span><span class="cd-lbl">hrs</span></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><span class="cd-num" id="ci-m">--</span><span class="cd-lbl">mins</span></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><span class="cd-num" id="ci-s">--</span><span class="cd-lbl">secs</span></div>
-      </div>
-    </div>
-    <div class="cd-card cd-dad">
-      <span class="cd-emoji">🎉</span>
-      <div class="cd-label">
-        <div class="cd-title">Daddy's Birthday!</div>
-        <div class="cd-msg" id="cd-msg">May 21st 🎊</div>
-      </div>
-      <div class="cd-numbers">
-        <div class="cd-unit"><span class="cd-num" id="cd-d">--</span><span class="cd-lbl">days</span></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><span class="cd-num" id="cd-h">--</span><span class="cd-lbl">hrs</span></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><span class="cd-num" id="cd-m">--</span><span class="cd-lbl">mins</span></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><span class="cd-num" id="cd-s">--</span><span class="cd-lbl">secs</span></div>
-      </div>
-    </div>
     <div class="cd-card cd-mom">
       <span class="cd-emoji">🌹</span>
       <div class="cd-label">
@@ -665,14 +612,13 @@ function getTarget(month, day) {
   if (t < now) t = new Date(yr + 1, month - 1, day, 0, 0, 0).getTime();
   return t;
 }
-const tJapan = getTarget(1, 6), tTara = getTarget(1, 11), tSana = getTarget(4, 17), tIre = getTarget(5, 18), tDad = getTarget(5, 21), tMom = getTarget(9, 19);
+const tMom = getTarget(9, 19), tJapan = getTarget(1, 6), tTara = getTarget(1, 11), tSana = getTarget(4, 17), tDad = getTarget(5, 21);
 function tickAll() {
-  cdUpdate(tJapan, ['cj-d','cj-h','cj-m','cj-s'], 'cj-msg', "IT'S JAPAN TIME!",       '⛩️');
+  cdUpdate(tMom,   ['cm-d','cm-h','cm-m','cm-s'], 'cm-msg', "HAPPY BIRTHDAY AMMA!",  '🌹');
+  cdUpdate(tJapan, ['cj-d','cj-h','cj-m','cj-s'], 'cj-msg', "IT'S JAPAN TIME!",      '⛩️');
   cdUpdate(tTara,  ['ct-d','ct-h','ct-m','ct-s'], 'ct-msg', "IT'S TARA'S BIRTHDAY!", '🌊');
   cdUpdate(tSana,  ['cs-d','cs-h','cs-m','cs-s'], 'cs-msg', "IT'S SANA'S BIRTHDAY!", '🎂');
-  cdUpdate(tIre,   ['ci-d','ci-h','ci-m','ci-s'], 'ci-msg', "IT'S IRELAND DAY!",     '✈️');
   cdUpdate(tDad,   ['cd-d','cd-h','cd-m','cd-s'], 'cd-msg', "HAPPY BIRTHDAY DADDY!", '🎉');
-  cdUpdate(tMom,   ['cm-d','cm-h','cm-m','cm-s'], 'cm-msg', "HAPPY BIRTHDAY AMMA!",  '🌹');
 }
 tickAll(); setInterval(tickAll, 1000);
 
