@@ -1,0 +1,705 @@
+<title>Sana's Leg Exercises</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* ── TOKENS ── */
+:root {
+  --bg:        #FFF5F9;
+  --surface:   #FFFFFF;
+  --text-1:    #3B1F2B;
+  --text-2:    #7A5468;
+  --text-3:    #B08090;
+  --border:    rgba(180,100,130,.1);
+  --shadow-sm: 0 2px 12px rgba(220,120,160,.12);
+  --shadow-md: 0 8px 32px rgba(200,100,140,.16);
+
+  /* per-exercise accent (overridden by JS) */
+  --ex-pale:   #FFF1F2;
+  --ex-soft:   #FECDD3;
+  --ex-accent: #FB7185;
+  --ex-glow:   rgba(251,113,133,.22);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:      #1C1018;
+    --surface: #27152A;
+    --text-1:  #F5E8F0;
+    --text-2:  #C9A8BB;
+    --text-3:  #8C6A7C;
+    --border:  rgba(255,255,255,.07);
+    --shadow-sm: 0 2px 12px rgba(0,0,0,.4);
+    --shadow-md: 0 8px 32px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"] {
+  --bg:      #1C1018;
+  --surface: #27152A;
+  --text-1:  #F5E8F0;
+  --text-2:  #C9A8BB;
+  --text-3:  #8C6A7C;
+  --border:  rgba(255,255,255,.07);
+  --shadow-sm: 0 2px 12px rgba(0,0,0,.4);
+  --shadow-md: 0 8px 32px rgba(0,0,0,.5);
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+button:focus-visible { outline: 3px solid var(--ex-accent); outline-offset: 3px; }
+
+/* ── BASE ── */
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text-1);
+  min-height: 100vh;
+  padding-block: 1.5rem 3rem;
+  padding-inline: 1rem;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .4s;
+}
+
+/* ── HEADER ── */
+.page-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.page-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  color: var(--ex-accent);
+  letter-spacing: .5px;
+  transition: color .4s;
+}
+.page-sub {
+  font-size: .88rem;
+  color: var(--text-3);
+  margin-top: .2rem;
+  font-weight: 600;
+}
+
+/* ── PROGRESS DOTS ── */
+.dots-row {
+  display: flex;
+  justify-content: center;
+  gap: .45rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 2px solid var(--border);
+  transition: all .35s;
+}
+.dot.done    { background: var(--ex-soft); border-color: var(--ex-accent); }
+.dot.active  { background: var(--ex-accent); border-color: var(--ex-accent);
+               transform: scale(1.35); box-shadow: 0 0 0 3px var(--ex-glow); }
+
+/* ── EXERCISE CARD ── */
+.exercise-card {
+  background: var(--surface);
+  border-radius: 28px;
+  padding: 2rem 1.75rem;
+  max-width: 480px;
+  margin: 0 auto 1.5rem;
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--border);
+  transition: border-color .4s, box-shadow .4s;
+  text-align: center;
+}
+.exercise-card:hover { box-shadow: 0 12px 40px var(--ex-glow); }
+
+.ex-badge {
+  display: inline-flex; align-items: center; gap: .4rem;
+  background: var(--ex-pale);
+  color: var(--ex-accent);
+  border-radius: 999px;
+  padding: .28rem .85rem;
+  font-family: 'Fredoka One', cursive;
+  font-size: .82rem;
+  letter-spacing: .5px;
+  margin-bottom: 1rem;
+  transition: background .4s, color .4s;
+}
+.ex-emoji-big {
+  font-size: 3.2rem;
+  display: block;
+  margin-bottom: .5rem;
+  animation: bob 2.4s ease-in-out infinite;
+  filter: drop-shadow(0 4px 8px var(--ex-glow));
+}
+.ex-name {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  color: var(--ex-accent);
+  text-wrap: balance;
+  margin-bottom: .5rem;
+  transition: color .4s;
+}
+.ex-instruction {
+  font-size: 1rem;
+  color: var(--text-2);
+  line-height: 1.55;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-wrap: balance;
+}
+
+/* ── TIMER RING ── */
+.timer-wrap {
+  position: relative;
+  width: 180px; height: 180px;
+  margin: 0 auto 1.2rem;
+}
+.timer-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring-track {
+  fill: none;
+  stroke: var(--ex-soft);
+  stroke-width: 11;
+  opacity: .4;
+  transition: stroke .4s;
+}
+.ring-fill {
+  fill: none;
+  stroke: var(--ex-accent);
+  stroke-width: 11;
+  stroke-linecap: round;
+  stroke-dasharray: 472;
+  stroke-dashoffset: 0;
+  transition: stroke .4s, stroke-dashoffset .9s linear;
+}
+.ring-fill.instant { transition: stroke .4s, stroke-dashoffset 0s; }
+.timer-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.timer-digits {
+  font-family: 'Fredoka One', cursive;
+  font-size: 2.6rem;
+  color: var(--ex-accent);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  transition: color .4s;
+}
+.timer-sub {
+  font-size: .7rem;
+  font-weight: 700;
+  color: var(--text-3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: .2rem;
+}
+
+/* ── REP COUNTER ── */
+.rep-section {
+  background: var(--ex-pale);
+  border-radius: 16px;
+  padding: .9rem;
+  margin-bottom: 1.2rem;
+  transition: background .4s;
+}
+.rep-row { display: flex; align-items: center; justify-content: center; gap: .6rem; margin-bottom: .65rem; }
+.rep-current {
+  font-family: 'Fredoka One', cursive;
+  font-size: 2.4rem;
+  color: var(--ex-accent);
+  line-height: 1;
+  transition: transform .12s;
+}
+.rep-current.pop { transform: scale(1.3); }
+.rep-of { font-size: 1rem; color: var(--text-3); font-weight: 700; }
+.rep-target-label { font-size: .88rem; color: var(--text-2); font-weight: 600; }
+.tap-btn {
+  background: var(--ex-accent);
+  color: white;
+  border-radius: 999px;
+  padding: .65rem 1.8rem;
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.05rem;
+  box-shadow: 0 4px 14px var(--ex-glow);
+  transition: all .15s;
+  display: block;
+  width: 100%;
+}
+.tap-btn:active { transform: scale(.95); }
+
+/* ── START / PAUSE BTN ── */
+.control-row { display: flex; gap: .75rem; justify-content: center; margin-top: .5rem; }
+.start-btn {
+  background: var(--ex-accent);
+  color: white;
+  border-radius: 999px;
+  padding: .8rem 2.4rem;
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.15rem;
+  box-shadow: 0 6px 20px var(--ex-glow);
+  transition: transform .15s, box-shadow .15s, background .4s;
+  letter-spacing: .5px;
+}
+.start-btn:hover { transform: scale(1.05); box-shadow: 0 8px 28px var(--ex-glow); }
+.start-btn:active { transform: scale(.97); }
+.skip-btn {
+  background: var(--ex-pale);
+  color: var(--ex-accent);
+  border-radius: 999px;
+  padding: .8rem 1.4rem;
+  font-family: 'Fredoka One', cursive;
+  font-size: 1rem;
+  transition: background .15s;
+}
+.skip-btn:hover { background: var(--ex-soft); }
+
+/* ── OVERLAY ── */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(30,10,22,.6);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+  animation: fadein .3s ease;
+}
+.overlay.hidden { display: none; }
+@keyframes fadein { from { opacity:0 } to { opacity:1 } }
+
+.overlay-card {
+  background: var(--surface);
+  border-radius: 28px;
+  padding: 2.5rem 2rem;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  animation: popIn .35s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn { from { transform:scale(.85); opacity:0 } to { transform:scale(1); opacity:1 } }
+
+.overlay-emoji { font-size: 3.5rem; margin-bottom: .75rem; }
+.overlay-card h2 {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.8rem;
+  color: var(--ex-accent);
+  margin-bottom: .4rem;
+  transition: color .4s;
+}
+.overlay-card p { font-size: 1rem; color: var(--text-2); font-weight: 600; line-height: 1.5; }
+.overlay-big-num {
+  font-family: 'Fredoka One', cursive;
+  font-size: 5rem;
+  color: var(--ex-accent);
+  line-height: 1;
+  margin: .5rem 0;
+  transition: color .4s;
+}
+.overlay-card .small { font-size: .82rem; color: var(--text-3); margin-top: .4rem; }
+
+/* ── DONE SCREEN ── */
+.done-stars { font-size: 2.4rem; margin-bottom: .5rem; }
+.done-btn {
+  background: var(--ex-accent);
+  color: white;
+  border-radius: 999px;
+  padding: .8rem 2rem;
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.1rem;
+  box-shadow: 0 6px 20px var(--ex-glow);
+  margin-top: 1.2rem;
+  transition: transform .15s;
+}
+.done-btn:hover { transform: scale(1.05); }
+
+/* ── UTIL ── */
+.hidden { display: none !important; }
+@keyframes bob {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ex-emoji-big { animation: none; }
+  .ring-fill     { transition: stroke .4s; }
+}
+@media (max-width: 400px) {
+  .exercise-card { padding: 1.5rem 1.2rem; border-radius: 22px; }
+  .timer-wrap { width: 150px; height: 150px; }
+  .timer-digits { font-size: 2.1rem; }
+}
+</style>
+
+<header class="page-header">
+  <h1 class="page-title">💪 Sana's Exercises</h1>
+  <p class="page-sub">Let's make your leg stronger! 🌸</p>
+</header>
+
+<div class="dots-row" id="dots"></div>
+
+<div class="exercise-card" id="card">
+  <div class="ex-badge" id="badge">Exercise 1 of 10</div>
+  <span class="ex-emoji-big" id="emoji">🦵</span>
+  <h2 class="ex-name" id="name">Forward Push</h2>
+  <p class="ex-instruction" id="instruction">Push your leg forward and your hand backward</p>
+
+  <div class="timer-wrap">
+    <svg class="timer-ring" viewBox="0 0 160 160" aria-hidden="true">
+      <circle class="ring-track" cx="80" cy="80" r="75"/>
+      <circle class="ring-fill instant" id="ring" cx="80" cy="80" r="75"
+        stroke-dasharray="472" stroke-dashoffset="0"/>
+    </svg>
+    <div class="timer-inner">
+      <div class="timer-digits" id="digits">1:00</div>
+      <div class="timer-sub" id="timer-sub">tap to start</div>
+    </div>
+  </div>
+
+  <div class="rep-section hidden" id="rep-section">
+    <div class="rep-row">
+      <span class="rep-current" id="rep-current">0</span>
+      <div>
+        <div class="rep-of" id="rep-of">/ 30</div>
+        <div class="rep-target-label" id="rep-target-label">times</div>
+      </div>
+    </div>
+    <button class="tap-btn" id="tap-btn" onclick="countRep()" aria-label="Count one rep">
+      Tap to count! 👆
+    </button>
+  </div>
+
+  <div class="control-row">
+    <button class="start-btn" id="main-btn" onclick="handleMain()">▶ Start!</button>
+    <button class="skip-btn hidden" id="skip-btn" onclick="skip()" aria-label="Skip exercise">Skip →</button>
+  </div>
+</div>
+
+<!-- mid-break overlay (for ex 8/9/10 at 30s) -->
+<div class="overlay hidden" id="midbreak-ov" role="dialog" aria-modal="true" aria-label="Mini break">
+  <div class="overlay-card">
+    <div class="overlay-emoji">😮‍💨</div>
+    <h2>Mini Break!</h2>
+    <p>Halfway there! Take a quick breather 🌟</p>
+    <div class="overlay-big-num" id="midbreak-num">10</div>
+    <p class="small">Continuing in a moment…</p>
+  </div>
+</div>
+
+<!-- between-exercise break overlay -->
+<div class="overlay hidden" id="exbreak-ov" role="dialog" aria-modal="true" aria-label="Exercise break">
+  <div class="overlay-card">
+    <div class="overlay-emoji" id="exbreak-emoji">⭐</div>
+    <h2 id="exbreak-title">Brilliant!</h2>
+    <p id="exbreak-msg">Great work! Rest for 10 seconds 💜</p>
+    <div class="overlay-big-num" id="exbreak-num">10</div>
+    <p class="small" id="exbreak-sub">Next up: Exercise 2</p>
+  </div>
+</div>
+
+<!-- done screen -->
+<div class="overlay hidden" id="done-ov" role="dialog" aria-modal="true" aria-label="All done">
+  <div class="overlay-card">
+    <div class="done-stars">🌟🎉🌟</div>
+    <h2>You did it, Sana!</h2>
+    <p>All 10 exercises done! You're a superstar and your leg is going to feel so much better! 🦵💪🌸</p>
+    <button class="done-btn" onclick="restart()">Do it again! 🔄</button>
+  </div>
+</div>
+
+<script>
+/* ── DATA ── */
+const CIRC = 472; // 2π×75 ≈ 471.24
+
+const EXERCISES = [
+  { num:1,  emoji:"🦵", name:"Forward Push",
+    instruction:"Push your leg forward and your hand backward",
+    duration:60, type:"standard",
+    colors:{ pale:"#FFF1F2", soft:"#FECDD3", accent:"#FB7185", glow:"rgba(251,113,133,.22)" } },
+  { num:2,  emoji:"🤸", name:"Backward Push",
+    instruction:"Push your leg backward and your hand forward",
+    duration:60, type:"standard",
+    colors:{ pale:"#EFF6FF", soft:"#BAE6FD", accent:"#38BDF8", glow:"rgba(56,189,248,.22)" } },
+  { num:3,  emoji:"⬇️", name:"Downward Push",
+    instruction:"Push your leg downwards and your hand upwards",
+    duration:60, type:"standard",
+    colors:{ pale:"#ECFDF5", soft:"#A7F3D0", accent:"#34D399", glow:"rgba(52,211,153,.22)" } },
+  { num:4,  emoji:"⬆️", name:"Upward Push",
+    instruction:"Push your leg upwards and your hand downwards",
+    duration:60, type:"standard",
+    colors:{ pale:"#FEFCE8", soft:"#FEF08A", accent:"#EAB308", glow:"rgba(234,179,8,.22)" } },
+  { num:5,  emoji:"🧺", name:"Pick Up Towel",
+    instruction:"Pick up the towel from the floor using your toes",
+    duration:30, type:"count", total:30,
+    colors:{ pale:"#F5F3FF", soft:"#DDD6FE", accent:"#A78BFA", glow:"rgba(167,139,250,.22)" } },
+  { num:6,  emoji:"🪨", name:"Pick Up Pebbles",
+    instruction:"Pick up 10 small rocks or pebbles one by one",
+    duration:10, type:"count", total:10,
+    colors:{ pale:"#FFF7ED", soft:"#FED7AA", accent:"#FB923C", glow:"rgba(251,146,60,.22)" } },
+  { num:7,  emoji:"⚽", name:"Roll a Ball",
+    instruction:"Roll the ball 30 times using the sole of your foot",
+    duration:30, type:"count", total:30,
+    colors:{ pale:"#FFF1F2", soft:"#FECDD3", accent:"#F43F5E", glow:"rgba(244,63,94,.22)" } },
+  { num:8,  emoji:"🚶", name:"Marching",
+    instruction:"March in place for two full rounds — keep your back straight!",
+    duration:60, type:"split",
+    colors:{ pale:"#EFF6FF", soft:"#BAE6FD", accent:"#0EA5E9", glow:"rgba(14,165,233,.22)" } },
+  { num:9,  emoji:"🦀", name:"Crab Walk",
+    instruction:"Crab walk for two full rounds — hands and feet on the floor!",
+    duration:60, type:"split",
+    colors:{ pale:"#ECFDF5", soft:"#A7F3D0", accent:"#10B981", glow:"rgba(16,185,129,.22)" } },
+  { num:10, emoji:"👣", name:"Toe Walk",
+    instruction:"Walk on your tiptoes for two full rounds — nice and tall!",
+    duration:60, type:"split",
+    colors:{ pale:"#F5F3FF", soft:"#DDD6FE", accent:"#8B5CF6", glow:"rgba(139,92,246,.22)" } },
+];
+
+/* ── STATE ── */
+let exIdx = 0;
+let phase = 'ready';   // ready | running | midbreak | exbreak | done
+let timeLeft = 0;
+let breakLeft = 0;
+let repCount = 0;
+let timerId = null;
+
+/* ── INIT ── */
+buildDots();
+loadExercise(0);
+
+function buildDots() {
+  const row = document.getElementById('dots');
+  EXERCISES.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.id = 'dot-' + i;
+    row.appendChild(d);
+  });
+}
+
+function loadExercise(idx) {
+  const ex = EXERCISES[idx];
+  exIdx = idx;
+  phase = 'ready';
+  timeLeft = ex.duration;
+  repCount = 0;
+
+  // colors
+  applyColors(ex.colors);
+
+  // header
+  document.getElementById('badge').textContent = `Exercise ${ex.num} of 10`;
+  document.getElementById('emoji').textContent  = ex.emoji;
+  document.getElementById('name').textContent   = ex.name;
+  document.getElementById('instruction').textContent = ex.instruction;
+
+  // timer
+  setTimerDisplay(ex.duration, ex.duration, true);
+  document.getElementById('timer-sub').textContent = 'tap to start';
+
+  // rep section
+  const repSec = document.getElementById('rep-section');
+  if (ex.type === 'count') {
+    repSec.classList.remove('hidden');
+    document.getElementById('rep-current').textContent = '0';
+    document.getElementById('rep-of').textContent = `/ ${ex.total}`;
+    document.getElementById('rep-target-label').textContent = ex.total === 10 ? 'rocks' : ex.num === 7 ? 'rolls' : 'times';
+    document.getElementById('tap-btn').disabled = true;
+  } else {
+    repSec.classList.add('hidden');
+  }
+
+  // buttons
+  setMainBtn('▶ Start!');
+  document.getElementById('skip-btn').classList.add('hidden');
+
+  // dots
+  updateDots();
+}
+
+function applyColors(c) {
+  const r = document.documentElement.style;
+  r.setProperty('--ex-pale',   c.pale);
+  r.setProperty('--ex-soft',   c.soft);
+  r.setProperty('--ex-accent', c.accent);
+  r.setProperty('--ex-glow',   c.glow);
+}
+
+function updateDots() {
+  EXERCISES.forEach((_, i) => {
+    const d = document.getElementById('dot-' + i);
+    d.className = 'dot' + (i < exIdx ? ' done' : i === exIdx ? ' active' : '');
+  });
+}
+
+/* ── TIMER DISPLAY ── */
+function setTimerDisplay(left, total, instant) {
+  const ring = document.getElementById('ring');
+  const mins = Math.floor(left / 60);
+  const secs = left % 60;
+  document.getElementById('digits').textContent =
+    mins > 0 ? `${mins}:${String(secs).padStart(2,'0')}` : String(secs);
+
+  const offset = CIRC * (1 - left / total);
+  if (instant) {
+    ring.classList.add('instant');
+    ring.style.strokeDashoffset = offset;
+    requestAnimationFrame(() => ring.classList.remove('instant'));
+  } else {
+    ring.style.strokeDashoffset = offset;
+  }
+}
+
+/* ── CONTROLS ── */
+function handleMain() {
+  if (phase === 'ready')   { startExercise(); return; }
+  if (phase === 'running') { pauseExercise(); return; }
+  if (phase === 'paused')  { resumeExercise(); return; }
+}
+
+function startExercise() {
+  phase = 'running';
+  const ex = EXERCISES[exIdx];
+  if (ex.type === 'count') {
+    document.getElementById('tap-btn').disabled = false;
+  }
+  setMainBtn('⏸ Pause');
+  document.getElementById('skip-btn').classList.remove('hidden');
+  document.getElementById('timer-sub').textContent = '';
+  startTicking();
+}
+
+function pauseExercise() {
+  phase = 'paused';
+  clearInterval(timerId);
+  setMainBtn('▶ Resume');
+  document.getElementById('timer-sub').textContent = 'paused';
+}
+
+function resumeExercise() {
+  phase = 'running';
+  setMainBtn('⏸ Pause');
+  document.getElementById('timer-sub').textContent = '';
+  startTicking();
+}
+
+function skip() {
+  clearInterval(timerId);
+  finishExercise();
+}
+
+function setMainBtn(label) {
+  document.getElementById('main-btn').textContent = label;
+}
+
+/* ── TICKING ── */
+function startTicking() {
+  clearInterval(timerId);
+  timerId = setInterval(tick, 1000);
+}
+
+function tick() {
+  const ex = EXERCISES[exIdx];
+  timeLeft--;
+  setTimerDisplay(timeLeft, ex.duration, false);
+
+  // mid-break trigger at 30s for split exercises
+  if (ex.type === 'split' && timeLeft === 30) {
+    clearInterval(timerId);
+    phase = 'midbreak';
+    startMidBreak();
+    return;
+  }
+
+  if (timeLeft <= 0) {
+    clearInterval(timerId);
+    finishExercise();
+  }
+}
+
+/* ── MID BREAK ── */
+function startMidBreak() {
+  breakLeft = 10;
+  document.getElementById('midbreak-num').textContent = breakLeft;
+  document.getElementById('midbreak-ov').classList.remove('hidden');
+  timerId = setInterval(midBreakTick, 1000);
+}
+function midBreakTick() {
+  breakLeft--;
+  document.getElementById('midbreak-num').textContent = breakLeft;
+  if (breakLeft <= 0) {
+    clearInterval(timerId);
+    document.getElementById('midbreak-ov').classList.add('hidden');
+    phase = 'running';
+    setMainBtn('⏸ Pause');
+    startTicking();
+  }
+}
+
+/* ── EXERCISE COMPLETE ── */
+function finishExercise() {
+  phase = 'exbreak';
+  const ex = EXERCISES[exIdx];
+  const isLast = exIdx === EXERCISES.length - 1;
+
+  if (isLast) {
+    // go straight to done
+    showDone();
+    return;
+  }
+
+  const cheers = ['Brilliant! 🌟', 'Superstar! ⭐', 'Amazing! 🎉', 'Fantastic! 🥳',
+    'Incredible! 💫', 'Awesome! 🏆', 'You nailed it! 🎯', 'So strong! 💪',
+    'Wonderful! 🌸', 'Great job! 🙌'];
+  const msgs = ['Rest up — you deserve it! 💜', 'Take a breather! ✨',
+    'You\'re doing brilliantly! 🌟', 'Almost there, keep going! 🚀',
+    'Your leg is getting stronger! 💪', 'So proud of you! 🌸'];
+
+  const nextEx = EXERCISES[exIdx + 1];
+  document.getElementById('exbreak-emoji').textContent = ex.emoji;
+  document.getElementById('exbreak-title').textContent = cheers[exIdx];
+  document.getElementById('exbreak-msg').textContent   = msgs[exIdx % msgs.length];
+  document.getElementById('exbreak-sub').textContent   = `Next up: ${nextEx.name} ${nextEx.emoji}`;
+
+  breakLeft = 10;
+  document.getElementById('exbreak-num').textContent = breakLeft;
+  applyColors(nextEx.colors); // preview next colors
+  document.getElementById('exbreak-ov').classList.remove('hidden');
+  timerId = setInterval(exBreakTick, 1000);
+}
+
+function exBreakTick() {
+  breakLeft--;
+  document.getElementById('exbreak-num').textContent = breakLeft;
+  if (breakLeft <= 0) {
+    clearInterval(timerId);
+    document.getElementById('exbreak-ov').classList.add('hidden');
+    loadExercise(exIdx + 1);
+  }
+}
+
+/* ── REP COUNT ── */
+function countRep() {
+  const ex = EXERCISES[exIdx];
+  if (phase !== 'running' || ex.type !== 'count') return;
+  repCount = Math.min(repCount + 1, ex.total);
+  const el = document.getElementById('rep-current');
+  el.textContent = repCount;
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
+  setTimeout(() => el.classList.remove('pop'), 120);
+}
+
+/* ── DONE ── */
+function showDone() {
+  applyColors(EXERCISES[0].colors);
+  document.getElementById('done-ov').classList.remove('hidden');
+  EXERCISES.forEach((_, i) => {
+    document.getElementById('dot-' + i).className = 'dot done';
+  });
+}
+
+function restart() {
+  document.getElementById('done-ov').classList.add('hidden');
+  loadExercise(0);
+}
+</script>
