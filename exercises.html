@@ -3,16 +3,14 @@
 <style>
 /* ── TOKENS ── */
 :root {
-  --bg:        #FFF5F9;
-  --surface:   #FFFFFF;
-  --text-1:    #3B1F2B;
-  --text-2:    #7A5468;
-  --text-3:    #B08090;
-  --border:    rgba(180,100,130,.1);
-  --shadow-sm: 0 2px 12px rgba(220,120,160,.12);
-  --shadow-md: 0 8px 32px rgba(200,100,140,.16);
-
-  /* per-exercise accent (overridden by JS) */
+  --bg:      #FFF5F9;
+  --surface: #FFFFFF;
+  --text-1:  #3B1F2B;
+  --text-2:  #7A5468;
+  --text-3:  #B08090;
+  --border:  rgba(180,100,130,.1);
+  --sh-sm:   0 2px 12px rgba(220,120,160,.12);
+  --sh-md:   0 8px 32px rgba(200,100,140,.16);
   --ex-pale:   #FFF1F2;
   --ex-soft:   #FECDD3;
   --ex-accent: #FB7185;
@@ -20,334 +18,315 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg:      #1C1018;
-    --surface: #27152A;
-    --text-1:  #F5E8F0;
-    --text-2:  #C9A8BB;
-    --text-3:  #8C6A7C;
+    --bg:      #1C1018; --surface: #27152A;
+    --text-1:  #F5E8F0; --text-2:  #C9A8BB; --text-3: #8C6A7C;
     --border:  rgba(255,255,255,.07);
-    --shadow-sm: 0 2px 12px rgba(0,0,0,.4);
-    --shadow-md: 0 8px 32px rgba(0,0,0,.5);
+    --sh-sm:   0 2px 12px rgba(0,0,0,.4);
+    --sh-md:   0 8px 32px rgba(0,0,0,.5);
   }
 }
 :root[data-theme="dark"] {
-  --bg:      #1C1018;
-  --surface: #27152A;
-  --text-1:  #F5E8F0;
-  --text-2:  #C9A8BB;
-  --text-3:  #8C6A7C;
+  --bg:      #1C1018; --surface: #27152A;
+  --text-1:  #F5E8F0; --text-2:  #C9A8BB; --text-3: #8C6A7C;
   --border:  rgba(255,255,255,.07);
-  --shadow-sm: 0 2px 12px rgba(0,0,0,.4);
-  --shadow-md: 0 8px 32px rgba(0,0,0,.5);
+  --sh-sm:   0 2px 12px rgba(0,0,0,.4);
+  --sh-md:   0 8px 32px rgba(0,0,0,.5);
 }
 
 /* ── RESET ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-button { font-family: inherit; cursor: pointer; border: none; background: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; -webkit-tap-highlight-color: transparent; }
 button:focus-visible { outline: 3px solid var(--ex-accent); outline-offset: 3px; }
+a { -webkit-tap-highlight-color: transparent; }
 
-/* ── BASE ── */
+/* ── LAYOUT: full-height, no wasted space ── */
+html { height: 100%; }
 body {
   font-family: 'Nunito', sans-serif;
   background: var(--bg);
   color: var(--text-1);
-  min-height: 100vh;
-  padding-block: 1.5rem 3rem;
-  padding-inline: 1rem;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding-inline: 0;
   -webkit-tap-highlight-color: transparent;
   transition: background .4s;
+  overflow: hidden;
 }
 
 /* ── HEADER ── */
 .page-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: .85rem 1rem .4rem;
+  flex-shrink: 0;
   position: relative;
 }
 .back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: .3rem;
+  display: inline-flex; align-items: center; gap: .3rem;
   background: var(--surface);
   color: var(--text-2);
   border: 2px solid var(--border);
   border-radius: 999px;
-  padding: .4rem 1.1rem;
-  font-family: 'Nunito', sans-serif;
-  font-size: .88rem;
-  font-weight: 700;
+  padding: .35rem 1rem;
+  font-size: .82rem; font-weight: 700;
   text-decoration: none;
-  margin-bottom: .9rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--sh-sm);
   transition: all .2s;
+  align-self: flex-start;
+  position: absolute; left: 1rem; top: .85rem;
 }
-.back-btn:hover { background: var(--ex-pale); color: var(--ex-accent); border-color: var(--ex-soft); }
+.back-btn:hover { background: var(--ex-pale); color: var(--ex-accent); }
 .page-title {
   font-family: 'Fredoka One', cursive;
-  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  font-size: clamp(1.4rem, 5vw, 2rem);
   color: var(--ex-accent);
-  letter-spacing: .5px;
   transition: color .4s;
+  line-height: 1.1;
 }
 .page-sub {
-  font-size: .88rem;
-  color: var(--text-3);
-  margin-top: .2rem;
-  font-weight: 600;
+  font-size: .78rem; color: var(--text-3);
+  font-weight: 700; margin-top: .1rem;
 }
 
 /* ── PROGRESS DOTS ── */
 .dots-row {
-  display: flex;
-  justify-content: center;
-  gap: .45rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
+  display: flex; justify-content: center; gap: .4rem;
+  padding: .5rem 1rem;
+  flex-shrink: 0; flex-wrap: wrap;
 }
 .dot {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--border);
-  border: 2px solid var(--border);
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--border); border: 2px solid var(--border);
   transition: all .35s;
 }
-.dot.done    { background: var(--ex-soft); border-color: var(--ex-accent); }
-.dot.active  { background: var(--ex-accent); border-color: var(--ex-accent);
-               transform: scale(1.35); box-shadow: 0 0 0 3px var(--ex-glow); }
+.dot.done   { background: var(--ex-soft); border-color: var(--ex-accent); }
+.dot.active { background: var(--ex-accent); border-color: var(--ex-accent);
+              transform: scale(1.5); box-shadow: 0 0 0 3px var(--ex-glow); }
+.dot.done.pop-done { animation: dotPop .4s cubic-bezier(.34,1.56,.64,1); }
+@keyframes dotPop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.9)} }
+
+/* ── CARD WRAPPER (fills remaining height) ── */
+.card-wrapper {
+  flex: 1; display: flex; align-items: stretch;
+  padding: .25rem .75rem .75rem;
+  min-height: 0;
+}
 
 /* ── EXERCISE CARD ── */
 .exercise-card {
+  flex: 1;
   background: var(--surface);
-  border-radius: 28px;
-  padding: 2rem 1.75rem;
-  max-width: 480px;
-  margin: 0 auto 1.5rem;
-  box-shadow: var(--shadow-md);
+  border-radius: 24px;
+  padding: 1rem 1.25rem 1.1rem;
+  box-shadow: var(--sh-md);
   border: 2px solid var(--border);
   transition: border-color .4s, box-shadow .4s;
   text-align: center;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  animation: cardIn .4s cubic-bezier(.34,1.36,.64,1);
+  overflow: hidden;
+  position: relative;
 }
-.exercise-card:hover { box-shadow: 0 12px 40px var(--ex-glow); }
+@keyframes cardIn {
+  from { opacity:0; transform: translateY(18px) scale(.97); }
+  to   { opacity:1; transform: none; }
+}
+.exercise-card.urgent .ex-name,
+.exercise-card.urgent .timer-digits { color: #EF4444 !important; }
+.exercise-card.urgent .ring-fill    { stroke: #EF4444 !important; }
 
+/* ── TOP SECTION ── */
+.card-top { display: flex; flex-direction: column; align-items: center; }
 .ex-badge {
-  display: inline-flex; align-items: center; gap: .4rem;
-  background: var(--ex-pale);
-  color: var(--ex-accent);
-  border-radius: 999px;
-  padding: .28rem .85rem;
-  font-family: 'Fredoka One', cursive;
-  font-size: .82rem;
-  letter-spacing: .5px;
-  margin-bottom: 1rem;
+  display: inline-flex; align-items: center;
+  background: var(--ex-pale); color: var(--ex-accent);
+  border-radius: 999px; padding: .22rem .75rem;
+  font-family: 'Fredoka One', cursive; font-size: .75rem;
+  letter-spacing: .5px; margin-bottom: .5rem;
   transition: background .4s, color .4s;
 }
 .ex-emoji-big {
-  font-size: 3.2rem;
-  display: block;
-  margin-bottom: .5rem;
+  font-size: clamp(2.4rem, 7vw, 3.4rem);
+  display: block; margin-bottom: .25rem;
   animation: bob 2.4s ease-in-out infinite;
-  filter: drop-shadow(0 4px 8px var(--ex-glow));
+  filter: drop-shadow(0 3px 6px var(--ex-glow));
 }
 .ex-name {
   font-family: 'Fredoka One', cursive;
-  font-size: clamp(1.4rem, 4vw, 2rem);
-  color: var(--ex-accent);
-  text-wrap: balance;
-  margin-bottom: .5rem;
-  transition: color .4s;
+  font-size: clamp(1.3rem, 4.5vw, 1.8rem);
+  color: var(--ex-accent); text-wrap: balance;
+  margin-bottom: .3rem; transition: color .4s;
+  line-height: 1.1;
 }
 .ex-instruction {
-  font-size: 1rem;
-  color: var(--text-2);
-  line-height: 1.55;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  text-wrap: balance;
+  font-size: clamp(.82rem, 2.5vw, .96rem);
+  color: var(--text-2); line-height: 1.45;
+  font-weight: 700; text-wrap: balance;
 }
 
-/* ── TIMER RING ── */
+/* ── TIMER ── */
 .timer-wrap {
   position: relative;
-  width: 180px; height: 180px;
-  margin: 0 auto 1.2rem;
+  width: clamp(150px, 40vw, 200px);
+  height: clamp(150px, 40vw, 200px);
+  margin: 0 auto;
+  flex-shrink: 0;
 }
 .timer-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
-.ring-track {
-  fill: none;
-  stroke: var(--ex-soft);
-  stroke-width: 11;
-  opacity: .4;
-  transition: stroke .4s;
-}
-.ring-fill {
-  fill: none;
-  stroke: var(--ex-accent);
-  stroke-width: 11;
+.ring-track { fill: none; stroke: var(--ex-soft); stroke-width: 10; opacity: .35; transition: stroke .4s; }
+.ring-fill  {
+  fill: none; stroke: var(--ex-accent); stroke-width: 10;
   stroke-linecap: round;
-  stroke-dasharray: 472;
-  stroke-dashoffset: 0;
-  transition: stroke .4s, stroke-dashoffset .9s linear;
+  stroke-dasharray: 472; stroke-dashoffset: 0;
+  transition: stroke .4s, stroke-dashoffset .95s linear;
+  filter: drop-shadow(0 0 6px var(--ex-glow));
 }
-.ring-fill.instant { transition: stroke .4s, stroke-dashoffset 0s; }
+.ring-fill.instant  { transition: stroke .4s, stroke-dashoffset 0s; }
+.ring-fill.pulsing  { animation: ringPulse 1s ease-in-out infinite; }
+@keyframes ringPulse {
+  0%,100% { filter: drop-shadow(0 0 4px var(--ex-glow)); }
+  50%      { filter: drop-shadow(0 0 16px var(--ex-accent)); }
+}
 .timer-inner {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
 }
 .timer-digits {
   font-family: 'Fredoka One', cursive;
-  font-size: 2.6rem;
-  color: var(--ex-accent);
-  line-height: 1;
+  font-size: clamp(2.2rem, 7vw, 3rem);
+  color: var(--ex-accent); line-height: 1;
   font-variant-numeric: tabular-nums;
   transition: color .4s;
 }
+.timer-digits.shake { animation: shake .5s ease; }
+@keyframes shake {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 40%{transform:translateX(5px)}
+  60%{transform:translateX(-4px)} 80%{transform:translateX(4px)}
+}
 .timer-sub {
-  font-size: .7rem;
-  font-weight: 700;
-  color: var(--text-3);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-top: .2rem;
+  font-size: .65rem; font-weight: 700; color: var(--text-3);
+  letter-spacing: 1px; text-transform: uppercase; margin-top: .2rem;
 }
 
-/* ── REP COUNTER ── */
+/* ── REP SECTION ── */
 .rep-section {
-  background: var(--ex-pale);
-  border-radius: 16px;
-  padding: .9rem;
-  margin-bottom: 1.2rem;
+  background: var(--ex-pale); border-radius: 14px;
+  padding: .65rem .75rem;
   transition: background .4s;
 }
-.rep-row { display: flex; align-items: center; justify-content: center; gap: .6rem; margin-bottom: .65rem; }
+.rep-row { display: flex; align-items: center; justify-content: center; gap: .5rem; margin-bottom: .5rem; }
 .rep-current {
   font-family: 'Fredoka One', cursive;
-  font-size: 2.4rem;
-  color: var(--ex-accent);
-  line-height: 1;
-  transition: transform .12s;
+  font-size: clamp(1.8rem, 6vw, 2.4rem);
+  color: var(--ex-accent); line-height: 1;
+  display: inline-block; transition: transform .12s;
 }
-.rep-current.pop { transform: scale(1.3); }
-.rep-of { font-size: 1rem; color: var(--text-3); font-weight: 700; }
-.rep-target-label { font-size: .88rem; color: var(--text-2); font-weight: 600; }
+.rep-current.pop { animation: repPop .18s ease; }
+@keyframes repPop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
+.rep-of    { font-size: .9rem; color: var(--text-3); font-weight: 700; }
+.rep-label { font-size: .78rem; color: var(--text-2); font-weight: 600; }
 .tap-btn {
-  background: var(--ex-accent);
-  color: white;
-  border-radius: 999px;
-  padding: .65rem 1.8rem;
-  font-family: 'Fredoka One', cursive;
-  font-size: 1.05rem;
+  background: var(--ex-accent); color: white;
+  border-radius: 14px; padding: .6rem 1rem;
+  font-family: 'Fredoka One', cursive; font-size: 1rem;
   box-shadow: 0 4px 14px var(--ex-glow);
-  transition: all .15s;
-  display: block;
-  width: 100%;
+  transition: all .12s; display: block; width: 100%;
+  position: relative; overflow: hidden;
 }
 .tap-btn:active { transform: scale(.95); }
+.tap-btn::after {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(255,255,255,.3); opacity: 0;
+  border-radius: inherit; transition: opacity .1s;
+}
+.tap-btn:active::after { opacity: 1; }
 
-/* ── START / PAUSE BTN ── */
-.control-row { display: flex; gap: .75rem; justify-content: center; margin-top: .5rem; }
+/* ── CONTROLS ── */
+.control-row { display: flex; gap: .6rem; justify-content: center; }
 .start-btn {
-  background: var(--ex-accent);
-  color: white;
-  border-radius: 999px;
-  padding: .8rem 2.4rem;
-  font-family: 'Fredoka One', cursive;
-  font-size: 1.15rem;
+  background: var(--ex-accent); color: white;
+  border-radius: 999px; padding: .75rem 2rem;
+  font-family: 'Fredoka One', cursive; font-size: 1.05rem;
   box-shadow: 0 6px 20px var(--ex-glow);
   transition: transform .15s, box-shadow .15s, background .4s;
-  letter-spacing: .5px;
+  letter-spacing: .5px; flex: 1; max-width: 220px;
 }
-.start-btn:hover { transform: scale(1.05); box-shadow: 0 8px 28px var(--ex-glow); }
+.start-btn:hover { transform: scale(1.04); box-shadow: 0 8px 28px var(--ex-glow); }
 .start-btn:active { transform: scale(.97); }
 .skip-btn {
-  background: var(--ex-pale);
-  color: var(--ex-accent);
-  border-radius: 999px;
-  padding: .8rem 1.4rem;
-  font-family: 'Fredoka One', cursive;
-  font-size: 1rem;
+  background: var(--ex-pale); color: var(--ex-accent);
+  border-radius: 999px; padding: .75rem 1.1rem;
+  font-family: 'Fredoka One', cursive; font-size: .92rem;
   transition: background .15s;
 }
 .skip-btn:hover { background: var(--ex-soft); }
 
-/* ── OVERLAY ── */
+/* ── OVERLAYS ── */
 .overlay {
   position: fixed; inset: 0;
-  background: rgba(30,10,22,.6);
-  backdrop-filter: blur(6px);
+  background: rgba(20,5,18,.65);
+  backdrop-filter: blur(8px);
   display: flex; align-items: center; justify-content: center;
-  z-index: 100;
-  padding: 1rem;
-  animation: fadein .3s ease;
+  z-index: 100; padding: 1rem;
+  animation: fadeIn .25s ease;
 }
 .overlay.hidden { display: none; }
-@keyframes fadein { from { opacity:0 } to { opacity:1 } }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
 .overlay-card {
   background: var(--surface);
-  border-radius: 28px;
-  padding: 2.5rem 2rem;
-  max-width: 380px;
-  width: 100%;
-  text-align: center;
-  box-shadow: var(--shadow-md);
-  animation: popIn .35s cubic-bezier(.34,1.56,.64,1);
+  border-radius: 28px; padding: 2rem 1.75rem;
+  max-width: 360px; width: 100%;
+  text-align: center; box-shadow: var(--sh-md);
+  animation: popIn .3s cubic-bezier(.34,1.56,.64,1);
 }
-@keyframes popIn { from { transform:scale(.85); opacity:0 } to { transform:scale(1); opacity:1 } }
+@keyframes popIn { from{transform:scale(.82);opacity:0} to{transform:scale(1);opacity:1} }
 
-.overlay-emoji { font-size: 3.5rem; margin-bottom: .75rem; }
+.overlay-emoji { font-size: 3.2rem; margin-bottom: .6rem; }
 .overlay-card h2 {
-  font-family: 'Fredoka One', cursive;
-  font-size: 1.8rem;
-  color: var(--ex-accent);
-  margin-bottom: .4rem;
-  transition: color .4s;
+  font-family: 'Fredoka One', cursive; font-size: 1.7rem;
+  color: var(--ex-accent); margin-bottom: .35rem; transition: color .4s;
 }
-.overlay-card p { font-size: 1rem; color: var(--text-2); font-weight: 600; line-height: 1.5; }
+.overlay-card p { font-size: .95rem; color: var(--text-2); font-weight: 600; line-height: 1.5; }
 .overlay-big-num {
-  font-family: 'Fredoka One', cursive;
-  font-size: 5rem;
-  color: var(--ex-accent);
-  line-height: 1;
-  margin: .5rem 0;
+  font-family: 'Fredoka One', cursive; font-size: 4.5rem;
+  color: var(--ex-accent); line-height: 1; margin: .4rem 0;
   transition: color .4s;
+  animation: numPulse 1s ease-in-out infinite;
 }
-.overlay-card .small { font-size: .82rem; color: var(--text-3); margin-top: .4rem; }
-
-/* ── DONE SCREEN ── */
-.done-stars { font-size: 2.4rem; margin-bottom: .5rem; }
+@keyframes numPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+.overlay-small { font-size: .78rem; color: var(--text-3); margin-top: .35rem; }
+.done-stars { font-size: 2.2rem; margin-bottom: .4rem; }
 .done-btn {
-  background: var(--ex-accent);
-  color: white;
-  border-radius: 999px;
-  padding: .8rem 2rem;
-  font-family: 'Fredoka One', cursive;
-  font-size: 1.1rem;
+  background: var(--ex-accent); color: white;
+  border-radius: 999px; padding: .75rem 2rem;
+  font-family: 'Fredoka One', cursive; font-size: 1.05rem;
   box-shadow: 0 6px 20px var(--ex-glow);
-  margin-top: 1.2rem;
-  transition: transform .15s;
+  margin-top: 1.1rem; transition: transform .15s;
 }
 .done-btn:hover { transform: scale(1.05); }
 
+/* ── CONFETTI CANVAS ── */
+#confetti { position: fixed; inset: 0; pointer-events: none; z-index: 200; }
+#confetti.hidden { display: none; }
+
 /* ── UTIL ── */
 .hidden { display: none !important; }
-@keyframes bob {
-  0%,100% { transform: translateY(0); }
-  50%      { transform: translateY(-8px); }
-}
+@keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
+
 @media (prefers-reduced-motion: reduce) {
-  .ex-emoji-big { animation: none; }
-  .ring-fill     { transition: stroke .4s; }
-}
-@media (max-width: 400px) {
-  .exercise-card { padding: 1.5rem 1.2rem; border-radius: 22px; }
-  .timer-wrap { width: 150px; height: 150px; }
-  .timer-digits { font-size: 2.1rem; }
+  .ex-emoji-big, .overlay-big-num { animation: none; }
+  .ring-fill { transition: stroke .4s; }
+  .ring-fill.pulsing { animation: none; }
+  @keyframes cardIn { from{opacity:0} to{opacity:1} }
 }
 </style>
+
+<canvas id="confetti" class="hidden" aria-hidden="true"></canvas>
 
 <header class="page-header">
   <a href="index.html" class="back-btn" aria-label="Back to home">← Home</a>
@@ -357,181 +336,271 @@ body {
 
 <div class="dots-row" id="dots"></div>
 
-<div class="exercise-card" id="card">
-  <div class="ex-badge" id="badge">Exercise 1 of 10</div>
-  <span class="ex-emoji-big" id="emoji">🦵</span>
-  <h2 class="ex-name" id="name">Forward Push</h2>
-  <p class="ex-instruction" id="instruction">Push your leg forward and your hand backward</p>
+<div class="card-wrapper">
+  <div class="exercise-card" id="card">
 
-  <div class="timer-wrap">
-    <svg class="timer-ring" viewBox="0 0 160 160" aria-hidden="true">
-      <circle class="ring-track" cx="80" cy="80" r="75"/>
-      <circle class="ring-fill instant" id="ring" cx="80" cy="80" r="75"
-        stroke-dasharray="472" stroke-dashoffset="0"/>
-    </svg>
-    <div class="timer-inner">
-      <div class="timer-digits" id="digits">1:00</div>
-      <div class="timer-sub" id="timer-sub">tap to start</div>
+    <div class="card-top">
+      <div class="ex-badge" id="badge">Exercise 1 of 10</div>
+      <span class="ex-emoji-big" id="emoji">🦵</span>
+      <h2 class="ex-name" id="name">Forward Push</h2>
+      <p class="ex-instruction" id="instruction">Push your leg forward and your hand backward</p>
     </div>
-  </div>
 
-  <div class="rep-section hidden" id="rep-section">
-    <div class="rep-row">
-      <span class="rep-current" id="rep-current">0</span>
-      <div>
-        <div class="rep-of" id="rep-of">/ 30</div>
-        <div class="rep-target-label" id="rep-target-label">times</div>
+    <div class="timer-wrap">
+      <svg class="timer-ring" viewBox="0 0 160 160" aria-hidden="true">
+        <circle class="ring-track" cx="80" cy="80" r="75"/>
+        <circle class="ring-fill instant" id="ring" cx="80" cy="80" r="75"
+          stroke-dasharray="472" stroke-dashoffset="0"/>
+      </svg>
+      <div class="timer-inner">
+        <div class="timer-digits" id="digits">1:00</div>
+        <div class="timer-sub" id="timer-sub">tap to start</div>
       </div>
     </div>
-    <button class="tap-btn" id="tap-btn" onclick="countRep()" aria-label="Count one rep">
-      Tap to count! 👆
-    </button>
-  </div>
 
-  <div class="control-row">
-    <button class="start-btn" id="main-btn" onclick="handleMain()">▶ Start!</button>
-    <button class="skip-btn hidden" id="skip-btn" onclick="skip()" aria-label="Skip exercise">Skip →</button>
+    <div class="rep-section hidden" id="rep-section">
+      <div class="rep-row">
+        <span class="rep-current" id="rep-current">0</span>
+        <div>
+          <div class="rep-of" id="rep-of">/ 30</div>
+          <div class="rep-label" id="rep-label">times</div>
+        </div>
+      </div>
+      <button class="tap-btn" id="tap-btn" onclick="countRep()" disabled aria-label="Count one rep">
+        Tap to count! 👆
+      </button>
+    </div>
+
+    <div class="control-row">
+      <button class="start-btn" id="main-btn" onclick="handleMain()">▶ Start!</button>
+      <button class="skip-btn hidden" id="skip-btn" onclick="skip()">Skip →</button>
+    </div>
+
   </div>
 </div>
 
-<!-- mid-break overlay (for ex 8/9/10 at 30s) -->
+<!-- mid-break overlay -->
 <div class="overlay hidden" id="midbreak-ov" role="dialog" aria-modal="true" aria-label="Mini break">
   <div class="overlay-card">
     <div class="overlay-emoji">😮‍💨</div>
     <h2>Mini Break!</h2>
     <p>Halfway there! Take a quick breather 🌟</p>
     <div class="overlay-big-num" id="midbreak-num">10</div>
-    <p class="small">Continuing in a moment…</p>
+    <p class="overlay-small">Continuing in a moment…</p>
   </div>
 </div>
 
 <!-- between-exercise break overlay -->
-<div class="overlay hidden" id="exbreak-ov" role="dialog" aria-modal="true" aria-label="Exercise break">
+<div class="overlay hidden" id="exbreak-ov" role="dialog" aria-modal="true" aria-label="Rest break">
   <div class="overlay-card">
     <div class="overlay-emoji" id="exbreak-emoji">⭐</div>
     <h2 id="exbreak-title">Brilliant!</h2>
     <p id="exbreak-msg">Great work! Rest for 10 seconds 💜</p>
     <div class="overlay-big-num" id="exbreak-num">10</div>
-    <p class="small" id="exbreak-sub">Next up: Exercise 2</p>
+    <p class="overlay-small" id="exbreak-sub">Next up: Exercise 2</p>
   </div>
 </div>
 
-<!-- done screen -->
-<div class="overlay hidden" id="done-ov" role="dialog" aria-modal="true" aria-label="All done">
+<!-- all done -->
+<div class="overlay hidden" id="done-ov" role="dialog" aria-modal="true" aria-label="All done!">
   <div class="overlay-card">
     <div class="done-stars">🌟🎉🌟</div>
     <h2>You did it, Sana!</h2>
-    <p>All 10 exercises done! You're a superstar and your leg is going to feel so much better! 🦵💪🌸</p>
+    <p>All 10 exercises done! You're a superstar and your leg is going to feel SO much better! 🦵💪🌸</p>
     <button class="done-btn" onclick="restart()">Do it again! 🔄</button>
   </div>
 </div>
 
 <script>
-/* ── DATA ── */
-const CIRC = 472; // 2π×75 ≈ 471.24
+/* ══════════════════════════════════════════
+   SOUND ENGINE  (Web Audio API, no files)
+══════════════════════════════════════════ */
+let _ac = null;
+function getAC() {
+  if (!_ac) _ac = new (window.AudioContext || window.webkitAudioContext)();
+  if (_ac.state === 'suspended') _ac.resume();
+  return _ac;
+}
+function beep(freq, dur, type = 'sine', vol = 0.25, delay = 0) {
+  try {
+    const ac = getAC(), o = ac.createOscillator(), g = ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    o.type = type; o.frequency.value = freq;
+    const t = ac.currentTime + delay;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(vol, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.start(t); o.stop(t + dur + 0.01);
+  } catch(e) {}
+}
+const snd = {
+  start()    { beep(523,.12,'sine',.28,0); beep(659,.12,'sine',.28,.1); beep(784,.22,'sine',.28,.2); },
+  tick(loud) { beep(loud?1050:820,.07,'square',loud?.2:.1); },
+  complete() { [523,659,784,1047].forEach((f,i) => beep(f,.3,'triangle',.3,i*.1)); },
+  midBreak() { beep(523,.15,'sine',.22,0); beep(392,.3,'sine',.18,.15); },
+  resume()   { beep(659,.1,'sine',.2,0); beep(784,.2,'sine',.2,.1); },
+  breakTick(){ beep(600,.05,'sine',.08); },
+  allDone()  { [523,659,784,880,1047,1318].forEach((f,i) => beep(f,.4,'triangle',.35,i*.1)); },
+  rep()      { beep(900,.07,'sine',.14); },
+};
 
+/* ══════════════════════════════════════════
+   CONFETTI
+══════════════════════════════════════════ */
+function launchConfetti() {
+  const cv = document.getElementById('confetti');
+  cv.classList.remove('hidden');
+  cv.width  = window.innerWidth;
+  cv.height = window.innerHeight;
+  const ctx = cv.getContext('2d');
+  const glyphs = ['🌸','⭐','💜','🎉','✨','💫','🌟','🎊'];
+  const ptcls = Array.from({length: 55}, () => ({
+    x: Math.random() * cv.width,
+    y: -30 - Math.random() * 80,
+    vx: (Math.random() - .5) * 3.5,
+    vy: Math.random() * 2.5 + 1.5,
+    g: glyphs[Math.floor(Math.random() * glyphs.length)],
+    sz: Math.random() * 18 + 14,
+    rot: Math.random() * Math.PI * 2,
+    rv: (Math.random() - .5) * .12,
+  }));
+  let raf;
+  (function draw() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    let alive = false;
+    ptcls.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.vy += .06; p.rot += p.rv;
+      if (p.y < cv.height + 40) alive = true;
+      const alpha = Math.max(0, 1 - p.y / cv.height);
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.font = `${p.sz}px serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(p.g, 0, 0);
+      ctx.restore();
+    });
+    if (alive) { raf = requestAnimationFrame(draw); }
+    else { cv.classList.add('hidden'); }
+  })();
+}
+
+/* ══════════════════════════════════════════
+   DATA
+══════════════════════════════════════════ */
+const CIRC = 472;
 const EXERCISES = [
-  { num:1,  emoji:"🦵", name:"Forward Push",
-    instruction:"Push your leg forward and your hand backward",
-    duration:60, type:"standard",
-    colors:{ pale:"#FFF1F2", soft:"#FECDD3", accent:"#FB7185", glow:"rgba(251,113,133,.22)" } },
-  { num:2,  emoji:"🤸", name:"Backward Push",
-    instruction:"Push your leg backward and your hand forward",
-    duration:60, type:"standard",
-    colors:{ pale:"#EFF6FF", soft:"#BAE6FD", accent:"#38BDF8", glow:"rgba(56,189,248,.22)" } },
-  { num:3,  emoji:"⬇️", name:"Downward Push",
-    instruction:"Push your leg downwards and your hand upwards",
-    duration:60, type:"standard",
-    colors:{ pale:"#ECFDF5", soft:"#A7F3D0", accent:"#34D399", glow:"rgba(52,211,153,.22)" } },
-  { num:4,  emoji:"⬆️", name:"Upward Push",
-    instruction:"Push your leg upwards and your hand downwards",
-    duration:60, type:"standard",
-    colors:{ pale:"#FEFCE8", soft:"#FEF08A", accent:"#EAB308", glow:"rgba(234,179,8,.22)" } },
-  { num:5,  emoji:"🧺", name:"Pick Up Towel",
-    instruction:"Pick up the towel from the floor using your toes",
-    duration:30, type:"count", total:30,
-    colors:{ pale:"#F5F3FF", soft:"#DDD6FE", accent:"#A78BFA", glow:"rgba(167,139,250,.22)" } },
-  { num:6,  emoji:"🪨", name:"Pick Up Pebbles",
-    instruction:"Pick up 10 small rocks or pebbles one by one",
-    duration:10, type:"count", total:10,
-    colors:{ pale:"#FFF7ED", soft:"#FED7AA", accent:"#FB923C", glow:"rgba(251,146,60,.22)" } },
-  { num:7,  emoji:"⚽", name:"Roll a Ball",
-    instruction:"Roll the ball 30 times using the sole of your foot",
-    duration:30, type:"count", total:30,
-    colors:{ pale:"#FFF1F2", soft:"#FECDD3", accent:"#F43F5E", glow:"rgba(244,63,94,.22)" } },
-  { num:8,  emoji:"🚶", name:"Marching",
-    instruction:"March in place for two full rounds — keep your back straight!",
-    duration:60, type:"split",
-    colors:{ pale:"#EFF6FF", soft:"#BAE6FD", accent:"#0EA5E9", glow:"rgba(14,165,233,.22)" } },
-  { num:9,  emoji:"🦀", name:"Crab Walk",
-    instruction:"Crab walk for two full rounds — hands and feet on the floor!",
-    duration:60, type:"split",
-    colors:{ pale:"#ECFDF5", soft:"#A7F3D0", accent:"#10B981", glow:"rgba(16,185,129,.22)" } },
-  { num:10, emoji:"👣", name:"Toe Walk",
-    instruction:"Walk on your tiptoes for two full rounds — nice and tall!",
-    duration:60, type:"split",
-    colors:{ pale:"#F5F3FF", soft:"#DDD6FE", accent:"#8B5CF6", glow:"rgba(139,92,246,.22)" } },
+  { num:1,  emoji:'🦵', name:'Forward Push',
+    instruction:'Push your leg forward and your hand backward',
+    duration:60, type:'standard',
+    colors:{pale:'#FFF1F2',soft:'#FECDD3',accent:'#FB7185',glow:'rgba(251,113,133,.22)'} },
+  { num:2,  emoji:'🤸', name:'Backward Push',
+    instruction:'Push your leg backward and your hand forward',
+    duration:60, type:'standard',
+    colors:{pale:'#EFF6FF',soft:'#BAE6FD',accent:'#38BDF8',glow:'rgba(56,189,248,.22)'} },
+  { num:3,  emoji:'⬇️', name:'Downward Push',
+    instruction:'Push your leg downwards and your hand upwards',
+    duration:60, type:'standard',
+    colors:{pale:'#ECFDF5',soft:'#A7F3D0',accent:'#34D399',glow:'rgba(52,211,153,.22)'} },
+  { num:4,  emoji:'⬆️', name:'Upward Push',
+    instruction:'Push your leg upwards and your hand downwards',
+    duration:60, type:'standard',
+    colors:{pale:'#FEFCE8',soft:'#FEF08A',accent:'#EAB308',glow:'rgba(234,179,8,.22)'} },
+  { num:5,  emoji:'🧺', name:'Pick Up Towel',
+    instruction:'Pick up the towel from the floor using your toes',
+    duration:30, type:'count', total:30,
+    colors:{pale:'#F5F3FF',soft:'#DDD6FE',accent:'#A78BFA',glow:'rgba(167,139,250,.22)'} },
+  { num:6,  emoji:'🪨', name:'Pick Up Pebbles',
+    instruction:'Pick up 10 small rocks or pebbles one by one',
+    duration:10, type:'count', total:10,
+    colors:{pale:'#FFF7ED',soft:'#FED7AA',accent:'#FB923C',glow:'rgba(251,146,60,.22)'} },
+  { num:7,  emoji:'⚽', name:'Roll a Ball',
+    instruction:'Roll the ball 30 times using the sole of your foot',
+    duration:30, type:'count', total:30,
+    colors:{pale:'#FFF1F2',soft:'#FECDD3',accent:'#F43F5E',glow:'rgba(244,63,94,.22)'} },
+  { num:8,  emoji:'🚶', name:'Marching',
+    instruction:'March in place for two full rounds — back straight, arms swinging!',
+    duration:60, type:'split',
+    colors:{pale:'#EFF6FF',soft:'#BAE6FD',accent:'#0EA5E9',glow:'rgba(14,165,233,.22)'} },
+  { num:9,  emoji:'🦀', name:'Crab Walk',
+    instruction:'Crab walk for two full rounds — hands and feet on the floor!',
+    duration:60, type:'split',
+    colors:{pale:'#ECFDF5',soft:'#A7F3D0',accent:'#10B981',glow:'rgba(16,185,129,.22)'} },
+  { num:10, emoji:'👣', name:'Toe Walk',
+    instruction:'Walk on your tiptoes for two full rounds — nice and tall!',
+    duration:60, type:'split',
+    colors:{pale:'#F5F3FF',soft:'#DDD6FE',accent:'#8B5CF6',glow:'rgba(139,92,246,.22)'} },
 ];
 
-/* ── STATE ── */
+const CHEERS = ['Brilliant! 🌟','Superstar! ⭐','Amazing! 🎉','Fantastic! 🥳',
+  'Incredible! 💫','Awesome! 🏆','You nailed it! 🎯','So strong! 💪',
+  'Wonderful! 🌸','Great job! 🙌'];
+const MSGS = ['Rest up — you deserve it! 💜','Take a breather! ✨',
+  'Doing brilliantly! 🌟','Keep going, almost there! 🚀',
+  'Your leg is getting stronger! 💪','So proud of you! 🌸'];
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
 let exIdx = 0;
-let phase = 'ready';   // ready | running | midbreak | exbreak | done
+let phase = 'ready';  // ready | running | paused | midbreak | exbreak | done
 let timeLeft = 0;
 let breakLeft = 0;
 let repCount = 0;
 let timerId = null;
 
-/* ── INIT ── */
-buildDots();
-loadExercise(0);
-
-function buildDots() {
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+(function init() {
   const row = document.getElementById('dots');
   EXERCISES.forEach((_, i) => {
     const d = document.createElement('div');
-    d.className = 'dot';
-    d.id = 'dot-' + i;
+    d.className = 'dot'; d.id = 'dot-' + i;
     row.appendChild(d);
   });
-}
+  loadExercise(0);
+})();
 
+/* ══════════════════════════════════════════
+   LOAD EXERCISE
+══════════════════════════════════════════ */
 function loadExercise(idx) {
   const ex = EXERCISES[idx];
-  exIdx = idx;
-  phase = 'ready';
-  timeLeft = ex.duration;
-  repCount = 0;
+  exIdx = idx; phase = 'ready'; timeLeft = ex.duration; repCount = 0;
 
-  // colors
   applyColors(ex.colors);
+  const card = document.getElementById('card');
+  card.classList.remove('urgent');
+  card.style.animation = 'none';
+  void card.offsetWidth;
+  card.style.animation = '';
 
-  // header
   document.getElementById('badge').textContent = `Exercise ${ex.num} of 10`;
   document.getElementById('emoji').textContent  = ex.emoji;
   document.getElementById('name').textContent   = ex.name;
   document.getElementById('instruction').textContent = ex.instruction;
 
-  // timer
   setTimerDisplay(ex.duration, ex.duration, true);
   document.getElementById('timer-sub').textContent = 'tap to start';
+  document.getElementById('ring').classList.remove('pulsing');
 
-  // rep section
   const repSec = document.getElementById('rep-section');
   if (ex.type === 'count') {
     repSec.classList.remove('hidden');
     document.getElementById('rep-current').textContent = '0';
     document.getElementById('rep-of').textContent = `/ ${ex.total}`;
-    document.getElementById('rep-target-label').textContent = ex.total === 10 ? 'rocks' : ex.num === 7 ? 'rolls' : 'times';
+    document.getElementById('rep-label').textContent =
+      ex.num === 6 ? 'rocks' : ex.num === 7 ? 'rolls' : 'times';
     document.getElementById('tap-btn').disabled = true;
   } else {
     repSec.classList.add('hidden');
   }
 
-  // buttons
-  setMainBtn('▶ Start!');
+  document.getElementById('main-btn').textContent = '▶ Start!';
   document.getElementById('skip-btn').classList.add('hidden');
-
-  // dots
   updateDots();
 }
 
@@ -550,11 +619,18 @@ function updateDots() {
   });
 }
 
-/* ── TIMER DISPLAY ── */
+function completeDot(i) {
+  const d = document.getElementById('dot-' + i);
+  d.className = 'dot done pop-done';
+  setTimeout(() => d.className = 'dot done', 450);
+}
+
+/* ══════════════════════════════════════════
+   TIMER DISPLAY
+══════════════════════════════════════════ */
 function setTimerDisplay(left, total, instant) {
   const ring = document.getElementById('ring');
-  const mins = Math.floor(left / 60);
-  const secs = left % 60;
+  const mins = Math.floor(left / 60), secs = left % 60;
   document.getElementById('digits').textContent =
     mins > 0 ? `${mins}:${String(secs).padStart(2,'0')}` : String(secs);
 
@@ -566,51 +642,61 @@ function setTimerDisplay(left, total, instant) {
   } else {
     ring.style.strokeDashoffset = offset;
   }
+
+  // urgency
+  const card = document.getElementById('card');
+  const digits = document.getElementById('digits');
+  if (left <= 5 && left > 0 && phase === 'running') {
+    card.classList.add('urgent');
+    ring.classList.add('pulsing');
+    digits.classList.remove('shake');
+    void digits.offsetWidth;
+    digits.classList.add('shake');
+  } else if (left > 5) {
+    card.classList.remove('urgent');
+    ring.classList.remove('pulsing');
+  }
 }
 
-/* ── CONTROLS ── */
+/* ══════════════════════════════════════════
+   CONTROLS
+══════════════════════════════════════════ */
 function handleMain() {
-  if (phase === 'ready')   { startExercise(); return; }
-  if (phase === 'running') { pauseExercise(); return; }
-  if (phase === 'paused')  { resumeExercise(); return; }
+  if (phase === 'ready')   return startExercise();
+  if (phase === 'running') return pauseExercise();
+  if (phase === 'paused')  return resumeExercise();
 }
 
 function startExercise() {
   phase = 'running';
-  const ex = EXERCISES[exIdx];
-  if (ex.type === 'count') {
+  snd.start();
+  if (EXERCISES[exIdx].type === 'count')
     document.getElementById('tap-btn').disabled = false;
-  }
-  setMainBtn('⏸ Pause');
+  document.getElementById('main-btn').textContent = '⏸ Pause';
   document.getElementById('skip-btn').classList.remove('hidden');
   document.getElementById('timer-sub').textContent = '';
   startTicking();
 }
 
 function pauseExercise() {
-  phase = 'paused';
-  clearInterval(timerId);
-  setMainBtn('▶ Resume');
+  phase = 'paused'; clearInterval(timerId);
+  document.getElementById('main-btn').textContent = '▶ Resume';
   document.getElementById('timer-sub').textContent = 'paused';
 }
 
 function resumeExercise() {
   phase = 'running';
-  setMainBtn('⏸ Pause');
+  snd.resume();
+  document.getElementById('main-btn').textContent = '⏸ Pause';
   document.getElementById('timer-sub').textContent = '';
   startTicking();
 }
 
-function skip() {
-  clearInterval(timerId);
-  finishExercise();
-}
+function skip() { clearInterval(timerId); finishExercise(); }
 
-function setMainBtn(label) {
-  document.getElementById('main-btn').textContent = label;
-}
-
-/* ── TICKING ── */
+/* ══════════════════════════════════════════
+   TICK
+══════════════════════════════════════════ */
 function startTicking() {
   clearInterval(timerId);
   timerId = setInterval(tick, 1000);
@@ -621,82 +707,79 @@ function tick() {
   timeLeft--;
   setTimerDisplay(timeLeft, ex.duration, false);
 
-  // mid-break trigger at 30s for split exercises
+  // sound cues
+  if (timeLeft <= 10 && timeLeft > 0) snd.tick(timeLeft <= 5);
+
+  // mid-break for split exercises
   if (ex.type === 'split' && timeLeft === 30) {
     clearInterval(timerId);
     phase = 'midbreak';
+    snd.midBreak();
     startMidBreak();
     return;
   }
 
-  if (timeLeft <= 0) {
-    clearInterval(timerId);
-    finishExercise();
-  }
+  if (timeLeft <= 0) { clearInterval(timerId); finishExercise(); }
 }
 
-/* ── MID BREAK ── */
+/* ══════════════════════════════════════════
+   MID-BREAK (exercises 8/9/10 at 30s)
+══════════════════════════════════════════ */
 function startMidBreak() {
   breakLeft = 10;
   document.getElementById('midbreak-num').textContent = breakLeft;
   document.getElementById('midbreak-ov').classList.remove('hidden');
-  timerId = setInterval(midBreakTick, 1000);
-}
-function midBreakTick() {
-  breakLeft--;
-  document.getElementById('midbreak-num').textContent = breakLeft;
-  if (breakLeft <= 0) {
-    clearInterval(timerId);
-    document.getElementById('midbreak-ov').classList.add('hidden');
-    phase = 'running';
-    setMainBtn('⏸ Pause');
-    startTicking();
-  }
+  timerId = setInterval(() => {
+    breakLeft--;
+    document.getElementById('midbreak-num').textContent = breakLeft;
+    snd.breakTick();
+    if (breakLeft <= 0) {
+      clearInterval(timerId);
+      document.getElementById('midbreak-ov').classList.add('hidden');
+      snd.resume();
+      phase = 'running';
+      document.getElementById('main-btn').textContent = '⏸ Pause';
+      startTicking();
+    }
+  }, 1000);
 }
 
-/* ── EXERCISE COMPLETE ── */
+/* ══════════════════════════════════════════
+   FINISH EXERCISE
+══════════════════════════════════════════ */
 function finishExercise() {
-  phase = 'exbreak';
-  const ex = EXERCISES[exIdx];
   const isLast = exIdx === EXERCISES.length - 1;
+  completeDot(exIdx);
+  snd.complete();
 
-  if (isLast) {
-    // go straight to done
-    showDone();
-    return;
-  }
-
-  const cheers = ['Brilliant! 🌟', 'Superstar! ⭐', 'Amazing! 🎉', 'Fantastic! 🥳',
-    'Incredible! 💫', 'Awesome! 🏆', 'You nailed it! 🎯', 'So strong! 💪',
-    'Wonderful! 🌸', 'Great job! 🙌'];
-  const msgs = ['Rest up — you deserve it! 💜', 'Take a breather! ✨',
-    'You\'re doing brilliantly! 🌟', 'Almost there, keep going! 🚀',
-    'Your leg is getting stronger! 💪', 'So proud of you! 🌸'];
+  if (isLast) { setTimeout(showDone, 400); return; }
 
   const nextEx = EXERCISES[exIdx + 1];
-  document.getElementById('exbreak-emoji').textContent = ex.emoji;
-  document.getElementById('exbreak-title').textContent = cheers[exIdx];
-  document.getElementById('exbreak-msg').textContent   = msgs[exIdx % msgs.length];
+  document.getElementById('exbreak-emoji').textContent = EXERCISES[exIdx].emoji;
+  document.getElementById('exbreak-title').textContent = CHEERS[exIdx];
+  document.getElementById('exbreak-msg').textContent   = MSGS[exIdx % MSGS.length];
   document.getElementById('exbreak-sub').textContent   = `Next up: ${nextEx.name} ${nextEx.emoji}`;
-
   breakLeft = 10;
   document.getElementById('exbreak-num').textContent = breakLeft;
-  applyColors(nextEx.colors); // preview next colors
+  applyColors(nextEx.colors);
   document.getElementById('exbreak-ov').classList.remove('hidden');
-  timerId = setInterval(exBreakTick, 1000);
+  phase = 'exbreak';
+
+  timerId = setInterval(() => {
+    breakLeft--;
+    document.getElementById('exbreak-num').textContent = breakLeft;
+    snd.breakTick();
+    if (breakLeft <= 0) {
+      clearInterval(timerId);
+      document.getElementById('exbreak-ov').classList.add('hidden');
+      loadExercise(exIdx + 1);
+    }
+  }, 1000);
 }
 
-function exBreakTick() {
-  breakLeft--;
-  document.getElementById('exbreak-num').textContent = breakLeft;
-  if (breakLeft <= 0) {
-    clearInterval(timerId);
-    document.getElementById('exbreak-ov').classList.add('hidden');
-    loadExercise(exIdx + 1);
-  }
-}
-
-/* ── REP COUNT ── */
+/* ══════════════════════════════════════════
+   REP TAP
+══════════════════════════════════════════ */
 function countRep() {
   const ex = EXERCISES[exIdx];
   if (phase !== 'running' || ex.type !== 'count') return;
@@ -706,16 +789,18 @@ function countRep() {
   el.classList.remove('pop');
   void el.offsetWidth;
   el.classList.add('pop');
-  setTimeout(() => el.classList.remove('pop'), 120);
+  snd.rep();
 }
 
-/* ── DONE ── */
+/* ══════════════════════════════════════════
+   ALL DONE
+══════════════════════════════════════════ */
 function showDone() {
   applyColors(EXERCISES[0].colors);
   document.getElementById('done-ov').classList.remove('hidden');
-  EXERCISES.forEach((_, i) => {
-    document.getElementById('dot-' + i).className = 'dot done';
-  });
+  EXERCISES.forEach((_, i) => document.getElementById('dot-'+i).className = 'dot done');
+  snd.allDone();
+  launchConfetti();
 }
 
 function restart() {
