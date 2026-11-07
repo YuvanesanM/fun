@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Sana & Tara's piano practice garden: every practice day grows a flower.">
+<meta name="theme-color" content="#F3FBF4">
+<title>Piano Garden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* ── TOKENS ── */
+:root {
+  --bg:       #F3FBF4;
+  --surface:  #FFFFFF;
+  --surface-2:#EEF7EF;
+  --text-1:   #1F3A2B;
+  --text-2:   #4F6E5C;
+  --text-3:   #8AA595;
+  --border:   rgba(40,110,70,.12);
+  --sh-sm:    0 2px 12px rgba(40,120,80,.10);
+  --sh-md:    0 8px 32px rgba(40,120,80,.14);
+  --accent:   #22A06B;
+  --accent-2: #8B5CF6;
+  --pale:     #DCF5E7;
+  --soil:     #B98B63;
+  --soil-2:   #9C6F4A;
+  --gold:     #F5B700;
+  --danger:   #E5484D;
+  --key-white:#FFFFFF;
+  --key-black:#1F2A24;
+  --sana:     #EC4899;
+  --tara:     #0EA5E9;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#0F1A14; --surface:#18271E; --surface-2:#1E3126;
+    --text-1:#E6F4EA; --text-2:#A9C7B4; --text-3:#6F8F7B;
+    --border:rgba(255,255,255,.08);
+    --sh-sm:0 2px 12px rgba(0,0,0,.4); --sh-md:0 8px 32px rgba(0,0,0,.5);
+    --pale:#1D3A2A; --soil:#7A5A3E; --soil-2:#5E432D;
+    --key-white:#E9EFEA; --key-black:#0B120E;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#0F1A14; --surface:#18271E; --surface-2:#1E3126;
+  --text-1:#E6F4EA; --text-2:#A9C7B4; --text-3:#6F8F7B;
+  --border:rgba(255,255,255,.08);
+  --sh-sm:0 2px 12px rgba(0,0,0,.4); --sh-md:0 8px 32px rgba(0,0,0,.5);
+  --pale:#1D3A2A; --soil:#7A5A3E; --soil-2:#5E432D;
+  --key-white:#E9EFEA; --key-black:#0B120E;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+button, input, select { font-family:inherit; font-size:inherit; color:inherit; }
+button { cursor:pointer; border:none; background:none; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+body {
+  font-family:'Nunito', sans-serif;
+  background:var(--bg);
+  color:var(--text-1);
+  min-height:100dvh;
+  padding-bottom:calc(84px + env(safe-area-inset-bottom));
+  -webkit-tap-highlight-color:transparent;
+}
+.wrap { max-width:560px; margin:0 auto; padding:0 16px; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:none;} }
+@keyframes pop    { 0%{transform:scale(.6);opacity:0;} 70%{transform:scale(1.12);} 100%{transform:scale(1);opacity:1;} }
+@keyframes sway   { 0%,100%{transform:rotate(-3deg);} 50%{transform:rotate(3deg);} }
+@keyframes flutter{ 0%,100%{transform:translate(0,0) rotate(-8deg);} 25%{transform:translate(6px,-6px) rotate(6deg);} 50%{transform:translate(12px,0) rotate(-4deg);} 75%{transform:translate(6px,5px) rotate(8deg);} }
+@keyframes fall   { 0%{opacity:1;transform:translate(0,0) rotate(0);} 100%{opacity:0;transform:translate(var(--dx),110vh) rotate(720deg);} }
+@keyframes beat   { 0%{transform:scale(1.35);} 100%{transform:scale(1);} }
+@keyframes pulse  { 0%,100%{opacity:1;} 50%{opacity:.45;} }
+
+/* ── HEADER ── */
+header { padding:14px 0 6px; }
+.top-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.back-btn {
+  display:inline-flex; align-items:center; gap:.3rem;
+  background:var(--surface); color:var(--text-2);
+  border:2px solid var(--border); border-radius:999px;
+  padding:.35rem 1rem; font-size:.82rem; font-weight:700;
+  text-decoration:none; box-shadow:var(--sh-sm);
+}
+.back-btn:hover { color:var(--accent); }
+.title { text-align:center; margin-top:10px; }
+.title h1 { font-family:'Fredoka One',cursive; font-size:clamp(1.7rem,7vw,2.3rem); color:var(--accent); line-height:1.1; }
+.title p { font-size:.85rem; color:var(--text-3); font-weight:700; }
+
+.who { display:flex; gap:6px; background:var(--surface); border:2px solid var(--border); border-radius:999px; padding:3px; box-shadow:var(--sh-sm); }
+.who button { padding:.3rem .95rem; border-radius:999px; font-weight:800; font-size:.85rem; color:var(--text-2); transition:all .2s; }
+.who button[aria-pressed="true"].sana { background:var(--sana); color:#fff; }
+.who button[aria-pressed="true"].tara { background:var(--tara); color:#fff; }
+
+/* ── CARDS ── */
+.card { background:var(--surface); border:2px solid var(--border); border-radius:22px; padding:16px; box-shadow:var(--sh-sm); margin-top:14px; animation:fadeUp .35s ease both; }
+.card h2 { font-family:'Fredoka One',cursive; font-size:1.15rem; color:var(--text-1); margin-bottom:10px; display:flex; align-items:center; gap:.4rem; }
+.muted { color:var(--text-3); font-size:.85rem; font-weight:600; }
+.row { display:flex; align-items:center; gap:10px; }
+.spread { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:.35rem; padding:.6rem 1.2rem; border-radius:999px; font-weight:800; transition:transform .15s, box-shadow .15s, background .2s; min-height:44px; }
+.btn:active { transform:scale(.96); }
+.btn-primary { background:var(--accent); color:#fff; box-shadow:0 6px 18px rgba(34,160,107,.3); }
+.btn-purple  { background:var(--accent-2); color:#fff; box-shadow:0 6px 18px rgba(139,92,246,.3); }
+.btn-soft    { background:var(--surface-2); color:var(--text-1); border:2px solid var(--border); }
+.btn-danger  { background:transparent; color:var(--danger); border:2px solid currentColor; }
+.btn:disabled { opacity:.45; cursor:not-allowed; }
+.chip { padding:.45rem .9rem; border-radius:999px; background:var(--surface-2); border:2px solid var(--border); font-weight:800; font-size:.9rem; min-height:40px; }
+.chip:hover { border-color:var(--accent); }
+.icon-btn { width:36px; height:36px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background:var(--surface-2); border:2px solid var(--border); font-weight:800; color:var(--text-2); flex-shrink:0; }
+
+/* ── TODAY ── */
+.today { display:flex; align-items:center; gap:16px; }
+.ring { position:relative; width:118px; height:118px; flex-shrink:0; }
+.ring svg { width:100%; height:100%; transform:rotate(-90deg); }
+.ring .track { stroke:var(--surface-2); }
+.ring .fill { stroke:var(--accent); transition:stroke-dashoffset .8s cubic-bezier(.2,.8,.2,1); }
+.ring.done .fill { stroke:var(--gold); }
+.ring-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.ring-center b { font-family:'Fredoka One',cursive; font-size:1.9rem; line-height:1; font-variant-numeric:tabular-nums; }
+.ring-center span { font-size:.72rem; color:var(--text-3); font-weight:800; }
+.today-msg { font-weight:800; font-size:1rem; line-height:1.35; }
+.today-flower { width:54px; height:54px; margin-top:6px; }
+
+/* ── TIMER ── */
+.timer { text-align:center; }
+.timer-time { font-family:'Fredoka One',cursive; font-size:clamp(2.8rem,14vw,3.8rem); font-variant-numeric:tabular-nums; letter-spacing:1px; line-height:1.1; margin:4px 0 10px; }
+.timer-time.running { color:var(--accent); }
+.timer-time.paused { animation:pulse 1.4s ease-in-out infinite; }
+.timer-btns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.quick { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:12px; }
+.note-input { width:100%; margin-top:10px; padding:.6rem .9rem; border-radius:14px; border:2px solid var(--border); background:var(--surface-2); }
+
+/* ── WEEK ── */
+.week { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; text-align:center; }
+.week .d { display:flex; flex-direction:column; align-items:center; gap:4px; font-size:.72rem; font-weight:800; color:var(--text-3); }
+.week .bubble { width:100%; max-width:44px; aspect-ratio:1; border-radius:50%; background:var(--surface-2); border:2px dashed var(--border); display:flex; align-items:center; justify-content:center; }
+.week .bubble svg { width:80%; height:80%; }
+.week .d.today .bubble { border-style:solid; border-color:var(--accent); }
+.week .d.today { color:var(--accent); }
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; }
+.stat { background:var(--surface-2); border-radius:14px; padding:8px 6px; text-align:center; }
+.stat b { display:block; font-family:'Fredoka One',cursive; font-size:1.35rem; color:var(--accent); }
+.stat span { font-size:.72rem; font-weight:800; color:var(--text-3); }
+
+/* ── GARDEN ── */
+.garden-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.garden-head h2 { margin:0; }
+.garden {
+  position:relative;
+  background:linear-gradient(180deg, #CFEFFF 0%, #E9F8FF 38%, #D7F0C9 38%, #BFE3AE 100%);
+  border-radius:18px; padding:46px 10px 12px; overflow:hidden;
+}
+:root[data-theme="dark"] .garden { background:linear-gradient(180deg,#14223A 0%,#1B2C46 38%,#1E3A24 38%,#173020 100%); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .garden { background:linear-gradient(180deg,#14223A 0%,#1B2C46 38%,#1E3A24 38%,#173020 100%); } }
+.sky-row { position:absolute; top:8px; left:12px; right:12px; height:30px; display:flex; align-items:center; gap:4px; }
+.sky-row .sun { margin-left:auto; font-size:1.4rem; }
+.butterfly { width:26px; height:26px; animation:flutter 4s ease-in-out infinite; }
+.days-head, .days { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+.days-head { font-size:.66rem; font-weight:800; color:rgba(31,58,43,.6); text-align:center; margin-bottom:2px; }
+:root[data-theme="dark"] .days-head { color:rgba(230,244,234,.55); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .days-head { color:rgba(230,244,234,.55); } }
+.plot { position:relative; aspect-ratio:1; border-radius:10px; display:flex; align-items:flex-end; justify-content:center; transition:transform .15s; }
+.plot svg { width:100%; height:100%; }
+.plot.has { cursor:pointer; }
+.plot:not(.future):hover { transform:translateY(-2px); }
+.plot .num { position:absolute; top:1px; left:3px; font-size:.58rem; font-weight:800; color:rgba(31,58,43,.55); }
+:root[data-theme="dark"] .plot .num { color:rgba(230,244,234,.5); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .plot .num { color:rgba(230,244,234,.5); } }
+.plot.future { opacity:.35; cursor:default; }
+.plot.today { box-shadow:inset 0 0 0 2px var(--accent); background:rgba(255,255,255,.25); }
+.plot.selected { box-shadow:inset 0 0 0 2px var(--accent-2); background:rgba(139,92,246,.12); }
+.plot .grow, .today-flower .grow, .bubble .grow { transform-box:fill-box; }
+.plot .grow { transform-origin:50% 90%; animation:sway 3.5s ease-in-out infinite; }
+.plot.new .grow { animation:pop .6s ease both, sway 3.5s ease-in-out .6s infinite; }
+.legend { display:flex; flex-wrap:wrap; gap:10px 14px; margin-top:10px; font-size:.75rem; font-weight:700; color:var(--text-2); }
+.legend span { display:inline-flex; align-items:center; gap:4px; }
+.legend svg { width:22px; height:22px; }
+
+.day-detail { margin-top:12px; border-top:2px dashed var(--border); padding-top:12px; }
+.session { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
+.session:last-child { border-bottom:none; }
+.session .mins { font-family:'Fredoka One',cursive; font-size:1.1rem; color:var(--accent); min-width:56px; }
+.session .note { flex:1; font-size:.88rem; color:var(--text-2); word-break:break-word; }
+.add-past { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+.add-past input { width:90px; padding:.55rem .8rem; border-radius:12px; border:2px solid var(--border); background:var(--surface-2); }
+
+/* ── PIECES ── */
+.add-piece { display:flex; gap:8px; }
+.add-piece input { flex:1; min-width:0; padding:.6rem .9rem; border-radius:14px; border:2px solid var(--border); background:var(--surface-2); }
+.piece { padding:12px 0; border-bottom:1px solid var(--border); }
+.piece:last-child { border-bottom:none; }
+.piece-title { font-weight:800; font-size:1rem; word-break:break-word; flex:1; }
+.steps { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:8px; }
+.step { padding:.4rem .2rem; border-radius:12px; font-size:.72rem; font-weight:800; background:var(--surface-2); color:var(--text-3); border:2px solid transparent; min-height:44px; line-height:1.15; }
+.step.on { background:var(--pale); color:var(--accent); border-color:var(--accent); }
+.step.on.last { background:var(--gold); color:#3a2a00; border-color:var(--gold); }
+.mastered { display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid var(--border); }
+.mastered:last-child { border-bottom:none; }
+.empty { text-align:center; padding:14px 0 4px; color:var(--text-3); font-weight:700; font-size:.9rem; }
+.empty .big { font-size:2rem; display:block; }
+
+/* ── METRONOME ── */
+.metro-bpm { font-family:'Fredoka One',cursive; font-size:2.6rem; text-align:center; font-variant-numeric:tabular-nums; }
+.metro-bpm small { font-size:1rem; color:var(--text-3); }
+.metro-name { text-align:center; font-weight:800; color:var(--text-3); font-size:.85rem; margin-top:-4px; }
+.beats { display:flex; justify-content:center; gap:12px; margin:12px 0; }
+.beats i { width:18px; height:18px; border-radius:50%; background:var(--surface-2); border:2px solid var(--border); }
+.beats i.hit { background:var(--accent); border-color:var(--accent); animation:beat .18s ease-out; }
+.beats i.hit.first { background:var(--accent-2); border-color:var(--accent-2); }
+input[type=range] { width:100%; accent-color:var(--accent); height:32px; }
+.metro-ctrls { display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap; }
+.seg { display:flex; background:var(--surface-2); border-radius:999px; padding:3px; border:2px solid var(--border); }
+.seg button { padding:.3rem .75rem; border-radius:999px; font-weight:800; font-size:.85rem; color:var(--text-2); min-height:36px; }
+.seg button[aria-pressed="true"] { background:var(--surface); color:var(--accent); box-shadow:var(--sh-sm); }
+
+/* ── KEYBOARD ── */
+.keys { position:relative; height:150px; display:flex; user-select:none; -webkit-user-select:none; touch-action:none; margin-top:4px; }
+.wkey { flex:1; background:var(--key-white); border:2px solid var(--border); border-radius:0 0 10px 10px; margin:0 1px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:8px; font-size:.75rem; font-weight:800; color:#7c8f83; box-shadow:0 4px 0 rgba(0,0,0,.08); transition:background .08s, transform .08s; }
+.bkey { position:absolute; top:0; width:9%; height:60%; background:var(--key-black); border-radius:0 0 8px 8px; z-index:2; transform:translateX(-50%); box-shadow:0 3px 0 rgba(0,0,0,.3); transition:background .08s; }
+.wkey.down { background:var(--pale); transform:translateY(2px); }
+.bkey.down { background:var(--accent); }
+
+/* ── SETTINGS ── */
+.setting { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+.setting:last-child { border-bottom:none; }
+.setting label { font-weight:800; }
+.setting select { padding:.45rem .8rem; border-radius:12px; border:2px solid var(--border); background:var(--surface-2); }
+.btn-row { display:flex; gap:8px; flex-wrap:wrap; }
+
+/* ── TABS ── */
+nav.tabs {
+  position:fixed; left:0; right:0; bottom:0; z-index:20;
+  background:var(--surface); border-top:2px solid var(--border);
+  padding:6px 8px calc(6px + env(safe-area-inset-bottom));
+  display:flex; justify-content:center;
+}
+nav.tabs .inner { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; width:100%; max-width:560px; }
+nav.tabs button { display:flex; flex-direction:column; align-items:center; gap:2px; padding:6px 2px; border-radius:14px; font-size:.72rem; font-weight:800; color:var(--text-3); min-height:52px; }
+nav.tabs button .ic { font-size:1.3rem; line-height:1; }
+nav.tabs button[aria-selected="true"] { color:var(--accent); background:var(--pale); }
+section[role=tabpanel][hidden] { display:none; }
+
+/* ── TOAST + CONFETTI ── */
+.toast { position:fixed; left:50%; bottom:calc(96px + env(safe-area-inset-bottom)); transform:translateX(-50%) translateY(20px); background:var(--text-1); color:var(--bg); padding:.6rem 1.1rem; border-radius:999px; font-weight:800; font-size:.9rem; opacity:0; pointer-events:none; transition:all .3s; z-index:50; max-width:calc(100% - 32px); text-align:center; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.petal { position:fixed; top:-20px; z-index:60; pointer-events:none; font-size:1.3rem; animation:fall 2.6s ease-in forwards; }
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="top-row">
+      <a class="back-btn" href="../">← Home</a>
+      <div class="who" role="group" aria-label="Who is practising?">
+        <button class="sana" data-player="sana" aria-pressed="true">Sana</button>
+        <button class="tara" data-player="tara" aria-pressed="false">Tara</button>
+      </div>
+    </div>
+    <div class="title">
+      <h1>🎹 Piano Garden</h1>
+      <p id="subtitle">Every practice day grows a flower</p>
+    </div>
+  </header>
+
+  <!-- ── PRACTICE TAB ── -->
+  <section role="tabpanel" id="tab-practice" aria-labelledby="t-practice">
+    <div class="card">
+      <div class="today">
+        <div class="ring" id="ring">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="track" cx="60" cy="60" r="50" fill="none" stroke-width="12"/>
+            <circle class="fill" id="ringFill" cx="60" cy="60" r="50" fill="none" stroke-width="12" stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+          </svg>
+          <div class="ring-center"><b id="todayMins">0</b><span id="todayGoal">of 15 min</span></div>
+        </div>
+        <div>
+          <div class="today-msg" id="todayMsg">Ready to play?</div>
+          <div class="today-flower" id="todayFlower" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card timer">
+      <h2 style="justify-content:center">⏱️ Practice timer</h2>
+      <div class="timer-time" id="timerTime" aria-live="off">00:00</div>
+      <div class="timer-btns">
+        <button class="btn btn-primary" id="btnStart">▶ Start</button>
+        <button class="btn btn-soft" id="btnPause" hidden>⏸ Pause</button>
+        <button class="btn btn-purple" id="btnFinish" hidden>🌱 Finish &amp; plant</button>
+        <button class="btn btn-soft" id="btnCancel" hidden aria-label="Throw away this timer">✕</button>
+      </div>
+      <input class="note-input" id="noteInput" maxlength="120" placeholder="What did you play? (optional)">
+      <p class="muted" style="margin-top:12px">Forgot the timer? Add minutes:</p>
+      <div class="quick" id="quickAdd">
+        <button class="chip" data-min="5">+5 min</button>
+        <button class="chip" data-min="10">+10 min</button>
+        <button class="chip" data-min="15">+15 min</button>
+        <button class="chip" data-min="20">+20 min</button>
+        <button class="chip" data-min="30">+30 min</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📅 This week</h2>
+      <div class="week" id="week"></div>
+      <div class="stats">
+        <div class="stat"><b id="statWeekMin">0</b><span>min this week</span></div>
+        <div class="stat"><b id="statFlowers">0</b><span>flowers grown</span></div>
+        <div class="stat"><b id="statPieces">0</b><span>pieces learned</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GARDEN TAB ── -->
+  <section role="tabpanel" id="tab-garden" aria-labelledby="t-garden" hidden>
+    <div class="card">
+      <div class="garden-head">
+        <button class="icon-btn" id="prevMonth" aria-label="Previous month">‹</button>
+        <h2 id="monthLabel">Month</h2>
+        <button class="icon-btn" id="nextMonth" aria-label="Next month">›</button>
+      </div>
+      <div class="garden">
+        <div class="sky-row" id="skyRow"><span class="sun" aria-hidden="true">☀️</span></div>
+        <div class="days-head"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span></div>
+        <div class="days" id="days"></div>
+      </div>
+      <div class="legend" id="legend"></div>
+      <div class="day-detail" id="dayDetail" hidden></div>
+    </div>
+  </section>
+
+  <!-- ── PIECES TAB ── -->
+  <section role="tabpanel" id="tab-pieces" aria-labelledby="t-pieces" hidden>
+    <div class="card">
+      <h2>🎼 Pieces I'm learning</h2>
+      <form class="add-piece" id="addPiece" autocomplete="off">
+        <label class="sr-only" for="pieceTitle">Piece name</label>
+        <input id="pieceTitle" maxlength="60" placeholder="Add a new piece…">
+        <button class="btn btn-primary" type="submit">Add</button>
+      </form>
+      <div id="pieceList"></div>
+    </div>
+    <div class="card">
+      <h2>⭐ Learned pieces</h2>
+      <p class="muted" style="margin-bottom:6px">Each one brings a butterfly to the garden.</p>
+      <div id="masteredList"></div>
+    </div>
+  </section>
+
+  <!-- ── TOOLS TAB ── -->
+  <section role="tabpanel" id="tab-tools" aria-labelledby="t-tools" hidden>
+    <div class="card">
+      <h2>🥁 Metronome</h2>
+      <div class="metro-bpm"><span id="bpmVal">80</span> <small>bpm</small></div>
+      <div class="metro-name" id="bpmName">Andante · walking</div>
+      <div class="beats" id="beats"></div>
+      <div class="row" style="gap:8px">
+        <button class="icon-btn" id="bpmDown" aria-label="Slower">−</button>
+        <label class="sr-only" for="bpm">Tempo</label>
+        <input type="range" id="bpm" min="40" max="200" value="80">
+        <button class="icon-btn" id="bpmUp" aria-label="Faster">+</button>
+      </div>
+      <div class="metro-ctrls" style="margin-top:10px">
+        <div class="seg" role="group" aria-label="Beats per bar" id="meter">
+          <button data-m="2" aria-pressed="false">2</button>
+          <button data-m="3" aria-pressed="false">3</button>
+          <button data-m="4" aria-pressed="true">4</button>
+        </div>
+        <button class="btn btn-primary" id="metroBtn">▶ Start</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🎹 Little keyboard</h2>
+      <p class="muted" style="margin-bottom:8px">Tap the keys, or use your computer keys A S D F G H J K.</p>
+      <div class="keys" id="keys"></div>
+    </div>
+
+    <div class="card">
+      <h2>⚙️ Settings</h2>
+      <div class="setting">
+        <label for="goalSel">Daily goal for <span class="pname">Sana</span></label>
+        <select id="goalSel">
+          <option value="5">5 min</option><option value="10">10 min</option><option value="15">15 min</option>
+          <option value="20">20 min</option><option value="25">25 min</option><option value="30">30 min</option>
+          <option value="45">45 min</option><option value="60">60 min</option>
+        </select>
+      </div>
+      <div class="setting">
+        <label for="soundSel">Sounds</label>
+        <select id="soundSel"><option value="on">On</option><option value="off">Off</option></select>
+      </div>
+      <div class="setting">
+        <label>Backup</label>
+        <div class="btn-row">
+          <button class="btn btn-soft" id="exportBtn">⬇ Save backup</button>
+          <button class="btn btn-soft" id="importBtn">⬆ Load backup</button>
+          <input type="file" id="importFile" accept="application/json,.json" hidden>
+        </div>
+      </div>
+      <div class="setting">
+        <label>Start over</label>
+        <button class="btn btn-danger" id="resetBtn"><span>Clear <span class="pname">Sana</span>'s garden</span></button>
+      </div>
+      <p class="muted" style="margin-top:8px">Everything is saved on this device only.</p>
+    </div>
+  </section>
+</div>
+
+<nav class="tabs" role="tablist" aria-label="Sections">
+  <div class="inner">
+    <button role="tab" id="t-practice" aria-controls="tab-practice" aria-selected="true" data-tab="practice"><span class="ic">⏱️</span>Practice</button>
+    <button role="tab" id="t-garden" aria-controls="tab-garden" aria-selected="false" data-tab="garden"><span class="ic">🌷</span>Garden</button>
+    <button role="tab" id="t-pieces" aria-controls="tab-pieces" aria-selected="false" data-tab="pieces"><span class="ic">🎼</span>Pieces</button>
+    <button role="tab" id="t-tools" aria-controls="tab-tools" aria-selected="false" data-tab="tools"><span class="ic">🥁</span>Tools</button>
+  </div>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ════════════════ STORAGE ════════════════ */
+const KEY = 'piano-garden:v1';
+const PLAYERS = { sana: 'Sana', tara: 'Tara' };
+
+const freshPlayer = () => ({ goal: 15, sessions: [], pieces: [], timer: { running: false, startedAt: 0, accMs: 0 } });
+const freshState  = () => ({ version: 1, active: 'sana', sound: 'on', players: { sana: freshPlayer(), tara: freshPlayer() } });
+
+function validState(s) {
+  return s && s.version === 1 && s.players && Object.keys(PLAYERS).every(p => {
+    const pl = s.players[p];
+    return pl && Array.isArray(pl.sessions) && Array.isArray(pl.pieces) && typeof pl.goal === 'number';
+  });
+}
+function normalise(s) {
+  for (const p of Object.keys(PLAYERS)) {
+    const pl = s.players[p];
+    if (!pl.timer) pl.timer = { running: false, startedAt: 0, accMs: 0 };
+  }
+  if (!PLAYERS[s.active]) s.active = 'sana';
+  if (s.sound !== 'off') s.sound = 'on';
+  return s;
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) { const s = JSON.parse(raw); if (validState(s)) return normalise(s); }
+  } catch (e) { /* storage blocked or corrupt: start fresh */ }
+  return freshState();
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ } }
+
+let state = load();
+const me = () => state.players[state.active];
+
+/* ════════════════ DATES ════════════════ */
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const today = () => ymd(new Date());
+const parseYmd = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const mondayOf = d => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); const wd = (x.getDay() + 6) % 7; x.setDate(x.getDate() - wd); return x; };
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+function minutesOn(player, date) {
+  return player.sessions.reduce((t, s) => s.date === date ? t + s.minutes : t, 0);
+}
+function minutesByDate(player) {
+  const m = {};
+  for (const s of player.sessions) m[s.date] = (m[s.date] || 0) + s.minutes;
+  return m;
+}
+
+/* ════════════════ FLOWER ART (original SVG) ════════════════ */
+const PETALS = ['#F472B6', '#A78BFA', '#FB923C', '#F87171', '#60A5FA', '#FACC15', '#34D399', '#E879F9'];
+const hueFor = date => PETALS[(parseInt(date.replace(/-/g, ''), 10) * 7) % PETALS.length];
+
+// level: 0 = bare soil, 1 = sprout, 2 = bud, 3 = full bloom (goal met)
+function flowerSVG(level, color, opts = {}) {
+  const soil = `<ellipse cx="20" cy="36" rx="13" ry="3.6" fill="var(--soil)"/><ellipse cx="20" cy="35" rx="9" ry="2" fill="var(--soil-2)" opacity=".5"/>`;
+  let plant = '';
+  if (level === 1) {
+    plant = `<path d="M20 35 V25" stroke="#3FA45B" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M20 28 C14 27 13 22 14 21 C18 21 20 24 20 28Z" fill="#5CC97A"/>
+      <path d="M20 26 C26 25 27 20 26 19 C22 19 20 22 20 26Z" fill="#4DB86B"/>`;
+  } else if (level === 2) {
+    plant = `<path d="M20 35 V17" stroke="#3FA45B" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M20 30 C13 29 12 24 13 23 C17 23 20 26 20 30Z" fill="#5CC97A"/>
+      <path d="M14 10 Q14 20 20 20 Q26 20 26 10 L23 13 L20 9 L17 13Z" fill="${color}"/>
+      <path d="M17 13 L20 9 L23 13 Q22 18 20 18 Q18 18 17 13Z" fill="#fff" opacity=".25"/>`;
+  } else if (level === 3) {
+    let petals = '';
+    for (let i = 0; i < 8; i++) {
+      const a = i * Math.PI / 4, x = 20 + Math.cos(a) * 6.2, y = 13 + Math.sin(a) * 6.2;
+      petals += `<ellipse cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" rx="4.2" ry="3" transform="rotate(${i * 45} ${x.toFixed(2)} ${y.toFixed(2)})" fill="${color}"/>`;
+    }
+    plant = `<path d="M20 35 V18" stroke="#3FA45B" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M20 31 C12 30 11 24 12 23 C17 23 20 27 20 31Z" fill="#5CC97A"/>
+      <path d="M20 27 C28 26 29 21 28 20 C23 20 20 23 20 27Z" fill="#4DB86B"/>
+      ${petals}<circle cx="20" cy="13" r="3.8" fill="#FCD34D"/><circle cx="19" cy="12" r="1.2" fill="#fff" opacity=".6"/>`;
+    if (opts.sparkle) plant += `<path d="M33 5 l1 2.4 2.4 1 -2.4 1 -1 2.4 -1 -2.4 -2.4 -1 2.4 -1Z" fill="#FCD34D"/>`;
+  }
+  return `<svg viewBox="0 0 40 40" aria-hidden="true">${soil}<g class="grow">${plant}</g></svg>`;
+}
+function levelFor(mins, goal) {
+  if (!mins) return 0;
+  if (mins >= goal) return 3;
+  if (mins >= Math.ceil(goal / 2)) return 2;
+  return 1;
+}
+function butterflySVG(color) {
+  return `<svg class="butterfly" viewBox="0 0 30 30" aria-hidden="true">
+    <path d="M15 15 C9 4 2 6 3 12 C4 17 10 17 15 15Z" fill="${color}"/>
+    <path d="M15 15 C21 4 28 6 27 12 C26 17 20 17 15 15Z" fill="${color}"/>
+    <path d="M15 15 C10 18 6 24 10 25 C13 26 14 20 15 15Z" fill="${color}" opacity=".8"/>
+    <path d="M15 15 C20 18 24 24 20 25 C17 26 16 20 15 15Z" fill="${color}" opacity=".8"/>
+    <rect x="14" y="9" width="2" height="13" rx="1" fill="#3B2F2F"/>
+    <path d="M15 9 Q12 4 10 4 M15 9 Q18 4 20 4" stroke="#3B2F2F" stroke-width="1" fill="none"/></svg>`;
+}
+
+/* ════════════════ SOUND ════════════════ */
+let actx = null;
+function audio() {
+  if (!actx) { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; actx = new AC(); }
+  if (actx.state === 'suspended') actx.resume();
+  return actx;
+}
+const midiFreq = m => 440 * Math.pow(2, (m - 69) / 12);
+function tone(freq, { dur = .6, type = 'triangle', vol = .22, when = 0, force = false } = {}) {
+  if (state.sound === 'off' && !force) return;
+  const ctx = audio(); if (!ctx) return;
+  const t = ctx.currentTime + when;
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(vol, t + .012);
+  g.gain.exponentialRampToValueAtTime(.0008, t + dur);
+  o.connect(g).connect(ctx.destination);
+  o.start(t); o.stop(t + dur + .05);
+}
+const chime  = () => [72, 76, 79].forEach((m, i) => tone(midiFreq(m), { when: i * .09, dur: .5 }));
+const fanfare= () => [60, 64, 67, 72, 76, 79, 84].forEach((m, i) => tone(midiFreq(m), { when: i * .08, dur: .7, vol: .18 }));
+
+/* ════════════════ UI HELPERS ════════════════ */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+let toastTimer;
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+function celebrate(icons = ['🌸', '🌼', '🎵', '⭐', '🌷', '🎶']) {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  for (let i = 0; i < 26; i++) {
+    const p = document.createElement('span');
+    p.className = 'petal';
+    p.textContent = icons[i % icons.length];
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.setProperty('--dx', (Math.random() * 120 - 60) + 'px');
+    p.style.animationDelay = (Math.random() * .6) + 's';
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 3400);
+  }
+}
+
+/* ════════════════ PLAYER SWITCH ════════════════ */
+document.querySelectorAll('.who button').forEach(b => b.addEventListener('click', () => {
+  state.active = b.dataset.player; save(); selectedDay = null; renderAll();
+}));
+
+/* ════════════════ ADD PRACTICE ════════════════ */
+let justPlanted = null;
+function addSession(minutes, date = today(), note = '') {
+  minutes = Math.max(1, Math.min(240, Math.round(minutes)));
+  const pl = me();
+  const before = minutesOn(pl, date);
+  pl.sessions.push({ id: uid(), date, minutes, note: note.trim().slice(0, 120), ts: Date.now() });
+  save();
+  const after = before + minutes;
+  justPlanted = date;
+  if (before < pl.goal && after >= pl.goal) {
+    fanfare(); celebrate();
+    toast(date === today() ? `🌻 Goal reached! A big flower bloomed for ${PLAYERS[state.active]}!` : '🌻 That day is in full bloom now!');
+  } else {
+    chime();
+    toast(before === 0 ? `🌱 Planted! ${minutes} min of practice.` : `💧 Watered with ${minutes} more min!`);
+  }
+  renderAll();
+  setTimeout(() => { justPlanted = null; }, 1200);
+}
+
+$('quickAdd').addEventListener('click', e => {
+  const b = e.target.closest('[data-min]'); if (!b) return;
+  addSession(+b.dataset.min, today(), $('noteInput').value);
+  $('noteInput').value = '';
+});
+
+/* ════════════════ TIMER ════════════════ */
+function timerMs(t) { return t.accMs + (t.running ? Date.now() - t.startedAt : 0); }
+function fmt(ms) {
+  const s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+  return h ? `${h}:${pad(m)}:${pad(sec)}` : `${pad(m)}:${pad(sec)}`;
+}
+function renderTimer() {
+  const t = me().timer, ms = timerMs(t), active = t.running || t.accMs > 0;
+  const el = $('timerTime');
+  el.textContent = fmt(ms);
+  el.classList.toggle('running', t.running);
+  el.classList.toggle('paused', !t.running && t.accMs > 0);
+  $('btnStart').hidden = t.running;
+  $('btnStart').textContent = t.accMs > 0 ? '▶ Keep going' : '▶ Start';
+  $('btnPause').hidden = !t.running;
+  $('btnFinish').hidden = !active;
+  $('btnCancel').hidden = !active;
+  document.title = t.running ? `${fmt(ms)} · Piano Garden` : 'Piano Garden';
+}
+$('btnStart').addEventListener('click', () => {
+  const t = me().timer; t.running = true; t.startedAt = Date.now(); save(); renderTimer();
+  tone(midiFreq(67), { dur: .25 });
+});
+$('btnPause').addEventListener('click', () => {
+  const t = me().timer; t.accMs = timerMs(t); t.running = false; save(); renderTimer();
+});
+$('btnFinish').addEventListener('click', () => {
+  const t = me().timer, ms = timerMs(t);
+  t.running = false; t.accMs = 0; t.startedAt = 0; save();
+  if (ms < 30000) { toast('That was under a minute, so nothing was planted. Keep going next time!'); renderTimer(); return; }
+  addSession(ms / 60000, today(), $('noteInput').value);
+  $('noteInput').value = '';
+});
+$('btnCancel').addEventListener('click', () => {
+  if (!confirm('Throw away this timer without planting?')) return;
+  const t = me().timer; t.running = false; t.accMs = 0; t.startedAt = 0; save(); renderTimer();
+});
+setInterval(() => { if (me().timer.running) renderTimer(); }, 500);
+
+/* ════════════════ PRACTICE TAB ════════════════ */
+const MESSAGES = {
+  0: ['Ready to play? 🎵', 'Your garden is waiting for today\'s seed.', 'A few minutes is enough to plant a sprout!'],
+  1: ['A little sprout is growing! 🌱', 'Nice start! Keep watering it.'],
+  2: ['A bud is forming! 🌷', 'Over halfway, wonderful!'],
+  3: ['Full bloom today! 🌻', 'Goal reached, amazing practice!'],
+};
+function renderPractice() {
+  const pl = me(), d = today(), mins = minutesOn(pl, d), lvl = levelFor(mins, pl.goal);
+  $('todayMins').textContent = mins;
+  $('todayGoal').textContent = `of ${pl.goal} min`;
+  const frac = Math.min(1, mins / pl.goal), C = 314.16;
+  $('ringFill').style.strokeDashoffset = (C * (1 - frac)).toFixed(2);
+  $('ring').classList.toggle('done', mins >= pl.goal);
+  const pool = MESSAGES[lvl];
+  $('todayMsg').textContent = pool[new Date().getDate() % pool.length];
+  $('todayFlower').innerHTML = flowerSVG(lvl, hueFor(d), { sparkle: lvl === 3 });
+
+  // week strip
+  const byDate = minutesByDate(pl), mon = mondayOf(new Date()), names = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+  let html = '', weekMin = 0;
+  for (let i = 0; i < 7; i++) {
+    const x = new Date(mon); x.setDate(mon.getDate() + i);
+    const k = ymd(x), m = byDate[k] || 0; weekMin += m;
+    const l = levelFor(m, pl.goal);
+    html += `<div class="d${k === d ? ' today' : ''}"><div class="bubble" title="${m} min">${l ? flowerSVG(l, hueFor(k)) : ''}</div>${names[i]}</div>`;
+  }
+  $('week').innerHTML = html;
+  $('statWeekMin').textContent = weekMin;
+  $('statFlowers').textContent = Object.keys(byDate).length;
+  $('statPieces').textContent = pl.pieces.filter(p => p.stage === 3).length;
+}
+
+/* ════════════════ GARDEN TAB ════════════════ */
+let viewMonth = (() => { const n = new Date(); return { y: n.getFullYear(), m: n.getMonth() }; })();
+let selectedDay = null;
+
+function renderGarden() {
+  const pl = me(), byDate = minutesByDate(pl), d = today();
+  const first = new Date(viewMonth.y, viewMonth.m, 1);
+  const daysIn = new Date(viewMonth.y, viewMonth.m + 1, 0).getDate();
+  const lead = (first.getDay() + 6) % 7;
+  $('monthLabel').textContent = first.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+  const now = new Date();
+  $('nextMonth').disabled = viewMonth.y > now.getFullYear() || (viewMonth.y === now.getFullYear() && viewMonth.m >= now.getMonth());
+  $('nextMonth').style.opacity = $('nextMonth').disabled ? .35 : 1;
+
+  let html = '';
+  for (let i = 0; i < lead; i++) html += '<div></div>';
+  for (let day = 1; day <= daysIn; day++) {
+    const k = `${viewMonth.y}-${pad(viewMonth.m + 1)}-${pad(day)}`;
+    const m = byDate[k] || 0, lvl = levelFor(m, pl.goal);
+    const future = k > d;
+    const cls = ['plot', future && 'future', k === d && 'today', m && 'has', k === selectedDay && 'selected', k === justPlanted && 'new'].filter(Boolean).join(' ');
+    const label = future ? `${day}` : `${day}: ${m ? m + ' minutes' : 'no practice'}`;
+    html += `<button class="${cls}" data-date="${k}" ${future ? 'disabled' : ''} aria-label="${label}"><span class="num">${day}</span>${future ? '' : flowerSVG(lvl, hueFor(k), { sparkle: lvl === 3 })}</button>`;
+  }
+  $('days').innerHTML = html;
+
+  // butterflies for pieces learned in this month
+  const prefix = `${viewMonth.y}-${pad(viewMonth.m + 1)}`;
+  const learned = pl.pieces.filter(p => p.stage === 3 && p.masteredAt && p.masteredAt.startsWith(prefix));
+  const sky = $('skyRow');
+  sky.innerHTML = learned.slice(0, 8).map((p, i) => {
+    const b = butterflySVG(PETALS[(i * 3 + 1) % PETALS.length]);
+    return `<span title="${esc(p.title)}" style="animation-delay:${i * .4}s">${b}</span>`;
+  }).join('') + (learned.length > 8 ? `<b style="font-size:.8rem">+${learned.length - 8}</b>` : '') + '<span class="sun" aria-hidden="true">☀️</span>';
+  sky.querySelectorAll('.butterfly').forEach((el, i) => el.style.animationDelay = (i * .5) + 's');
+
+  const g = pl.goal;
+  $('legend').innerHTML =
+    `<span>${flowerSVG(1, PETALS[0])} under ${Math.ceil(g / 2)} min</span>` +
+    `<span>${flowerSVG(2, PETALS[1])} ${Math.ceil(g / 2)}+ min</span>` +
+    `<span>${flowerSVG(3, PETALS[2])} ${g}+ min (goal)</span>`;
+
+  renderDayDetail();
+}
+
+function renderDayDetail() {
+  const box = $('dayDetail');
+  if (!selectedDay) { box.hidden = true; return; }
+  const pl = me();
+  const list = pl.sessions.filter(s => s.date === selectedDay).sort((a, b) => a.ts - b.ts);
+  const title = parseYmd(selectedDay).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
+  const total = list.reduce((t, s) => t + s.minutes, 0);
+  box.hidden = false;
+  box.innerHTML = `
+    <div class="spread"><b>${title}</b><span class="muted">${total} min</span></div>
+    ${list.length ? list.map(s => `
+      <div class="session">
+        <span class="mins">${s.minutes} min</span>
+        <span class="note">${s.note ? esc(s.note) : '<span class="muted">Practice</span>'}</span>
+        <button class="icon-btn" data-del="${s.id}" aria-label="Delete ${s.minutes} minute session">✕</button>
+      </div>`).join('') : '<p class="muted" style="padding:6px 0">No practice saved for this day.</p>'}
+    <form class="add-past" id="addPast">
+      <label class="sr-only" for="pastMin">Minutes</label>
+      <input id="pastMin" type="number" inputmode="numeric" min="1" max="240" placeholder="min" required>
+      <button class="btn btn-soft" type="submit">+ Add to this day</button>
+    </form>`;
+}
+
+$('days').addEventListener('click', e => {
+  const b = e.target.closest('.plot'); if (!b || b.disabled) return;
+  selectedDay = selectedDay === b.dataset.date ? null : b.dataset.date;
+  renderGarden();
+});
+$('dayDetail').addEventListener('click', e => {
+  const b = e.target.closest('[data-del]'); if (!b) return;
+  if (!confirm('Delete this practice?')) return;
+  const pl = me(); pl.sessions = pl.sessions.filter(s => s.id !== b.dataset.del); save(); renderAll();
+});
+$('dayDetail').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = parseInt($('pastMin').value, 10);
+  if (!(v > 0)) return;
+  addSession(v, selectedDay);
+});
+$('prevMonth').addEventListener('click', () => { viewMonth.m--; if (viewMonth.m < 0) { viewMonth.m = 11; viewMonth.y--; } selectedDay = null; renderGarden(); });
+$('nextMonth').addEventListener('click', () => { if ($('nextMonth').disabled) return; viewMonth.m++; if (viewMonth.m > 11) { viewMonth.m = 0; viewMonth.y++; } selectedDay = null; renderGarden(); });
+
+/* ════════════════ PIECES TAB ════════════════ */
+const STEPS = ['🌱 Just started', '🎵 Learning', '✨ Nearly there', '⭐ Got it!'];
+function renderPieces() {
+  const pl = me();
+  const active = pl.pieces.filter(p => p.stage < 3);
+  const done = pl.pieces.filter(p => p.stage === 3).sort((a, b) => (b.masteredAt || '').localeCompare(a.masteredAt || ''));
+  $('pieceList').innerHTML = active.length ? active.map(p => `
+    <div class="piece">
+      <div class="spread"><span class="piece-title">${esc(p.title)}</span>
+        <button class="icon-btn" data-remove="${p.id}" aria-label="Remove ${esc(p.title)}">✕</button></div>
+      <div class="steps" role="group" aria-label="Progress for ${esc(p.title)}">
+        ${STEPS.map((s, i) => `<button class="step${i <= p.stage ? ' on' : ''}${i === 3 ? ' last' : ''}" data-piece="${p.id}" data-stage="${i}" aria-pressed="${i === p.stage}">${s}</button>`).join('')}
+      </div>
+    </div>`).join('')
+    : '<div class="empty"><span class="big">🎼</span>Add the piece you\'re working on.</div>';
+  $('masteredList').innerHTML = done.length ? done.map((p, i) => `
+    <div class="mastered">
+      <span style="width:30px;height:30px;display:inline-flex">${butterflySVG(PETALS[(i * 3 + 1) % PETALS.length])}</span>
+      <span class="piece-title">${esc(p.title)}</span>
+      <span class="muted">${p.masteredAt ? parseYmd(p.masteredAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) : ''}</span>
+      <button class="icon-btn" data-undo="${p.id}" aria-label="Move ${esc(p.title)} back to learning">↺</button>
+    </div>`).join('')
+    : '<div class="empty">No learned pieces yet. They\'ll appear here!</div>';
+}
+$('addPiece').addEventListener('submit', e => {
+  e.preventDefault();
+  const title = $('pieceTitle').value.trim();
+  if (!title) return;
+  me().pieces.push({ id: uid(), title: title.slice(0, 60), stage: 0, addedAt: today(), masteredAt: null });
+  $('pieceTitle').value = ''; save(); renderAll(); tone(midiFreq(72), { dur: .3 });
+});
+$('pieceList').addEventListener('click', e => {
+  const rm = e.target.closest('[data-remove]');
+  if (rm) {
+    const p = me().pieces.find(x => x.id === rm.dataset.remove);
+    if (p && confirm(`Remove "${p.title}"?`)) { me().pieces = me().pieces.filter(x => x !== p); save(); renderAll(); }
+    return;
+  }
+  const st = e.target.closest('[data-stage]'); if (!st) return;
+  const p = me().pieces.find(x => x.id === st.dataset.piece); if (!p) return;
+  const stage = +st.dataset.stage;
+  p.stage = stage;
+  if (stage === 3) {
+    p.masteredAt = today(); fanfare(); celebrate(['🦋', '⭐', '🎶', '🌸']);
+    toast(`🦋 "${p.title}" learned! A butterfly joined the garden.`);
+  } else tone(midiFreq(64 + stage * 3), { dur: .3 });
+  save(); renderAll();
+});
+$('masteredList').addEventListener('click', e => {
+  const b = e.target.closest('[data-undo]'); if (!b) return;
+  const p = me().pieces.find(x => x.id === b.dataset.undo); if (!p) return;
+  p.stage = 2; p.masteredAt = null; save(); renderAll();
+});
+
+/* ════════════════ METRONOME ════════════════ */
+const metro = { on: false, bpm: 80, meter: 4, beat: 0, next: 0, timer: null };
+const TEMPO_NAMES = [[60, 'Largo · very slow'], [76, 'Adagio · slow'], [108, 'Andante · walking'], [120, 'Moderato · medium'], [156, 'Allegro · fast'], [176, 'Vivace · lively'], [999, 'Presto · very fast']];
+function renderMetro() {
+  $('bpmVal').textContent = metro.bpm;
+  $('bpm').value = metro.bpm;
+  $('bpmName').textContent = TEMPO_NAMES.find(([max]) => metro.bpm < max)[1];
+  $('beats').innerHTML = Array.from({ length: metro.meter }, () => '<i></i>').join('');
+  document.querySelectorAll('#meter button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.m === metro.meter));
+  $('metroBtn').textContent = metro.on ? '⏹ Stop' : '▶ Start';
+}
+function scheduleClicks() {
+  const ctx = actx;
+  while (metro.next < ctx.currentTime + .12) {
+    const first = metro.beat % metro.meter === 0, beatIndex = metro.beat % metro.meter;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'square'; o.frequency.value = first ? 1568 : 1046;
+    g.gain.setValueAtTime(.0001, metro.next);
+    g.gain.exponentialRampToValueAtTime(first ? .3 : .18, metro.next + .002);
+    g.gain.exponentialRampToValueAtTime(.0001, metro.next + .05);
+    o.connect(g).connect(ctx.destination); o.start(metro.next); o.stop(metro.next + .06);
+    const delay = Math.max(0, (metro.next - ctx.currentTime) * 1000);
+    setTimeout(() => {
+      if (!metro.on) return;
+      const dots = $('beats').children;
+      [...dots].forEach(d => d.classList.remove('hit', 'first'));
+      const dot = dots[beatIndex];
+      if (dot) { void dot.offsetWidth; dot.classList.add('hit'); if (first) dot.classList.add('first'); }
+    }, delay);
+    metro.next += 60 / metro.bpm;
+    metro.beat++;
+  }
+}
+function startMetro() {
+  const ctx = audio(); if (!ctx) { toast('Sound is not supported in this browser.'); return; }
+  metro.on = true; metro.beat = 0; metro.next = ctx.currentTime + .06;
+  metro.timer = setInterval(scheduleClicks, 25); scheduleClicks(); renderMetro();
+}
+function stopMetro() {
+  metro.on = false; clearInterval(metro.timer);
+  [...$('beats').children].forEach(d => d.classList.remove('hit', 'first')); renderMetro();
+}
+$('metroBtn').addEventListener('click', () => metro.on ? stopMetro() : startMetro());
+const setBpm = v => { metro.bpm = Math.max(40, Math.min(200, v)); renderMetro(); };
+$('bpm').addEventListener('input', e => setBpm(+e.target.value));
+$('bpmDown').addEventListener('click', () => setBpm(metro.bpm - 1));
+$('bpmUp').addEventListener('click', () => setBpm(metro.bpm + 1));
+$('meter').addEventListener('click', e => {
+  const b = e.target.closest('[data-m]'); if (!b) return;
+  metro.meter = +b.dataset.m; metro.beat = 0; renderMetro();
+});
+
+/* ════════════════ KEYBOARD ════════════════ */
+const WHITE = [['C', 60, 'a'], ['D', 62, 's'], ['E', 64, 'd'], ['F', 65, 'f'], ['G', 67, 'g'], ['A', 69, 'h'], ['B', 71, 'j'], ['C', 72, 'k']];
+const BLACK = [[61, 1, 'w'], [63, 2, 'e'], [66, 4, 't'], [68, 5, 'y'], [70, 6, 'u']]; // midi, sits after white key index n
+function buildKeys() {
+  const k = $('keys');
+  k.innerHTML = WHITE.map(([n, m]) => `<div class="wkey" data-midi="${m}">${n}</div>`).join('') +
+    BLACK.map(([m, after]) => `<div class="bkey" data-midi="${m}" style="left:${(after / WHITE.length) * 100}%"></div>`).join('');
+  const press = el => {
+    if (!el || !el.dataset.midi) return;
+    tone(midiFreq(+el.dataset.midi), { dur: 1.1, type: 'triangle', vol: .28, force: true });
+    tone(midiFreq(+el.dataset.midi) * 2, { dur: .6, type: 'sine', vol: .05, force: true });
+    el.classList.add('down'); setTimeout(() => el.classList.remove('down'), 160);
+  };
+  k.addEventListener('pointerdown', e => { e.preventDefault(); press(e.target.closest('[data-midi]')); });
+  const map = {};
+  WHITE.forEach(([, m, key]) => map[key] = m); BLACK.forEach(([m, , key]) => map[key] = m);
+  document.addEventListener('keydown', e => {
+    if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
+    if ($('tab-tools').hidden || /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
+    const m = map[e.key.toLowerCase()]; if (!m) return;
+    press(k.querySelector(`[data-midi="${m}"]`));
+  });
+}
+
+/* ════════════════ SETTINGS ════════════════ */
+function renderSettings() {
+  document.querySelectorAll('.pname').forEach(el => el.textContent = PLAYERS[state.active]);
+  $('goalSel').value = String(me().goal);
+  if (!$('goalSel').value) $('goalSel').value = '15';
+  $('soundSel').value = state.sound;
+}
+$('goalSel').addEventListener('change', e => { me().goal = +e.target.value; save(); renderAll(); toast(`Daily goal set to ${me().goal} min.`); });
+$('soundSel').addEventListener('change', e => { state.sound = e.target.value; save(); });
+$('exportBtn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = `piano-garden-${today()}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});
+$('importBtn').addEventListener('click', () => $('importFile').click());
+$('importFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try {
+    const s = JSON.parse(await f.text());
+    if (!validState(s)) throw new Error('bad');
+    if (!confirm('Replace everything on this device with this backup?')) return;
+    state = normalise(s); save(); selectedDay = null; renderAll(); toast('Backup loaded! 🌷');
+  } catch { toast('That file is not a Piano Garden backup.'); }
+});
+$('resetBtn').addEventListener('click', () => {
+  const name = PLAYERS[state.active];
+  if (!confirm(`Clear all of ${name}'s practice and pieces? This cannot be undone.`)) return;
+  state.players[state.active] = freshPlayer(); save(); selectedDay = null; renderAll(); toast(`${name}'s garden is ready for new seeds.`);
+});
+
+/* ════════════════ TABS ════════════════ */
+function showTab(name) {
+  document.querySelectorAll('nav.tabs [role=tab]').forEach(t => t.setAttribute('aria-selected', t.dataset.tab === name));
+  document.querySelectorAll('section[role=tabpanel]').forEach(s => s.hidden = s.id !== 'tab-' + name);
+  if (name !== 'tools' && metro.on) stopMetro();
+  try { sessionStorage.setItem('piano-garden:tab', name); } catch (e) { /* ignore */ }
+  window.scrollTo({ top: 0 });
+}
+document.querySelector('nav.tabs').addEventListener('click', e => {
+  const t = e.target.closest('[data-tab]'); if (t) showTab(t.dataset.tab);
+});
+
+/* ════════════════ RENDER ════════════════ */
+function renderAll() {
+  document.querySelectorAll('.who button').forEach(b => b.setAttribute('aria-pressed', b.dataset.player === state.active));
+  $('subtitle').textContent = `${PLAYERS[state.active]}'s garden · every practice day grows a flower`;
+  renderTimer(); renderPractice(); renderGarden(); renderPieces(); renderSettings();
+}
+
+// Re-render when the date rolls over (app left open overnight) or another tab saves.
+let lastDay = today();
+setInterval(() => { if (today() !== lastDay) { lastDay = today(); renderAll(); } }, 60000);
+window.addEventListener('storage', e => { if (e.key === KEY) { state = load(); renderAll(); } });
+
+buildKeys(); renderMetro(); renderAll();
+try { const t = sessionStorage.getItem('piano-garden:tab'); if (t && $('tab-' + t)) showTab(t); } catch (e) { /* ignore */ }
+})();
+</script>
+</body>
+</html>
